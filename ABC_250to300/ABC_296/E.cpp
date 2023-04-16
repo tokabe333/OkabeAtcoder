@@ -87,15 +87,35 @@ bool debug = true;
 
 int main() {
     preprocess();
+    ll  n, k;
+    vll arr(n);
+    rep(i, n) cin >> arr[i];
+    sort(arr.begin(), arr.end());
 
-    map<int, int> mii;
-    mii[0] = 3;
-    mii[4] = 2;
-    mii[2] = 1;
-    mii[6] = 334;
+    priority_queue<ll> pque;
+    map<ll, ll>        hash;
+    ll                 count = 1;
+    pque.push(0);
 
-    for (auto ite : mii) {
-        cout << ite.first << " " << ite.second << endl;
+    while (count < k) {
+        ll top = pque.top();
+        pque.pop();
+
+        rep(i, n) {
+            ll next = top + arr[i];
+            pque.push(next);
+            if (hash.find(next) == hash.end())
+                hash[next] = 1;
+            else
+                hash[next] += 1;
+        }
+
+        count += n;
+    }
+
+    count    = 0;
+    ll index = -1;
+    while (count < k) {
     }
 
     return 0;
