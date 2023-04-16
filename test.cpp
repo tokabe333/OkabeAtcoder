@@ -88,9 +88,7 @@ bool debug = true;
 int main() {
     preprocess();
 
-    set<int> s;
-    rep(i, 10) s.insert(10 - i);
-    cout << *s.begin() << " " << *s.end() << endl;
+    cout << (-1 % 4) << endl;
 
     return 0;
 } // end of main
