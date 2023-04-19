@@ -83,7 +83,7 @@ void preprocess() {
     std::ios_base::sync_with_stdio(false);
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
