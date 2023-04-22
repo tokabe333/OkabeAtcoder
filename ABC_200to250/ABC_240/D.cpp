@@ -92,12 +92,25 @@ int main() {
     vll arr(n);
     rep(i, n) cin >> arr[i];
 
-    ll count = 0;
-    for (int i = 1; i < n; ++i) {
-        if (arr[i] == arr[i - 1]) count += 1;
+    ll         count = 0;
+    deque<pii> cylinder;
+    rep(i, n) {
+        if (cylinder.size() == 0) {
+            cylinder.emplace_back(pii(arr[i], 1));
+            count += 1;
+        } else if (cylinder.back().first == arr[i]) {
+            cylinder.back().second += 1;
+            count += 1;
+            if (cylinder.back().first == cylinder.back().second) {
+                count -= cylinder.back().second;
+                cylinder.pop_back();
+            }
+        } else {
+            cylinder.emplace_back(pii(arr[i], 1));
+            count += 1;
+        }
+        cout << count << elnf;
     }
-
-    cout << n - count << endl;
 
     return 0;
 } // end of main
