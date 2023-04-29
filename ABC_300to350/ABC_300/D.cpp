@@ -101,23 +101,27 @@ int main() {
         }
     }
 
-    vi p;
+    vll p;
     rep(i, sqn + 1) {
         if (eratos[i] == 1) p.emplace_back(i);
     }
-    cout << "p.size():" << p.size() << endl;
+    // cout << "p.size():" << p.size() << endl;
 
-    ll     ans = 0;
-    double hoge;
-    for (int a = 0; a < p.size() - 2; ++a) {
-        hoge = (double)(n) / (double)(p[a]) / p[a];
-        for (int b = a + 1; b < p.size() - 1; ++b) {
-            hoge /= p[b];
-            ll   sqhoge = sqrt(hoge);
-            auto ite    = lower_bound(p.begin(), p.end(), sqhoge);
-            if (*ite < b) continue;
-            ans += ite - p.begin() - b;
-            if (sqhoge != *ite) ans -= 1;
+    ll ans   = 0;
+    ll psize = p.size();
+    for (int a = 0; a < psize - 2; ++a) {
+        for (int b = a + 1; b < psize - 1; ++b) {
+            for (int c = b + 1; c < psize; ++c) {
+
+                ll hoge = p[a] * p[a] * p[b];
+                if (hoge > n) break;
+                hoge *= p[c];
+                if (hoge > n) break;
+                hoge *= p[c];
+                if (hoge > n) break;
+                ans += 1;
+                // cout << "a:" << p[a] << " b:" << p[b] << " c:" << p[c] << endl;
+            }
         }
     }
     cout << ans << endl;
