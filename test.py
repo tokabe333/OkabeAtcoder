@@ -1,6 +1,4 @@
 import sys
-import requests
-
 
 def main():
 	# このコードは引数と標準出力を用いたサンプルコードです。
@@ -9,22 +7,21 @@ def main():
 	# This is a sample code to use arguments and outputs.
 	# Edit and remove this code as you like.
 
-	token = "5198d3f1-b93e-40f3-a248-3a69d77ab7b0"
-	# token = "52baaa19-5056-418b-ac6d-0a0372e6b740"
-	url = "http://challenge-server.code-check.io/api/kidnapper"
-
-	p = {"token" : token}
-	res = requests.get(url + "/start", params = p)
-	print(res)
-	while "put_the_bag" not in res.json():
-		print(res.json())
-		goto = res.json()["goto"]
-		p = {"token" : token, "to" : "hoge"}
-		res = requests.get(url + "/deliver", params = p)
+	n = 5
+	arr = [1, 2, 3, 4, 5]
 	
-	print(res.json())
-	print(goto)
+	s = set()
+	for i in range(n):
+		a = arr[i]
+		if a in s:
+			print(i + 1)
+			return 0
 
+		s.add(a)
+	# end of for
+
+	print(-1)
+# end of main
 
 
 if __name__ == "__main__":

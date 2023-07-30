@@ -101,18 +101,16 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    ll n;
+    int n, m;
+    cin >> n >> m;
+    vll arr(n);
+    vll brr(m);
+    rep(i, n) cin >> arr[i];
+    rep(i, m) cin >> brr[i];
+    sort(arr.begin(), arr.end());
+    sort(brr.begin(), brr.end());
 
-    vi   v  = {1,
-               2,
-               3,
-               4,
-               5,
-               6,
-               7};
-    auto it = lower_bound(v.begin(), v.end(), 1);
-    cout << distance(v.begin(), it) << " " << *it << endl;
-    cout << (v.begin() == it) << " " << (v.end() == it) << endl;
+    int ia = 0, ib = 0;
 
     return 0;
 } // end of main
