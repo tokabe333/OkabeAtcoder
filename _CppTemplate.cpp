@@ -101,18 +101,7 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    ll n;
-
-    vi   v  = {1,
-               2,
-               3,
-               4,
-               5,
-               6,
-               7};
-    auto it = lower_bound(v.begin(), v.end(), 1);
-    cout << distance(v.begin(), it) << " " << *it << endl;
-    cout << (v.begin() == it) << " " << (v.end() == it) << endl;
+    int n;
 
     return 0;
 } // end of main
