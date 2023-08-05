@@ -1,1 +1,2 @@
-puts 10.pow(2, 33)
+a = 3.3
+puts a.ceil
