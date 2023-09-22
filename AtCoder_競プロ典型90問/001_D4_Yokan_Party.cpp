@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -83,15 +83,59 @@ void preprocess() {
     std::ios_base::sync_with_stdio(false);
 } // end of func
 
-bool debug = true;
+template <class T>
+void printvec(vector<T> vec) {
+    rep(i, vec.size()) cout << vec[i] << " ";
+    cout << endl;
+} // end of func
+
+template <class T>
+void printvvec(vector<T> vec) {
+    rep(i, vec.size()) {
+        rep(j, vec[i].size()) cout << vec[i][j] << " ";
+        cout << endl;
+    }
+} // end of func
+
+const bool debug = true;
+
+bool check(const vi &arr, int k, int l, int d) {
+    int prev  = 0;
+    int count = 0;
+    rep(i, arr.size()) {
+        if (arr[i] - prev < d) continue;
+        prev = arr[i];
+        count += 1;
+    }
+    if (l - prev >= d) count += 1;
+
+    // cout << "check_count:" << count << "    ";
+
+    return count > k;
+}
 
 int main() {
     preprocess();
+    int n, L, k;
+    cin >> n >> L >> k;
+    vi arr(n);
+    rep(i, n) cin >> arr[i];
 
-    vi   hoge = {1, 2, 3, 5, 8, 10, 34};
-    auto itr  = lower_bound(hoge.begin(), hoge.end(), 4);
-    cout << *itr << endl;
-    cout << distance(hoge.begin(), itr) << endl;
+    int l   = 0;
+    int r   = L + 2;
+    int mid = 0;
+    while (abs(l - r) > 1) {
+        mid      = (l + r) / 2;
+        bool res = check(arr, k, L, mid);
+        // cout << "mid:" << mid << " res:" << res << endl;
+        if (res)
+            l = mid;
+        else
+            r = mid;
+    }
+
+    int ans = check(arr, k, L, mid) == 1 ? mid : mid - 1;
+    cout << ans << endl;
 
     return 0;
 } // end of main

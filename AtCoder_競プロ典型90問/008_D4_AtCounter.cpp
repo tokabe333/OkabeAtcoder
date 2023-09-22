@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -83,15 +83,40 @@ void preprocess() {
     std::ios_base::sync_with_stdio(false);
 } // end of func
 
-bool debug = true;
+template <class T>
+void printvec(vector<T> vec) {
+    rep(i, vec.size()) cout << vec[i] << " ";
+    cout << endl;
+} // end of func
+
+template <class T>
+void printvvec(vector<T> vec) {
+    rep(i, vec.size()) {
+        rep(j, vec[i].size()) cout << vec[i][j] << " ";
+        cout << endl;
+    }
+} // end of func
+
+const bool debug = true;
 
 int main() {
     preprocess();
+    int    n;
+    string str;
+    cin >> n >> str;
 
-    vi   hoge = {1, 2, 3, 5, 8, 10, 34};
-    auto itr  = lower_bound(hoge.begin(), hoge.end(), 4);
-    cout << *itr << endl;
-    cout << distance(hoge.begin(), itr) << endl;
+    vvi arr(7, vi(0));
+    rep(i, n) {
+        if (str[i] == 'a') arr[0].emplace_back(i);
+        if (str[i] == 't') arr[1].emplace_back(i);
+        if (str[i] == 'c') arr[2].emplace_back(i);
+        if (str[i] == 'o') arr[3].emplace_back(i);
+        if (str[i] == 'd') arr[4].emplace_back(i);
+        if (str[i] == 'e') arr[5].emplace_back(i);
+        if (str[i] == 'r') arr[6].emplace_back(i);
+    }
+
+    printvvec(arr);
 
     return 0;
 } // end of main

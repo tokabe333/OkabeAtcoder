@@ -68,30 +68,60 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
-// ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
+// æ•°å€¤ã‚’16æ¡ã§è¡¨ç¤º(èª¤å·®ãŒåŽ³ã—ã„å•é¡Œã«å¯¾å¿œ)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
 
-// endl no flush (flushˆ—‚Íd‚½‚¢)
+// endl no flush (flushå‡¦ç†ã¯é‡ãŸã„)
 #define elnf "\n"
 
-// ‹£ƒvƒ—pŠÂ‹«ƒZƒbƒeƒBƒ“ƒO
+// ç«¶ãƒ—ãƒ­ç”¨ç’°å¢ƒã‚»ãƒƒãƒ†ã‚£ãƒ³ã‚°
 void preprocess() {
     std::cin.tie(nullptr);
     std::ios_base::sync_with_stdio(false);
 } // end of func
 
-bool debug = true;
+template <class T>
+void printvec(vector<T> vec) {
+    rep(i, vec.size()) cout << vec[i] << " ";
+    cout << endl;
+} // end of func
+
+template <class T>
+void printvvec(vector<T> vec) {
+    rep(i, vec.size()) {
+        rep(j, vec[i].size()) cout << vec[i][j] << " ";
+        cout << endl;
+    }
+} // end of func
+
+const bool debug = true;
+
+int saiki(string str, int lefts, int depth, int n) {
+
+    // cout << "str:" << str << " lefts:" << lefts << " depth:" << depth << endl;
+
+    if (depth == n) {
+        if (lefts != 1) return 0;
+        cout << str + ")" << endl;
+        return 0;
+    }
+
+    if (lefts - 1 > n - depth || lefts < 0) return 0;
+    saiki(str + "(", lefts + 1, depth + 1, n);
+    saiki(str + ")", lefts - 1, depth + 1, n);
+
+    return 0;
+}
 
 int main() {
     preprocess();
+    int n;
+    cin >> n;
 
-    vi   hoge = {1, 2, 3, 5, 8, 10, 34};
-    auto itr  = lower_bound(hoge.begin(), hoge.end(), 4);
-    cout << *itr << endl;
-    cout << distance(hoge.begin(), itr) << endl;
+    saiki("(", 1, 2, n);
 
     return 0;
 } // end of main
