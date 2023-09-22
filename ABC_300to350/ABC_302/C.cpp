@@ -68,31 +68,86 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
-// êîílÇ16åÖÇ≈ï\é¶(åÎç∑Ç™åµÇµÇ¢ñ‚ëËÇ…ëŒâû)
+// Êï∞ÂÄ§„Çí16Ê°Å„ÅßË°®Á§∫(Ë™§Â∑Æ„ÅåÂé≥„Åó„ÅÑÂïèÈ°å„Å´ÂØæÂøú)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
 
-// endl no flush (flushèàóùÇÕèdÇΩÇ¢)
+// endl no flush (flushÂá¶ÁêÜ„ÅØÈáç„Åü„ÅÑ)
 #define elnf "\n"
 
-// ã£ÉvÉçópä¬ã´ÉZÉbÉeÉBÉìÉO
+// Á´∂„Éó„É≠Áî®Áí∞Â¢É„Çª„ÉÉ„ÉÜ„Ç£„É≥„Ç∞
 void preprocess() {
     std::cin.tie(nullptr);
     std::ios_base::sync_with_stdio(false);
 } // end of func
 
-bool debug = true;
+template <class T>
+void printvec(vector<T> vec) {
+    rep(i, vec.size()) cout << vec[i] << " ";
+    cout << endl;
+} // end of func
+
+template <class T>
+void printvvec(vector<T> vec) {
+    rep(i, vec.size()) {
+        rep(j, vec[i].size()) cout << vec[i][j] << " ";
+        cout << endl;
+    }
+} // end of func
+
+const bool debug = true;
+
+int dist_of_string(string s1, string s2, int m) {
+    int dist = 0;
+    rep(i, m) {
+        if (s1[i] != s2[i]) dist += 1;
+    }
+    return dist;
+}
+
+int n, m;
+
+bool dfs(set<int> si, const vvi &mat, int node) {
+    si.insert(node);
+    if (si.size() == n) return true;
+
+    bool flag = false;
+    rep(i, n) {
+        if (mat[node][i] != 1) continue;
+        if (si.count(i) == 1) continue;
+        flag = flag || dfs(si, mat, i);
+    }
+    si.erase(node);
+    return flag;
+} // end of dfs
 
 int main() {
     preprocess();
 
-    bool flag = false;
-    cout << (flag && true) << endl;
-    cout << (flag || true) << endl;
-    cout << (flag && false) << endl;
-    cout << (flag || false) << endl;
+    cin >> n >> m;
+
+    vs s(n);
+    rep(i, n) cin >> s[i];
+    vvi mat(n, vi(n, 0));
+
+    rep(i, n) {
+        rep(j, n) {
+            mat[i][j] = dist_of_string(s[i], s[j], m);
+        }
+    }
+
+    // dfs„Åß‰∏ÄÁ≠ÜÊõ∏„Åç„Åß„Åç„Çã„ÅãÊé¢Á¥¢
+    set<int> si;
+    rep(i, n) {
+        bool ans = dfs(si, mat, i);
+        if (ans) {
+            cout << "Yes" << endl;
+            return 0;
+        }
+    }
+    cout << "No" << endl;
 
     return 0;
 } // end of main

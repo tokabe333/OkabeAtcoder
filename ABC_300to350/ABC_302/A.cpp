@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -83,16 +83,31 @@ void preprocess() {
     std::ios_base::sync_with_stdio(false);
 } // end of func
 
-bool debug = true;
+template <class T>
+void printvec(vector<T> vec) {
+    rep(i, vec.size()) cout << vec[i] << " ";
+    cout << endl;
+} // end of func
+
+template <class T>
+void printvvec(vector<T> vec) {
+    rep(i, vec.size()) {
+        rep(j, vec[i].size()) cout << vec[i][j] << " ";
+        cout << endl;
+    }
+} // end of func
+
+const bool debug = true;
 
 int main() {
     preprocess();
+    ll a, b;
+    cin >> a >> b;
 
-    bool flag = false;
-    cout << (flag && true) << endl;
-    cout << (flag || true) << endl;
-    cout << (flag && false) << endl;
-    cout << (flag || false) << endl;
+    ll c = a / b;
+    if (a % b != 0) c += 1;
+
+    cout << c << endl;
 
     return 0;
 } // end of main

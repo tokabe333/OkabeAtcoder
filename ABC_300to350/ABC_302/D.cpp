@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -83,16 +83,48 @@ void preprocess() {
     std::ios_base::sync_with_stdio(false);
 } // end of func
 
-bool debug = true;
+template <class T>
+void printvec(vector<T> vec) {
+    rep(i, vec.size()) cout << vec[i] << " ";
+    cout << endl;
+} // end of func
+
+template <class T>
+void printvvec(vector<T> vec) {
+    rep(i, vec.size()) {
+        rep(j, vec[i].size()) cout << vec[i][j] << " ";
+        cout << endl;
+    }
+} // end of func
+
+const bool debug = true;
 
 int main() {
     preprocess();
+    ll n, m, d;
+    cin >> n >> m >> d;
+    vll arr(n);
+    vll brr(m);
+    rep(i, n) cin >> arr[i];
+    rep(i, m) cin >> brr[i];
 
-    bool flag = false;
-    cout << (flag && true) << endl;
-    cout << (flag || true) << endl;
-    cout << (flag && false) << endl;
-    cout << (flag || false) << endl;
+    set<ll> sll;
+    rep(i, n) {
+        rep(j, 3) {
+            sll.insert(arr[i] + j);
+            sll.insert(arr[i] - j);
+        }
+    }
 
+    for (int i = m - 1; i >= 0; --i) {
+        if (sll.count(brr[i]) == 0) continue;
+        for (int j = n - 1; j >= 0; --j) {
+            if (abs(brr[i] - arr[j]) <= 2) {
+                cout << arr[j] + brr[i] << endl;
+                cout << "arr:" << arr[j] << " brr:" << brr[i] << endl;
+                return 0;
+            }
+        }
+    }
     return 0;
 } // end of main
