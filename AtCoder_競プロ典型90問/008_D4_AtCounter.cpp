@@ -102,21 +102,22 @@ const bool debug = true;
 int main() {
     preprocess();
     int    n;
-    string str;
-    cin >> n >> str;
+    string s;
+    string at = "atcoder";
+    cin >> n >> s;
 
-    vvi arr(7, vi(0));
-    rep(i, n) {
-        if (str[i] == 'a') arr[0].emplace_back(i);
-        if (str[i] == 't') arr[1].emplace_back(i);
-        if (str[i] == 'c') arr[2].emplace_back(i);
-        if (str[i] == 'o') arr[3].emplace_back(i);
-        if (str[i] == 'd') arr[4].emplace_back(i);
-        if (str[i] == 'e') arr[5].emplace_back(i);
-        if (str[i] == 'r') arr[6].emplace_back(i);
+    vvll dp(at.size() + 1, vll(n + 1, 0));
+    dp[0][0] = 1;
+    rep(i, at.size() + 1) {
+        rep(j, n) {
+            dp[i][j + 1] = (dp[i][j] + dp[i][j + 1]) % m107;
+            if (i == at.size() || s[j] != at[i]) continue;
+            dp[i + 1][j + 1] = (dp[i][j] + dp[i + 1][j + 1]) % m107;
+        }
     }
 
-    printvvec(arr);
+    // printvvec(dp);
+    cout << dp.back().back() << endl;
 
     return 0;
 } // end of main

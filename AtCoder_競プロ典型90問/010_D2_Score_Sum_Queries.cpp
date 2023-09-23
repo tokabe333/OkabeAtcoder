@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,17 +97,39 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
-
-    vi hoge = {1, 2, 3, 5, 8, 10};
-    vi huga(hoge.size() + 1, 0);
-    for (int i = 1; i < huga.size(); ++i) {
-        huga[i] = hoge[i - 1] + huga[i - 1];
+    int n;
+    ll  c, p;
+    cin >> n;
+    vll arr(n, 0), brr(n, 0);
+    rep(i, n) {
+        cin >> c >> p;
+        if (c == 1)
+            arr[i] = p;
+        else
+            brr[i] = p;
     }
-    printvec(huga);
+    vll carr(arr.size() + 1, 0), cbrr(brr.size() + 1, 0);
+    for (int i = 1; i < carr.size(); ++i)
+        carr[i] = carr[i - 1] + arr[i - 1];
+    for (int i = 1; i < cbrr.size(); ++i)
+        cbrr[i] = cbrr[i - 1] + brr[i - 1];
+
+    // printvec(arr);
+    // printvec(carr);
+    // cout << endl;
+    // printvec(brr);
+    // printvec(cbrr);
+    // cout << endl;
+    int q, l, r;
+    cin >> q;
+    rep(i, q) {
+        cin >> l >> r;
+        cout << carr[r] - carr[l - 1] << " " << cbrr[r] - cbrr[l - 1] << elnf;
+    }
 
     return 0;
 } // end of main
