@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,13 +97,98 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+#include <iostream>
+#include <utility> // std::swap()
+#include <vector>
+
+#include <iostream>
+#include <utility> // std::swap()
+#include <vector>
+
+using namespace std;
+
+class PairedUnionFind {
+  public:
+    map<pair<int, int>, pair<int, int>> parent;
+    map<pair<int, int>, int>            set_size;
+
+    // constructor
+    PairedUnionFind(int h, int w) : parent(), set_size() {
+        for (int i = 0; i < h; ++i) {
+            for (int j = 0; j < w; ++j) {
+                parent[{i, j}]   = {i, j};
+                set_size[{i, j}] = 1;
+            }
+        }
+    }
+
+    pair<int, int> root(pair<int, int> x) // find (path halving)
+    {
+        while (parent[x] != x) {
+            parent[x] = parent[parent[x]];
+            x         = parent[x];
+        }
+
+        return x;
+    }
+
+    bool merge(pair<int, int> x, pair<int, int> y) // union by size
+    {
+        pair<int, int> rx = root(x);
+        pair<int, int> ry = root(y);
+
+        if (rx == ry) return false;
+
+        // Operations
+        else if (set_size[rx] < set_size[ry]) {
+            parent[rx] = ry;
+            set_size[ry] += set_size[rx];
+        } else {
+            parent[ry] = rx;
+            set_size[rx] += set_size[ry];
+        }
+    }
+
+    bool same(pair<int, int> x, pair<int, int> y) {
+        return root(x) == root(y);
+    }
+
+    int size(pair<int, int> x) {
+        return set_size[root(x)];
+    }
+};
+
+const bool debug = true;
 
 int main() {
     preprocess();
+    int h, w, q;
+    int t, r, c, ra, ca, rb, cb;
+    cin >> h >> w >> q;
 
-    int a = 3;
-    int b = 12;
+    PairedUnionFind puf(h, w);
+    vvi             masu(h, vi(w, 0));
+
+    rep(qq, q) {
+        cin >> t;
+        if (t == 1) {
+            cin >> r >> c;
+            r -= 1, c -= 1;
+            masu[r][c] = 1;
+            if (r > 0 && masu[r - 1][c] == 1) puf.merge(pii(r, c), pii(r - 1, c));
+            if (r < h - 1 && masu[r + 1][c] == 1) puf.merge(pii(r, c), pii(r + 1, c));
+            if (c > 0 && masu[r][c - 1] == 1) puf.merge(pii(r, c), pii(r, c - 1));
+            if (c < w - 1 && masu[r][c + 1] == 1) puf.merge(pii(r, c), pii(r, c + 1));
+        } else {
+            cin >> ra >> ca >> rb >> cb;
+            ra -= 1, ca -= 1, rb -= 1, cb -= 1;
+            pii    a(ra, ca), b(rb, cb);
+            string hoge = "Yes";
+            if (a == b && masu[ra][ca] == 0) hoge = "No";
+            if (a != b && puf.same(a, b) == false) hoge = "No";
+            cout << hoge << endl;
+        }
+    }
 
     return 0;
 } // end of main
