@@ -97,77 +97,66 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-#include <iostream>
-#include <utility> // std::swap()
-#include <vector>
-
-#include <iostream>
-#include <utility> // std::swap()
-#include <vector>
-
-using namespace std;
-
-class PairedUnionFind {
+// Union-Find 木 (1.4 高速化 + 省メモリ化)
+template <class uf_type>
+class UnionFind {
   public:
-    map<pair<int, int>, pair<int, int>> parent;
-    map<pair<int, int>, int>            set_size;
+    UnionFind() = default;
 
-    // constructor
-    PairedUnionFind(int h, int w) : parent(), set_size() {
-        for (int i = 0; i < h; ++i) {
-            for (int j = 0; j < w; ++j) {
-                parent[{i, j}]   = {i, j};
-                set_size[{i, j}] = 1;
+    // n 個の要素
+    explicit UnionFind(size_t n)
+        : m_parentsOrSize(n, -1) {}
+
+    // i の root を返す
+    uf_type find(uf_type i) {
+        if (m_parentsOrSize[i] < 0) {
+            return i;
+        }
+
+        // 経路圧縮
+        return (m_parentsOrSize[i] = find(m_parentsOrSize[i]));
+    }
+
+    // a の木と b の木を統合
+    void merge(uf_type a, uf_type b) {
+        a = find(a);
+        b = find(b);
+
+        if (a != b) {
+            // union by size (小さいほうが子になる）
+            if (-m_parentsOrSize[a] < -m_parentsOrSize[b]) {
+                std::swap(a, b);
             }
+
+            m_parentsOrSize[a] += m_parentsOrSize[b];
+            m_parentsOrSize[b] = a;
         }
     }
 
-    pair<int, int> root(pair<int, int> x) // find (path halving)
-    {
-        while (parent[x] != x) {
-            parent[x] = parent[parent[x]];
-            x         = parent[x];
-        }
-
-        return x;
+    // a と b が同じ木に属すかを返す
+    bool connected(uf_type a, uf_type b) {
+        return (find(a) == find(b));
     }
 
-    bool merge(pair<int, int> x, pair<int, int> y) // union by size
-    {
-        pair<int, int> rx = root(x);
-        pair<int, int> ry = root(y);
-
-        if (rx == ry) return false;
-
-        // Operations
-        else if (set_size[rx] < set_size[ry]) {
-            parent[rx] = ry;
-            set_size[ry] += set_size[rx];
-        } else {
-            parent[ry] = rx;
-            set_size[rx] += set_size[ry];
-        }
+    // i が属するグループの要素数を返す
+    uf_type size(uf_type i) {
+        return -m_parentsOrSize[find(i)];
     }
 
-    bool same(pair<int, int> x, pair<int, int> y) {
-        return root(x) == root(y);
-    }
-
-    int size(pair<int, int> x) {
-        return set_size[root(x)];
-    }
+  private:
+    // m_parentsOrSize[i] は i の 親,
+    // ただし root の場合は (-1 * そのグループに属する要素数)
+    std::vector<uf_type> m_parentsOrSize;
 };
-
-const bool debug = true;
 
 int main() {
     preprocess();
+
     int h, w, q;
     int t, r, c, ra, ca, rb, cb;
     cin >> h >> w >> q;
-
-    PairedUnionFind puf(h, w);
-    vvi             masu(h, vi(w, 0));
+    UnionFind<int> uf(2000 * 2000 + 1);
+    vvi            masu(h, vi(w, 0));
 
     rep(qq, q) {
         cin >> t;
@@ -175,20 +164,23 @@ int main() {
             cin >> r >> c;
             r -= 1, c -= 1;
             masu[r][c] = 1;
-            if (r > 0 && masu[r - 1][c] == 1) puf.merge(pii(r, c), pii(r - 1, c));
-            if (r < h - 1 && masu[r + 1][c] == 1) puf.merge(pii(r, c), pii(r + 1, c));
-            if (c > 0 && masu[r][c - 1] == 1) puf.merge(pii(r, c), pii(r, c - 1));
-            if (c < w - 1 && masu[r][c + 1] == 1) puf.merge(pii(r, c), pii(r, c + 1));
+            if (r > 0 && masu[r - 1][c] == 1) uf.merge(r * w + c, (r - 1) * w + c);
+            if (r < h - 1 && masu[r + 1][c] == 1) uf.merge(r * w + c, (r + 1) * w + c);
+            if (c > 0 && masu[r][c - 1] == 1) uf.merge(r * w + c, r * w + c - 1);
+            if (c < w - 1 && masu[r][c + 1] == 1) uf.merge(r * w + c, r * w + c + 1);
         } else {
             cin >> ra >> ca >> rb >> cb;
             ra -= 1, ca -= 1, rb -= 1, cb -= 1;
-            pii    a(ra, ca), b(rb, cb);
-            string hoge = "Yes";
-            if (a == b && masu[ra][ca] == 0) hoge = "No";
-            if (a != b && puf.same(a, b) == false) hoge = "No";
-            cout << hoge << endl;
+            int    a   = ra * w + ca;
+            int    b   = rb * w + cb;
+            string ans = "";
+            if (a == b) {
+                ans = masu[ra][ca] == 1 ? "Yes" : "No";
+            } else {
+                ans = uf.connected(a, b) ? "Yes" : "No";
+            }
+            cout << ans << elnf;
         }
     }
 
-    return 0;
 } // end of main
