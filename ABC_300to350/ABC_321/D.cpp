@@ -68,16 +68,16 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
-// ”’l‚ğ16Œ…‚Å•\¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰)
+// æ•°å€¤ã‚’16æ¡ã§è¡¨ç¤º(èª¤å·®ãŒå³ã—ã„å•é¡Œã«å¯¾å¿œ)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
 
-// endl no flush (flushˆ—‚Íd‚½‚¢)
+// endl no flush (flushå‡¦ç†ã¯é‡ãŸã„)
 #define elnf "\n"
 
-// ‹£ƒvƒ—pŠÂ‹«ƒZƒbƒeƒBƒ“ƒO
+// ç«¶ãƒ—ãƒ­ç”¨ç’°å¢ƒã‚»ãƒƒãƒ†ã‚£ãƒ³ã‚°
 void preprocess() {
     std::cin.tie(nullptr);
     std::ios_base::sync_with_stdio(false);
@@ -97,14 +97,37 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
+    int n, m;
+    ll  p;
+    cin >> n >> m >> p;
+    vll arr(n), brr(m);
+    rep(i, n) cin >> arr[i];
+    rep(i, m) cin >> brr[i];
 
-    vi   arr = {1, 2, 5, 7, 10, 23};
-    auto itr = lower_bound(arr.begin(), arr.end(), 6);
-    cout << *itr << " " << distance(arr.begin(), itr) << endl;
+    sort(arr.begin(), arr.end());
+    sort(brr.begin(), brr.end());
+    vll crr(m + 1, 0);
+    for (int i = 1; i <= m; ++i)
+        crr[i] = crr[i - 1] + brr[i - 1];
+
+    // printvec(crr);
+    // cout << endl;
+
+    ll ans = 0;
+    rep(i, n) {
+        ll   sa  = p - arr[i];
+        auto itr = lower_bound(brr.begin(), brr.end(), sa);
+        int  d   = distance(brr.begin(), itr);
+        ll   a   = crr[d] + arr[i] * d;
+        ll   b   = p * (m - d);
+        ans += a + b;
+        // cout << "sa:" << sa << " itr:" << *itr << " d:" << d << " a:" << a << " b:" << b << endl;
+    }
+    cout << ans << endl;
 
     return 0;
 } // end of main

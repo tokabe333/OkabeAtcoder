@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ğ16Œ…‚Å•\¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,14 +97,30 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
+    int n, x;
+    cin >> n >> x;
+    vi arr(n - 1);
+    rep(i, n - 1) cin >> arr[i];
 
-    vi   arr = {1, 2, 5, 7, 10, 23};
-    auto itr = lower_bound(arr.begin(), arr.end(), 6);
-    cout << *itr << " " << distance(arr.begin(), itr) << endl;
+    // sort(arr.begin(), arr.end());
+    int s  = accumulate(arr.begin(), arr.end(), 0);
+    int mi = *min_element(arr.begin(), arr.end());
+    int ma = *max_element(arr.begin(), arr.end());
+    if (s - mi < x) {
+        cout << -1 << endl;
+        return 0;
+    }
+    if (s - ma >= x) {
+        cout << 0 << endl;
+        return 0;
+    }
+
+    int sa = x - (s - mi - ma);
+    cout << sa << endl;
 
     return 0;
 } // end of main

@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ğ16Œ…‚Å•\¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -101,10 +101,27 @@ bool debug = true;
 
 int main() {
     preprocess();
+    ll kk;
+    cin >> kk;
 
-    vi   arr = {1, 2, 5, 7, 10, 23};
-    auto itr = lower_bound(arr.begin(), arr.end(), 6);
-    cout << *itr << " " << distance(arr.begin(), itr) << endl;
+    vi arr;
+
+    rep(bit, 1 << 10) {
+        vi hoge;
+        rep(i, 10) {
+
+            cout << "bit:" << bit << " 1<<i:" << (1 << i) << " &:" << (bit & (1 << i)) << endl;
+            if (bit & (1 << i) == 0) continue;
+            hoge.emplace_back(i);
+        }
+        printvec(hoge);
+        int a = 0;
+        rep(i, hoge.size()) {
+            a += hoge[i] * pow(10, i);
+        }
+        arr.emplace_back(a);
+    }
+    printvec(arr);
 
     return 0;
 } // end of main
