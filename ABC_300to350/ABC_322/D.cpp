@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,19 +97,96 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = false;
+
+vvi rotate90(const vvi &poly) {
+    vvi hoge(4, vi(4, 0));
+    rep(i, 4) {
+        rep(j, 4) {
+            hoge[3 - j][i] = poly[i][j];
+        }
+    }
+    return hoge;
+}
+
+bool put(const vvi &pol, vvi &masu, int y, int x) {
+    rep(i, 4) {
+        rep(j, 4) {
+            if (pol[i][j] == 0) continue;
+            if (y + i < 0 || 3 < y + i) return false;
+            if (x + j < 0 || 3 < x + j) return false;
+            if (masu[y + i][x + j] == 1) return false;
+        }
+    }
+
+    rep(i, 4) {
+        rep(j, 4) {
+            if (pol[i][j] == 0) continue;
+            masu[y + i][x + j] = 1;
+        }
+    }
+    return true;
+}
+
+bool dfs(const vvvi &poly, const vvi &masu, int depth) {
+    if (depth == 3) {
+        int s = 0;
+        rep(i, 4) {
+            rep(j, 4) s += masu[i][j];
+        }
+
+        if (debug) {
+            cout << "depth:" << depth << " s:" << s << endl;
+            printvvec(masu);
+        }
+
+        if (s != 16) return false;
+        return true;
+    }
+
+    for (int i = -3; i <= 3; ++i) {
+        for (int j = -3; j <= 3; ++j) {
+            vvi  m = masu;
+            bool p = put(poly[depth], m, i, j);
+            if (p == false) continue;
+            bool result = dfs(poly, m, depth + 1);
+            if (result == true) return true;
+        }
+    }
+    return false;
+}
 
 int main() {
     preprocess();
+    vvvi poly(3, vvi(4, vi(4, 0)));
+    char c;
 
-    vvi arr = {{1, 2, 3},
-               {4, 5, 6},
-               {7, 8, 9}};
+    rep(i, 3) {
+        rep(j, 4) {
+            rep(k, 4) {
+                cin >> c;
+                if (c == '#') poly[i][j][k] = 1;
+            }
+        }
+    }
 
-    vvi hoge   = arr;
-    hoge[0][0] = 334;
-    hoge       = arr;
-    printvvec(hoge);
-    cout << "Yes" << endl;
+    vvi masu(4, vi(4, 0));
+    rep(k, 4) {
+        poly[2] = rotate90(poly[2]);
+        rep(j, 4) {
+            poly[1] = rotate90(poly[1]);
+            rep(i, 4) {
+                poly[0]     = rotate90(poly[0]);
+                bool result = dfs(poly, masu, 0);
+
+                if (result == false) continue;
+                cout << "Yes" << endl;
+                return 0;
+            }
+        }
+    }
+
+    cout << "No" << endl;
+
     return 0;
 } // end of main
