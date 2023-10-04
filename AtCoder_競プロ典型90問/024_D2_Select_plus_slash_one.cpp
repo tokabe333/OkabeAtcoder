@@ -101,11 +101,16 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    ll a, b, c;
-    cin >> a >> b >> c;
+    int n, k;
+    cin >> n >> k;
+    vll arr(n), brr(n);
+    rep(i, n) cin >> arr[i];
+    rep(i, n) cin >> brr[i];
 
-    ll g   = gcd(a, gcd(b, c));
-    ll ans = (a / g - 1) + (b / g - 1) + (c / g - 1);
+    ll s = 0;
+    rep(i, n) s += abs(arr[i] - brr[i]);
+
+    string ans = s <= k && (s - k) % 2 == 0 ? "Yes" : "No";
     cout << ans << endl;
 
     return 0;

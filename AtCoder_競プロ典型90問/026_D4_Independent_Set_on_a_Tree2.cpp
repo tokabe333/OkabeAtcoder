@@ -101,12 +101,59 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    ll a, b, c;
-    cin >> a >> b >> c;
+    int n, a, b;
+    cin >> n;
+    vvi tree(n, vi(0));
+    rep(i, n - 1) {
+        cin >> a >> b;
+        a -= 1, b -= 1;
+        tree[a].emplace_back(b);
+        tree[b].emplace_back(a);
+    }
 
-    ll g   = gcd(a, gcd(b, c));
-    ll ans = (a / g - 1) + (b / g - 1) + (c / g - 1);
-    cout << ans << endl;
+    set<int>   si;
+    queue<pii> que;
+    vi         depths(n, -1);
+    que.push(pii(0, 0));
+    while (que.size() > 0) {
+        int node  = que.front().first;
+        int depth = que.front().second;
+        que.pop();
+        if (si.count(node) == 1) continue;
+
+        depths[node] = depth;
+        si.insert(node);
+        rep(i, tree[node].size()) {
+            que.push(pii(tree[node][i], depth + 1));
+        }
+    }
+
+    // printvec(depths);
+
+    int odd = 0, even = 0;
+    rep(i, n) {
+        if (depths[i] % 2 == 0)
+            even += 1;
+        else
+            odd += 1;
+    }
+
+    vi ans(0);
+    if (odd > even) {
+        rep(i, n) {
+            if (depths[i] % 2 == 0) continue;
+            ans.emplace_back(i + 1);
+            if (ans.size() == n / 2) break;
+        }
+    } else {
+        rep(i, n) {
+            if (depths[i] % 2 == 1) continue;
+            ans.emplace_back(i + 1);
+            if (ans.size() == n / 2) break;
+        }
+    }
+
+    printvec(ans);
 
     return 0;
 } // end of main

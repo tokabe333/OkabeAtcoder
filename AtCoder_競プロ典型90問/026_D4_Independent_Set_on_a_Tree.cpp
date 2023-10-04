@@ -99,14 +99,58 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
+bool dfs(set<int> &si, vvi &arr, int node, int depth, int n) {
+    if (depth == n) {
+        if (si.size() != n / 2) return false;
+
+        // cout << "ok! node:" << node << " depth:" << depth << endl;
+        // for (auto itr = si.begin(); itr != si.end(); itr++)
+        //     cout << *itr << " ";
+        // cout << endl;
+        return true;
+    }
+
+    bool flag = true;
+    rep(i, arr[node].size()) {
+        if (si.count(arr[node][i]) == 0) continue;
+        flag = false;
+        break;
+    }
+
+    if (flag == true) si.insert(node);
+
+    rep(i, arr[node].size()) {
+        flag = dfs(si, arr, arr[node][i], depth + 1, n);
+        if (flag == false) continue;
+        return true;
+    }
+    return false;
+}
+
 int main() {
     preprocess();
-    ll a, b, c;
-    cin >> a >> b >> c;
+    int n;
+    cin >> n;
+    vvi tree(n, vi(0));
+    int a, b;
+    rep(i, n - 1) {
+        cin >> a >> b;
+        a -= 1, b -= 1;
+        tree[a].emplace_back(b);
+        tree[b].emplace_back(a);
+    }
 
-    ll g   = gcd(a, gcd(b, c));
-    ll ans = (a / g - 1) + (b / g - 1) + (c / g - 1);
-    cout << ans << endl;
+    rep(i, n - 1) {
+        set<int> si;
+        bool     result = dfs(si, tree, i, 0, n);
+        // cout << "result:" << result << " si.size():" << si.size() << endl;
+        if (si.size() != n / 2) continue;
+        for (auto itr = si.begin(); itr != si.end(); itr++)
+            cout << (*itr + 1) << " ";
+        cout << endl;
+
+        return 0;
+    }
 
     return 0;
 } // end of main
