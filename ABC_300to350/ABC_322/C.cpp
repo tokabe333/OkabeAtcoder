@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,19 +97,30 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
+    int n, m, a;
+    cin >> n >> m;
+    set<int> si;
+    rep(i, m) {
+        cin >> a;
+        si.insert(a - 1);
+    }
 
-    vvi arr = {{1, 2, 3},
-               {4, 5, 6},
-               {7, 8, 9}};
+    vi  ans(n);
+    int prev = n;
+    for (int i = n - 1; i >= 0; --i) {
+        if (si.count(i) == 1) prev = i;
+        ans[i] = prev - i;
+    }
 
-    vvi hoge   = arr;
-    hoge[0][0] = 334;
-    hoge       = arr;
-    printvvec(hoge);
-    cout << "Yes" << endl;
+    // printvec(ans);
+
+    rep(i, n) {
+        cout << ans[i] << elnf;
+    }
+
     return 0;
 } // end of main
