@@ -102,8 +102,8 @@ bool debug = true;
 int main() {
     preprocess();
 
-    ll a = 3;
-    ll b = a << 1;
-    ll c = a >> 1;
-    printf("%lld %lld %lld\n", a, b, c);
+    map<int, int> mp;
+    mp[0] += 3;
+    cout << mp[0] << endl;
+
 } // end of main
