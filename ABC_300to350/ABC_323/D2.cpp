@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,13 +97,46 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
+    int n;
+    cin >> n;
+    unordered_map<ll, ll> umap;
+    ll                    s, c;
+    rep(i, n) {
+        cin >> s >> c;
+        umap[s] = c;
+    }
 
-    ll a = 3;
-    ll b = a << 1;
-    ll c = a >> 1;
-    printf("%lld %lld %lld\n", a, b, c);
+    for (auto itr = umap.begin(); itr != umap.end(); itr++) {
+        s = itr->first;
+        c = itr->second;
+        cout << "s:" << s << " c:" << c << endl;
+        ll ss    = s;
+        ll count = 0;
+        while (ss % 2 == 0) {
+            ss = ss >> 1;
+            count += 1;
+        }
+
+        if (count > 0) {
+            if (umap.find(ss) == umap.end()) {
+                umap[ss] = pow(2, count);
+            } else {
+                umap[ss] += pow(2, count);
+            }
+        }
+        umap[s] -= pow(2, count);
+    }
+
+    ll ans = 0;
+    for (auto itr = umap.begin(); itr != umap.end(); ++itr) {
+        cout << "key:" << itr->first << " value:" << itr->second << endl;
+        ans += itr->second;
+    }
+    cout << ans << endl;
+
+    return 0;
 } // end of main

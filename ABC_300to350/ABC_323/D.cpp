@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,13 +97,48 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
+    int n;
+    cin >> n;
+    priority_queue<ll, vector<ll>, greater<ll>> pque;
+    unordered_map<ll, ll>                       umap;
+    // map<ll, ll> umap;
+    ll s, c;
+    rep(i, n) {
+        cin >> s >> c;
+        pque.push(s);
+        umap[s] = c;
+    }
 
-    ll a = 3;
-    ll b = a << 1;
-    ll c = a >> 1;
-    printf("%lld %lld %lld\n", a, b, c);
+    while (pque.size() > 0) {
+        ll key = pque.top();
+        pque.pop();
+        // cout << "pque.size():" << pque.size() << " key:" << key << " value:" << umap[key] << endl;
+        if (umap[key] == 0) continue;
+        ll big = umap[key] / 2;
+        umap[key] -= (big * 2);
+        if (umap.find(key * 2) == umap.end()) {
+            umap[key * 2] = big;
+        } else {
+            umap[key * 2] += big;
+        }
+        if (big > 0) {
+            pque.push(key * 2);
+        }
+    }
+
+    // cout << endl;
+    // for (auto itr = umap.begin(); itr != umap.end(); itr++) {
+    //     cout << "key:" << itr->first << " value:" << itr->second << endl;
+    // }
+    ll ans = 0;
+    for (auto itr = umap.begin(); itr != umap.end(); itr++) {
+        ans += itr->second;
+    }
+    cout << ans << endl;
+
+    return 0;
 } // end of main
