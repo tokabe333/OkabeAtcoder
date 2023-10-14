@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,12 +97,74 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
+    int n;
+    cin >> n;
+    string t;
+    cin >> t;
+    vs srr(n);
+    rep(i, n) cin >> srr[i];
 
-    string s(3, '0');
-    cout << s << endl;
+    vi head(n, 0), tail(n, 0);
 
+    rep(i, n) {
+        string s  = srr[i];
+        int    ti = 0;
+        rep(j, s.size()) {
+            if (s[j] != t[ti]) continue;
+            head[i] += 1;
+            ti += 1;
+            if (ti == t.size()) break;
+        }
+    }
+
+    rep(i, n) {
+        string s  = srr[i];
+        int    ti = t.size() - 1;
+        for (int j = s.size() - 1; j >= 0; --j) {
+            if (s[j] != t[ti]) continue;
+            tail[i] += 1;
+            ti -= 1;
+            if (ti == -1) break;
+        }
+    }
+
+    vi tlens(n + 1, 0);
+    rep(i, n) {
+        tlens[tail[i]] += 1;
+    }
+
+    vi conc(n + 1, 0);
+    conc[n] = tlens[n];
+    for (int i = n - 1; i >= 0; --i) {
+        conc[i] = tlens[i] + conc[i + 1];
+    }
+
+    int ans = 0;
+    rep(i, n) {
+        ans += conc[t.size() - head[i]];
+    }
+
+    cout << ans << endl;
+
+    // rep(i, n) {
+    //     printf("i:%d num:%d\n", i, head[i]);
+    // }
+    // cout << endl;
+    // rep(i, n) {
+    //     printf("i:%d num:%d\n", i, tail[i]);
+    // }
+    // cout << endl;
+    // rep(i, n + 1) {
+    //     printf("i:%d num:%d\n", i, tlens[i]);
+    // }
+    // cout << endl;
+    // rep(i, n + 1) {
+    //     printf("i:%d num:%d\n", i, conc[i]);
+    // }
+
+    return 0;
 } // end of main

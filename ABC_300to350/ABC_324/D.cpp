@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,12 +97,30 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
+    ll n;
+    cin >> n;
+    string s;
+    cin >> s;
+    s = string(n - s.size(), '0') + s;
+    sort(s.begin(), s.end());
 
-    string s(3, '0');
-    cout << s << endl;
+    ll lim = pow(10, n);
+    ll ans = 0;
+    for (ll i = 1; i * i < lim; ++i) {
+        string t = to_string(i * i);
+        t        = string(n - t.size(), '0') + t;
+        sort(t.begin(), t.end());
 
+        // cout << s << endl
+        //      << t << endl;
+        if (s == t) ans += 1;
+    }
+
+    cout << ans << endl;
+
+    return 0;
 } // end of main

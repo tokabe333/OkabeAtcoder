@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,12 +97,69 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
 int main() {
     preprocess();
+    int n;
+    cin >> n;
+    string t;
+    cin >> t;
+    vs srr(n);
+    rep(i, n) cin >> srr[i];
 
-    string s(3, '0');
-    cout << s << endl;
+    int ans = 0;
 
+    vector<set<int>> tail(n + 2, set<int>());
+    rep(i, n) {
+        string s   = srr[i];
+        int    len = 1;
+        int    ti  = t.size() - 1;
+        for (int j = s.size() - 1; j >= 0; --j) {
+            if (s[j] == t[ti]) {
+                ti -= 1;
+                tail[len].insert(i);
+                len += 1;
+            }
+            if (ti == -1) {
+                // ans += n;
+                break;
+            }
+        }
+    }
+
+    rep(i, n) {
+        string   s  = srr[i];
+        int      ti = 0;
+        set<int> hoge;
+        rep(j, s.size()) {
+            if (s[j] == t[ti]) {
+                // cout << "i:" << i << " ti:" << ti << endl;
+                int index = t.size() - (ti + 1);
+                for (auto itr = tail[index].begin(); itr != tail[index].end(); itr++) {
+                    hoge.insert(*itr);
+                }
+                // hoge.merge(tail[t.size() - (ti + 1)]);
+                ti += 1;
+            }
+            if (ti == t.size() - 1) break;
+        }
+        ans += hoge.size();
+    }
+
+    // ans += tail[t.size()].size() * n;
+    cout << ans << endl;
+
+    // for (auto itr = head.begin(); itr != head.end(); itr++) {
+    //     cout << "head:" << itr->first << " num:" << itr->second << endl;
+    // }
+    // cout << endl;
+    // for (auto itr = tail.begin(); itr != tail.end(); itr++) {
+    //     cout << "tail:" << itr->first << " num:" << itr->second << endl;
+    // }
+    rep(i, tail.size()) {
+        cout << "i:" << i << " size:" << tail[i].size() << endl;
+    }
+
+    return 0;
 } // end of main
