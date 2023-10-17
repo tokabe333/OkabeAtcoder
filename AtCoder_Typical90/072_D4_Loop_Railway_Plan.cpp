@@ -99,77 +99,59 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-double calc(double c, const vd &arr) {
-    double num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
+vi dx = {0, 1, 0, -1};
+vi dy = {-1, 0, 1, 0};
 
-double mind(double a, double b) {
-    if (a < b)
-        return a;
-    else
-        return b;
+int h, w;
+
+int dfs(int y, int x, int depth, int gy, int gx, vvi &flag, const vvi &masu) {
+    // printf("y:%d x:%d depth:%d gy:%d gx:%d\n", y, x, depth, gy, gx);
+
+    if (y == gy && x == gx && depth > 2) return depth;
+    if (flag[y][x] == 1) return 0;
+    if (depth != 0) flag[y][x] = 1;
+
+    int ans = -1;
+
+    rep(i, 4) {
+        int yy = y + dy[i];
+        int xx = x + dx[i];
+        if (xx < 0 || w <= xx || yy < 0 || h <= yy) continue;
+        if (masu[yy][xx] == 1) continue;
+        if (flag[yy][xx] == 1) continue;
+
+        int res = dfs(yy, xx, depth + 1, gy, gx, flag, masu);
+        ans     = max(ans, res);
+    }
+    // printf("return ans:%d y:%d x:%d depth:%d\n", ans, y, x, depth);
+    return ans;
 }
 
 int main() {
     preprocess();
-    ll n;
-    cin >> n;
-    vd xrr(n), yrr(n);
-    rep(i, n) {
-        cin >> xrr[i] >> yrr[i];
+
+    cin >> h >> w;
+    vvi masu(h, vi(w, 0));
+    rep(i, h) {
+        string s;
+        cin >> s;
+        rep(j, w) {
+            if (s[j] == '#') masu[i][j] = 1;
+        }
     }
 
-    // ŽO•ª’TõH …•½ Ž¸”s
-    int    count = 1000;
-    double lowx  = pow(10, 9) * (-1) - 1;
-    double highx = pow(10, 9) + 1;
-    while (count > 0) {
-        double c1 = (lowx * 2 + highx) / 3;
-        double c2 = (lowx + highx * 2) / 3;
+    // printvvec(masu);
 
-        double fc1 = calc(c1, xrr);
-        double fc2 = calc(c2, xrr);
-        if (fc1 > fc2)
-            lowx = c1;
-        else
-            highx = c2;
-
-        count -= 1;
+    int ans = -1;
+    rep(i, h) {
+        rep(j, w) {
+            if (masu[i][j] == 1) continue;
+            vvi flag(h, vi(w, 0));
+            int res = dfs(i, j, 0, i, j, flag, masu);
+            ans     = max(ans, res);
+        }
     }
-
-    count        = 1000;
-    double lowy  = pow(10, 9) * (-1) - 1;
-    double highy = pow(10, 9) + 1;
-    while (count > 0) {
-        double c1 = (lowy * 2 + highy) / 3;
-        double c2 = (lowy + highy * 2) / 3;
-
-        double fc1 = calc(c1, yrr);
-        double fc2 = calc(c2, yrr);
-        if (fc1 > fc2)
-            lowy = c1;
-        else
-            highy = c2;
-
-        count -= 1;
-    }
-
-    double ansx = calc(lowx, xrr);
-    ansx        = mind(ansx, calc(round(lowx), xrr));
-    ansx        = mind(ansx, calc(floor(lowx), xrr));
-    ansx        = mind(ansx, calc(ceil(lowx), xrr));
-
-    double ansy = calc(lowy, yrr);
-    ansy        = mind(ansy, calc(round(lowx), yrr));
-    ansy        = mind(ansy, calc(floor(lowx), yrr));
-    ansy        = mind(ansy, calc(ceil(lowx), yrr));
-
-    // printf("lowx:%lf highx:%lf calc:%lf\n", lowx, highx, calc(lowx, xrr));
-    // printf("lowy:%lf highy:%lf calc:%lf\n", lowy, highy, calc(lowy, yrr));
-
-    cout << (ll)(ansx + ansy) << endl;
+    cout << ans << endl;
 
     return 0;
 } // end of main

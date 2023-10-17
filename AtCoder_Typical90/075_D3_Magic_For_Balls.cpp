@@ -99,77 +99,36 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-double calc(double c, const vd &arr) {
-    double num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
+template <class T>
+vector<pair<T, T>> prime_division(T n) {
+    vector<pair<T, T>> ret;
+    for (T a = 2; a * a <= n; ++a) {
+        if (n % a != 0) continue;
+        T ex = 0;
+        while (n % a == 0) {
+            ex += 1;
+            n /= a;
+        }
 
-double mind(double a, double b) {
-    if (a < b)
-        return a;
-    else
-        return b;
-}
+        ret.emplace_back(pair<T, T>(a, ex));
+    }
+
+    if (n != 1) ret.emplace_back(pair<T, T>(n, 1));
+    return ret;
+} // end of prime_division;
 
 int main() {
     preprocess();
     ll n;
     cin >> n;
-    vd xrr(n), yrr(n);
-    rep(i, n) {
-        cin >> xrr[i] >> yrr[i];
+
+    auto primes = prime_division<ll>(n);
+    ll   ans    = 0;
+    rep(i, primes.size()) {
+        ans += primes[i].second;
     }
 
-    // ŽO•ª’TõH …•½ Ž¸”s
-    int    count = 1000;
-    double lowx  = pow(10, 9) * (-1) - 1;
-    double highx = pow(10, 9) + 1;
-    while (count > 0) {
-        double c1 = (lowx * 2 + highx) / 3;
-        double c2 = (lowx + highx * 2) / 3;
-
-        double fc1 = calc(c1, xrr);
-        double fc2 = calc(c2, xrr);
-        if (fc1 > fc2)
-            lowx = c1;
-        else
-            highx = c2;
-
-        count -= 1;
-    }
-
-    count        = 1000;
-    double lowy  = pow(10, 9) * (-1) - 1;
-    double highy = pow(10, 9) + 1;
-    while (count > 0) {
-        double c1 = (lowy * 2 + highy) / 3;
-        double c2 = (lowy + highy * 2) / 3;
-
-        double fc1 = calc(c1, yrr);
-        double fc2 = calc(c2, yrr);
-        if (fc1 > fc2)
-            lowy = c1;
-        else
-            highy = c2;
-
-        count -= 1;
-    }
-
-    double ansx = calc(lowx, xrr);
-    ansx        = mind(ansx, calc(round(lowx), xrr));
-    ansx        = mind(ansx, calc(floor(lowx), xrr));
-    ansx        = mind(ansx, calc(ceil(lowx), xrr));
-
-    double ansy = calc(lowy, yrr);
-    ansy        = mind(ansy, calc(round(lowx), yrr));
-    ansy        = mind(ansy, calc(floor(lowx), yrr));
-    ansy        = mind(ansy, calc(ceil(lowx), yrr));
-
-    // printf("lowx:%lf highx:%lf calc:%lf\n", lowx, highx, calc(lowx, xrr));
-    // printf("lowy:%lf highy:%lf calc:%lf\n", lowy, highy, calc(lowy, yrr));
-
-    cout << (ll)(ansx + ansy) << endl;
+    cout << ceil(log2(ans)) << endl;
 
     return 0;
 } // end of main
