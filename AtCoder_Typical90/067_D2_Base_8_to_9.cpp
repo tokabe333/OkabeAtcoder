@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,37 +97,37 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
+const bool debug = true;
 
-template <typename T>
-T kurikaeshi_pow(T a, T b) {
-    T ret = 1;
-    while (b > 0) {
-        if (b & 1 == 1) ret *= a;
-        a *= a;
-        cout << "a:" << a << endl;
-        b >>= 1;
-    }
-    return ret;
-} // end of func
+string calc(string n8) {
+    ll num = 0;
+    for (char c : n8)
+        num = num * 8 + (c - '0');
 
-template <typename T>
-T kurikaeshi_pow_mod(T a, T b, ll mod) {
-    T ret = 1;
-    while (b > 0) {
-        if (b & 1 == 1) ret = (ret * a) % mod;
-        a = (a * a) % mod;
-        b >>= 1;
+    string n9 = "";
+    while (true) {
+        n9 += to_string(num % 9);
+        num /= 9;
+        if (num == 0) break;
     }
-    return ret;
-} // end of func
+
+    rep(i, n9.size()) {
+        if (n9[i] == '8') n9[i] = '5';
+    }
+
+    reverse(n9.begin(), n9.end());
+
+    return n9;
+}
 
 int main() {
     preprocess();
+    string n;
+    ll     k;
+    cin >> n >> k;
 
-    ll a   = 3;
-    ll b   = 14;
-    ll ans = kurikaeshi_pow<ll>(a, b);
-    cout << ans << endl;
+    rep(i, k) n = calc(n);
+    cout << n << endl;
 
+    return 0;
 } // end of main

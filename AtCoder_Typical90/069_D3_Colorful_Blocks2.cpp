@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,15 +97,13 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
-
+const bool debug = true;
 template <typename T>
 T kurikaeshi_pow(T a, T b) {
     T ret = 1;
     while (b > 0) {
         if (b & 1 == 1) ret *= a;
         a *= a;
-        cout << "a:" << a << endl;
         b >>= 1;
     }
     return ret;
@@ -121,13 +119,24 @@ T kurikaeshi_pow_mod(T a, T b, ll mod) {
     }
     return ret;
 } // end of func
-
 int main() {
     preprocess();
+    ll n, k;
+    cin >> n >> k;
 
-    ll a   = 3;
-    ll b   = 14;
-    ll ans = kurikaeshi_pow<ll>(a, b);
+    if (n == 1) {
+        cout << k % m107 << endl;
+        return 0;
+    } else if (n == 2) {
+        cout << (k * (k - 1)) % m107 << endl;
+        return 0;
+    }
+
+    ll kata = n - 2;
+    ll p    = kurikaeshi_pow_mod(k - 2, kata, m107);
+    ll ans  = (k * (k - 1)) % m107;
+    ans     = (ans * p) % m107;
     cout << ans << endl;
 
+    return 0;
 } // end of main

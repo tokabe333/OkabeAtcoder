@@ -68,8 +68,8 @@ const double PI = 3.141592653589793;
 #define repabe(i, a, b) for (int i = (a); i <= (b); ++i)
 #define mod107(m)       m % 1000000007
 #define mod998(m)       m % 998244353
-#define m107            1000000007
-#define m998            998244353
+const ll m107 = 1000000007;
+const ll m998 = 998244353;
 
 // ”’l‚ð16Œ…‚Å•\Ž¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰ž)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
@@ -97,37 +97,36 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-bool debug = true;
-
-template <typename T>
-T kurikaeshi_pow(T a, T b) {
-    T ret = 1;
-    while (b > 0) {
-        if (b & 1 == 1) ret *= a;
-        a *= a;
-        cout << "a:" << a << endl;
-        b >>= 1;
-    }
-    return ret;
-} // end of func
-
-template <typename T>
-T kurikaeshi_pow_mod(T a, T b, ll mod) {
-    T ret = 1;
-    while (b > 0) {
-        if (b & 1 == 1) ret = (ret * a) % mod;
-        a = (a * a) % mod;
-        b >>= 1;
-    }
-    return ret;
-} // end of func
+const bool debug = true;
 
 int main() {
     preprocess();
+    int n, q;
+    cin >> n >> q;
+    vll arr(n);
+    rep(i, n) cin >> arr[i];
 
-    ll a   = 3;
-    ll b   = 14;
-    ll ans = kurikaeshi_pow<ll>(a, b);
-    cout << ans << endl;
+    vll diff(n);
+    diff[0]               = 0;
+    rep(i, n - 1) diff[i] = arr[i + 1] - arr[i];
 
+    ll ans = 0;
+    rep(i, n) ans += abs(diff[i]);
+    // fprintf("ans:%lld\n", ans);
+
+    ll l, r, v;
+    rep(qq, q) {
+        cin >> l >> r >> v;
+        l -= 1, r -= 1;
+
+        ll before = abs(diff[l - 1]) + abs(diff[r]);
+        if (0 < l) diff[l - 1] += v;
+        if (r < n - 1) diff[r] -= v;
+        ll after = abs(diff[l - 1]) + abs(diff[r]);
+        ans += (after - before);
+        // printf("before:%lld after%lld\n", before, after);
+        cout << ans << endl;
+    }
+
+    return 0;
 } // end of main
