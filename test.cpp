@@ -102,7 +102,8 @@ bool debug = true;
 int main() {
     preprocess();
 
-    int i = INT32_MAX;
-    cout << i << endl;
+    int i = 0;
+    int p = 5;
+    cout << (i + p - 1) % p << endl;
 
 } // end of main

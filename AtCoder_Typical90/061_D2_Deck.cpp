@@ -101,7 +101,25 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    int n;
+    int q, t, x;
+    int left = 0, right = 0;
+    cin >> q;
+    vi arr(q, 0);
+    rep(i, q) {
+        cin >> t >> x;
+        if (t == 1) {
+            left      = (left - 1 + q) % q;
+            arr[left] = x;
+        } else if (t == 2) {
+            arr[right] = x;
+
+            right = (right + 1 + q) % q;
+        } else if (t == 3) {
+            int index = (left + x - 1 + q) % q;
+            cout << arr[index] << endl;
+        }
+        // printvec(arr);
+    }
 
     return 0;
 } // end of main
