@@ -1,1 +1,2 @@
-puts Math.sqrt(324)
+puts (3 * 4) % 7 
+puts ((3 + 7) * 4)  % 7

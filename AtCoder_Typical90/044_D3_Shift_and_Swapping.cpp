@@ -99,93 +99,37 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-typedef struct hoge {
-  public:
-    int y;
-    int x;
-    int dire; // 0:ã 1:‰E 2:‰º 3:¶
-    // int num;  // “WŠJ‰ñ”
-
-    hoge(int y, int x, int dire) {
-        this->y    = y;
-        this->x    = x;
-        this->dire = dire;
-        // this->num  = num;
-    }
-
-    hoge() {
-        this->y    = 0;
-        this->x    = 0;
-        this->dire = -1;
-        // this->num  = 0;
-    }
-} state;
-
 int main() {
     preprocess();
-    int h, w, rs, cs, rt, ct;
-    cin >> h >> w >> rs >> cs >> rt >> ct;
-    rs--, cs--, rt--, ct--;
+    int n, q;
+    cin >> n >> q;
+    vi arr(n);
+    rep(i, n) cin >> arr[i];
 
-    vvi  masu(h, vi(w, 0));
-    char c;
-    rep(i, h) {
-        rep(j, w) {
-            cin >> c;
-            if (c == '.') continue;
-            masu[i][j] = 1;
+    int s = 0;
+    int t, x, y;
+    rep(qq, q) {
+        cin >> t >> x >> y;
+        if (t == 1) {
+
+            x = (x - (n - s) - 1 + n) % n;
+            y = (y - (n - s) - 1 + n) % n;
+            // cout << "s:" << s << " n-s:" << (n - s) << " x:" << x << " y:" << y << endl;
+
+            int hoge = arr[x];
+            arr[x]   = arr[y];
+            arr[y]   = hoge;
+        } else if (t == 2) {
+            s -= 1;
+            if (s < 0) s += n;
+        } else if (t == 3) {
+            x = (x - (n - s) - 1 + n) % n;
+            cout << arr[x] << endl;
         }
+
+        // rep(i, n) cout << arr[(i + s) % n] << " ";
+        // cout << endl;
     }
-
-    // printvvec(masu);
-
-    const int init = 10000000;
-    vi        dx   = {0, 1, 0, -1};
-    vi        dy   = {-1, 0, 1, 0};
-
-    vvvi         bfs(h, vvi(w, vi(4, init)));
-    deque<state> que;
-    rep(i, 4) {
-        bfs[rs][cs][i] = 0;
-        que.push_back(state(rs, cs, i));
-    }
-
-    while (!que.empty()) {
-        state s = que.front();
-        que.pop_front();
-
-        rep(i, 4) {
-            int x = s.x + dx[i];
-            int y = s.y + dy[i];
-            // cout << "i:" << i << " y:" << y << " x:" << x << " dire:" << s.dire << endl;
-
-            if (x < 0 || w - 1 < x || y < 0 || h - 1 < y) continue;
-            if (masu[y][x] == 1) continue;
-            int c = bfs[s.y][s.x][s.dire];
-            if (s.dire != i) c += 1;
-
-            // cout << "bfs:" << bfs[y][x][i] << " c:" << c << endl;
-            if (bfs[y][x][i] <= c) continue;
-            bfs[y][x][i] = c;
-            if (s.dire == i)
-                que.push_front(state(y, x, i));
-            else
-                que.push_back(state(y, x, i));
-        }
-    }
-
-    // rep(y, h) {
-    //     rep(x, w) {
-    //         rep(i, 4) {
-    //             printf("masu[%d][%d][%d] = %d\n", y, x, i, bfs[y][x][i]);
-    //         }
-    //     }
-    //     cout << endl;
-    // }
-
-    int ans       = init;
-    rep(i, 4) ans = min(ans, bfs[rt][ct][i]);
-    cout << ans << endl;
 
     return 0;
 } // end of main

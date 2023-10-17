@@ -102,7 +102,7 @@ bool debug = true;
 int main() {
     preprocess();
 
-    string s(3, '0');
-    cout << s << endl;
+    int i = INT32_MAX;
+    cout << i << endl;
 
 } // end of main
