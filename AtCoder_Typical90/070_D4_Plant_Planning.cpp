@@ -99,43 +99,77 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
+double calc(double c, const vd &arr) {
+    double num = 0;
     rep(i, arr.size()) num += abs(c - arr[i]);
     return num;
+}
+
+double mind(double a, double b) {
+    if (a < b)
+        return a;
+    else
+        return b;
 }
 
 int main() {
     preprocess();
     ll n;
     cin >> n;
-    vll xrr(n), yrr(n);
+    vd xrr(n), yrr(n);
     rep(i, n) {
         cin >> xrr[i] >> yrr[i];
     }
 
-    double x = accumulate(xrr.begin(), xrr.end(), 0) / (double)n;
-    double y = accumulate(yrr.begin(), yrr.end(), 0) / (double)n;
+    // ŽO•ª’TõH …•½
+    int    count = 1000;
+    double lowx  = pow(10, 9) * (-1) - 1;
+    double highx = pow(10, 9) + 1;
+    while (count > 0) {
+        double c1 = (lowx * 2 + highx) / 3;
+        double c2 = (lowx + highx * 2) / 3;
 
-    cout << x << endl
-         << y << endl;
+        double fc1 = calc(c1, xrr);
+        double fc2 = calc(c2, xrr);
+        if (fc1 > fc2)
+            lowx = c1;
+        else
+            highx = c2;
 
-    // ll hori = LLONG_MAX;
-    // hori    = min(hori, calc((ll)x, xrr));
-    // hori    = min(hori, calc(round(x), xrr));
-    // hori    = min(hori, calc(ceil(x), xrr));
-    // hori    = min(hori, calc(floor(x), xrr));
-
-    // ll vert = LLONG_MAX;
-    // vert    = min(vert, calc((ll)y, yrr));
-    // vert    = min(vert, calc(round(y), yrr));
-    // vert    = min(vert, calc(ceil(y), yrr));
-    // vert    = min(vert, calc(floor(y), yrr));
-
-    // cout << hori + vert << endl;
-
-    for (int i = -20; i <= 20; ++i) {
-        cout << "i:" << i << " calc:" << calc(i, yrr) << endl;
+        count -= 1;
     }
+
+    count        = 1000;
+    double lowy  = pow(10, 9) * (-1) - 1;
+    double highy = pow(10, 9) + 1;
+    while (count > 0) {
+        double c1 = (lowy * 2 + highy) / 3;
+        double c2 = (lowy + highy * 2) / 3;
+
+        double fc1 = calc(c1, yrr);
+        double fc2 = calc(c2, yrr);
+        if (fc1 > fc2)
+            lowy = c1;
+        else
+            highy = c2;
+
+        count -= 1;
+    }
+
+    double ansx = calc(lowx, xrr);
+    ansx        = mind(ansx, calc(round(lowx), xrr));
+    ansx        = mind(ansx, calc(floor(lowx), xrr));
+    ansx        = mind(ansx, calc(ceil(lowx), xrr));
+
+    double ansy = calc(lowy, yrr);
+    ansy        = mind(ansy, calc(round(lowx), yrr));
+    ansy        = mind(ansy, calc(floor(lowx), yrr));
+    ansy        = mind(ansy, calc(ceil(lowx), yrr));
+
+    // printf("lowx:%lf highx:%lf calc:%lf\n", lowx, highx, calc(lowx, xrr));
+    // printf("lowy:%lf highy:%lf calc:%lf\n", lowy, highy, calc(lowy, yrr));
+
+    cout << (ll)(ansx + ansy) << endl;
+
     return 0;
 } // end of main

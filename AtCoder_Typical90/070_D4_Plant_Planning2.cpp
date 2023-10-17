@@ -107,35 +107,21 @@ ll calc(ll c, const vll &arr) {
 
 int main() {
     preprocess();
-    ll n;
+    int n;
     cin >> n;
     vll xrr(n), yrr(n);
-    rep(i, n) {
-        cin >> xrr[i] >> yrr[i];
-    }
+    rep(i, n) cin >> xrr[i] >> yrr[i];
 
-    double x = accumulate(xrr.begin(), xrr.end(), 0) / (double)n;
-    double y = accumulate(yrr.begin(), yrr.end(), 0) / (double)n;
+    sort(xrr.begin(), xrr.end());
+    sort(yrr.begin(), yrr.end());
 
-    cout << x << endl
-         << y << endl;
+    ll ansx = calc(xrr[n / 2], xrr);
+    ansx    = min(ansx, calc(xrr[n / 2 + 1], xrr));
 
-    // ll hori = LLONG_MAX;
-    // hori    = min(hori, calc((ll)x, xrr));
-    // hori    = min(hori, calc(round(x), xrr));
-    // hori    = min(hori, calc(ceil(x), xrr));
-    // hori    = min(hori, calc(floor(x), xrr));
+    ll ansy = calc(yrr[n / 2], yrr);
+    ansy    = min(ansy, calc(yrr[n / 2 + 1], yrr));
 
-    // ll vert = LLONG_MAX;
-    // vert    = min(vert, calc((ll)y, yrr));
-    // vert    = min(vert, calc(round(y), yrr));
-    // vert    = min(vert, calc(ceil(y), yrr));
-    // vert    = min(vert, calc(floor(y), yrr));
+    cout << ansx + ansy << endl;
 
-    // cout << hori + vert << endl;
-
-    for (int i = -20; i <= 20; ++i) {
-        cout << "i:" << i << " calc:" << calc(i, yrr) << endl;
-    }
     return 0;
 } // end of main
