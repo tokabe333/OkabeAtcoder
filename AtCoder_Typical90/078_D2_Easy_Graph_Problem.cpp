@@ -101,49 +101,29 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    int n;
-    cin >> n;
-    vll arr(n);
-    rep(i, n) cin >> arr[i];
-
-    int left  = 0;
-    int right = 0;
-    ll  size  = arr[0];
-
-    ll circle = accumulate(arr.begin(), arr.end(), 0LL);
-    // cout << "circle:" << circle << endl;
-    if (circle % 10 != 0) {
-        cout << "No" << endl;
-        return 0;
-    }
-    ll mokuhyo = circle / 10;
-
-    while (true) {
-        // printf("left:%d right:%d size:%lld\n", left, right, size);
-        if (size == mokuhyo) {
-            cout << "Yes" << endl;
-            return 0;
-        }
-
-        else if (size < mokuhyo) {
-            right = (right + 1) % n;
-            size += arr[right];
-        }
-
-        else if (size > mokuhyo) {
-            size -= arr[left];
-            left += 1;
-            if (left == n) break;
-        }
+    int n, m;
+    cin >> n >> m;
+    vvi graph(n, vi(0));
+    int a, b;
+    rep(i, m) {
+        cin >> a >> b;
+        a -= 1, b -= 1;
+        graph[a].emplace_back(b);
+        graph[b].emplace_back(a);
     }
 
-    while (size < mokuhyo) {
-        right = (right + 1) % n;
-        size += arr[right];
+    // cout << endl;
+    // printvvec(graph);
+    // cout << endl;
+
+    int ans = 0;
+    rep(i, n) {
+        int count = 0;
+        rep(j, graph[i].size()) {
+            if (graph[i][j] < i) count += 1;
+        }
+        if (count == 1) ans += 1;
     }
-
-    string ans = size == mokuhyo ? "Yes" : "No";
-
     cout << ans << endl;
 
     return 0;
