@@ -71,13 +71,13 @@ const double PI = 3.141592653589793;
 const ll m107 = 1000000007;
 const ll m998 = 998244353;
 
-// ���l��16���ŕ\��(�덷�����������ɑΉ�)
+// 数値を16桁で表示(誤差が厳しい問題に対応)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
 
-// endl no flush (flush�����͏d����)
+// endl no flush (flush処理は重たい)
 #define elnf "\n"
 
-// ���v���p���Z�b�e�B���O
+// 競プロ用環境セッティング
 void preprocess() {
     std::cin.tie(nullptr);
     std::ios_base::sync_with_stdio(false);
@@ -99,23 +99,109 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
+// Union-Find 木 (1.4 高速化 + 省メモリ化)
+typedef int uf_type;
+class UnionFind {
+  public:
+    UnionFind() = default;
+
+    // n 個の要素
+    explicit UnionFind(size_t n)
+        : m_parentsOrSize(n, -1) {}
+
+    // i の root を返す
+    uf_type find(uf_type i) {
+        if (m_parentsOrSize[i] < 0) {
+            return i;
+        }
+
+        // 経路圧縮
+        return (m_parentsOrSize[i] = find(m_parentsOrSize[i]));
+    }
+
+    // a の木と b の木を統合
+    void merge(uf_type a, uf_type b) {
+        a = find(a);
+        b = find(b);
+
+        if (a != b) {
+            // union by size (小さいほうが子になる）
+            if (-m_parentsOrSize[a] < -m_parentsOrSize[b]) {
+                std::swap(a, b);
+            }
+
+            m_parentsOrSize[a] += m_parentsOrSize[b];
+            m_parentsOrSize[b] = a;
+        }
+    }
+
+    // a と b が同じ木に属すかを返す
+    bool connected(uf_type a, uf_type b) {
+        return (find(a) == find(b));
+    }
+
+    // i が属するグループの要素数を返す
+    uf_type size(uf_type i) {
+        return -m_parentsOrSize[find(i)];
+    }
+
+  private:
+    // m_parentsOrSize[i] は i の 親,
+    // ただし root の場合は (-1 * そのグループに属する要素数)
+    std::vector<uf_type> m_parentsOrSize;
+};
 
 int main() {
     preprocess();
-    map<int, int> hash;
-    hash[3] = 3;
-    hash[1] = 3;
-    hash[2] = 44;
-    hash[5] = 322;
+    int h, w;
+    cin >> h >> w;
 
-    auto itr = hash.begin();
-    cout << itr->first << " " << itr->second << endl;
-    // itr = next(itr);
-    cout << next(itr)->first << " " << next(itr)->second << endl;
+    vvi masu(h, vi(w, 0));
 
+    UnionFind uf(h * w);
+    rep(i, h) {
+        string s;
+        cin >> s;
+        rep(j, w) {
+            if (s[j] == '#') masu[i][j] = 1;
+        }
+    }
+
+    // printvvec(masu);
+
+    rep(i, h) {
+        rep(j, w) {
+            if (masu[i][j] == 0) continue;
+
+            for (int dy = -1; dy <= 1; ++dy) {
+                for (int dx = -1; dx <= 1; ++dx) {
+                    if (dy == 0 && dx == 0) continue;
+                    int y = i + dy;
+                    int x = j + dx;
+                    if (y < 0 || h <= y || x < 0 || w <= x) continue;
+                    if (masu[i][j] == 0 || masu[y][x] == 0) continue;
+                    uf.merge(i * w + j, y * w + x);
+                    //   printf("i:%d j:%d y:%d x:%d\n", i, j, y, x);
+                }
+            }
+        }
+    }
+
+    set<int> si;
+    rep(i, h * w) {
+        si.insert(uf.find(i));
+    }
+    int ans = 0;
+    for (auto itr = si.begin(); itr != si.end(); ++itr) {
+        int y = (*itr) / w;
+        int x = (*itr) % w;
+        if (masu[y][x] == 1) {
+            // printf("y:%d x:%d\n", y, x);
+            ans += 1;
+        }
+    }
+
+    cout << ans << endl;
+
+    return 0;
 } // end of main

@@ -99,23 +99,45 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
-
 int main() {
     preprocess();
-    map<int, int> hash;
-    hash[3] = 3;
-    hash[1] = 3;
-    hash[2] = 44;
-    hash[5] = 322;
+    int n;
+    cin >> n;
+    vll trr(n), drr(n);
+    rep(i, n) cin >> trr[i] >> drr[i];
 
-    auto itr = hash.begin();
-    cout << itr->first << " " << itr->second << endl;
-    // itr = next(itr);
-    cout << next(itr)->first << " " << next(itr)->second << endl;
+    map<ll, vll> hash;
+    rep(i, n) hash[trr[i]].emplace_back(trr[i] + drr[i]);
 
+    priority_queue<ll, vll, greater<ll>> pq;
+
+    ll   time = 0;
+    ll   ans  = 0;
+    auto itr  = hash.begin();
+
+    while (itr != hash.end()) {
+        ll s     = itr->first;
+        ll nexts = next(itr) != hash.end() ? next(itr)->first : LLONG_MAX;
+
+        if (time < s) time = s;
+        rep(i, itr->second.size()) pq.push(itr->second[i]);
+        while (pq.top() < time) {
+            pq.pop();
+        }
+
+        while (!pq.empty() && time <= pq.top() && time < nexts) {
+            // printf("top:%lld time:%lld\n", pq.top(), time);
+            time += (pq.top() - time, 1);
+            pq.pop();
+            ans += 1;
+            while (pq.top() < time && !pq.empty()) {
+                pq.pop();
+            }
+        }
+        ++itr;
+    }
+
+    cout << ans << endl;
+
+    return 0;
 } // end of main
