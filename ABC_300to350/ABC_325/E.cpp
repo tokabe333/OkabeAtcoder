@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -99,47 +105,42 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-// 問題に合わせてバイト数を変更
-typedef long long            dijint;
-typedef pair<dijint, dijint> pdd;
-typedef vector<dijint>       vdi;
-typedef vector<pdd>          vpdd;
-typedef vector<vector<pdd>>  vvpdd;
-
 /// @brief ダイクストラ法である始点から全てのノードまでの距離を探索
-/// @param graph
-/// @param start
+/// @param graph vector<vector<pair<cost, node>>>
+/// @param start node
 /// @return 距離を列挙した配列
-vdi dijkstra(const vvpdd &graph, int start) {
+// 問題に合わせてバイト数を変更
+template <class T>
+vector<T> dijkstra(const vector<vector<pair<T, T>>> &graph, int start) {
     // 変数用意
     int n = graph.size();
 
     // とりあえず最大値
-    dijint MAX = sizeof(dijint) == 4 ? INT_MAX : LLONG_MAX;
+    T MAX = sizeof(T) == 4 ? INT_MAX : LLONG_MAX;
 
     // 距離候補を保持する優先度付きキュー
-    priority_queue<pdd, vpdd, greater<pdd>> pque;
+    priority_queue<pair<T, T>, vector<pair<T, T>>, greater<pair<T, T>>> pque;
 
     // 確定した距離を保持するreturn用変数
-    vdi distance(n, MAX);
+    vector<T> distance(n, MAX);
     distance[start] = 0;
-    pque.push(pdd(0, start));
+    pque.push(pair<T, T>(0, start));
     while (pque.size() > 0) {
-        dijint d = pque.top().first;  // start から u までの距離
-        dijint u = pque.top().second; // 距離を知りたいノード
+        T d = pque.top().first;  // start から u までの距離
+        T u = pque.top().second; // 距離を知りたいノード
         pque.pop();
 
         // 既に確定した距離以上なら更新余地がない
         if (distance[u] < d) continue;
 
         // 各種距離を追加
-        for (pdd next : graph[u]) {
-            dijint cost      = next.first;
-            dijint next_node = next.second;
+        for (auto next : graph[u]) {
+            T cost      = next.first;
+            T next_node = next.second;
             // 更新余地がない場合は次
             if (distance[next_node] <= d + cost) continue;
             distance[next_node] = d + cost;
-            pque.push(pdd(d + cost, next_node));
+            pque.push(pair<T, T>(d + cost, next_node));
         } // end of for
     }     // end of while
 
@@ -149,13 +150,27 @@ vdi dijkstra(const vvpdd &graph, int start) {
 int main() {
     preprocess();
     int n;
-    ll  a, b, c;
+    ll  a, b, c, d;
     cin >> n >> a >> b >> c;
 
     vvll drr(n, vll(n));
     rep(i, n) {
-        rep(j, n) cin >> drr[i][j];
+        rep(j, n) {
+            cin >> drr[i][j];
+        }
     }
+
+    vvpll car(n, vpll(n));
+    vvpll train(n, vpll(n));
+    rep(i, n) {
+        rep(j, n) {
+            car[i][j]   = pll(drr[i][j] * a, j);
+            train[i][j] = pll(drr[i][j] * b + c, j);
+        }
+    }
+
+    vll choge = dijkstra<ll>(car, 0);
+    vll thoge = dijkstra<ll>(train, n - 1);
 
     return 0;
 } // end of main
