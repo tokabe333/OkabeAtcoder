@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -97,20 +103,59 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-const bool debug = true;
-
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
+const bool debug = false;
 
 int main() {
     preprocess();
+    int n;
+    cin >> n;
 
-    vi a = {1, 2};
-    vi b = {1, 3};
-    vi c = {1, 2};
+    vector<string> srr(n), temp(n);
+    rep(i, n) {
+        cin >> srr[i];
+        temp[i] = srr[i];
+    }
 
-    cout << a == b << endl;
+    sort(srr.begin(), srr.end());
+
+    if (debug) rep(i, n) cout << srr[i] << endl;
+
+    unordered_map<string, int> ans;
+    rep(i, n) {
+        int ue   = srr[i].size();
+        int sita = srr[i].size();
+
+        if (0 < i) {
+            rep(j, srr[i].size()) {
+
+                if (srr[i][j] != srr[i - 1][j]) {
+                    ue = j;
+                    break;
+                }
+            }
+        } else {
+            ue = 0;
+        }
+
+        if (i < n - 1) {
+            rep(j, srr[i].size()) {
+
+                if (srr[i][j] != srr[i + 1][j]) {
+                    sita = j;
+                    break;
+                }
+            }
+        } else {
+            sita = 0;
+        }
+        if (debug) cout << "srr[i]:" << srr[i] << " ue:" << ue << " sita:" << sita << endl;
+        ans[srr[i]] = max(ue, sita);
+    }
+
+    rep(i, n) {
+        // cout << "temp:" << temp[i] << " " << ans[temp[i]] << endl;
+        cout << ans[temp[i]] << endl;
+    }
+
+    return 0;
 } // end of main

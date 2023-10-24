@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -76,6 +82,8 @@ const ll m998 = 998244353;
 
 // endl no flush (flush処理は重たい)
 #define elnf "\n"
+#define Y    first
+#define X    second
 
 // 競プロ用環境セッティング
 void preprocess() {
@@ -99,18 +107,58 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
-
 int main() {
     preprocess();
+    vvi    masu(9, vi(9, 0));
+    string s;
+    rep(i, 9) {
+        cin >> s;
+        rep(j, 9) {
+            if (s[j] == '#') masu[i][j] = 1;
+        }
+    }
 
-    vi a = {1, 2};
-    vi b = {1, 3};
-    vi c = {1, 2};
+    ll ans = 0;
+    for (int i = 0; i < 81 - 3; ++i) {
+        for (int j = i + 1; j < 81 - 2; ++j) {
+            for (int k = j + 1; k < 81 - 1; ++k) {
+                for (int l = k + 1; l < 81; ++l) {
+                    vvi p(4, vi(2));
+                    p[0][0] = i / 9;
+                    p[0][1] = i % 9;
+                    p[1][0] = j / 9;
+                    p[1][1] = j % 9;
+                    p[2][0] = k / 9;
+                    p[2][1] = k % 9;
+                    p[3][0] = l / 9;
+                    p[3][1] = l % 9;
 
-    cout << a == b << endl;
+                    bool flag = true;
+                    rep(i, 4) {
+                        if (masu[p[i][0]][p[i][1]] == 0) flag = false;
+                    }
+                    if (flag == false) continue;
+
+                    vi dist;
+                    rep(m, 3) {
+                        for (int n = m + 1; n < 4; ++n) {
+                            int y = p[m][0] - p[n][0];
+                            int x = p[m][1] - p[n][1];
+                            dist.emplace_back(y * y + x * x);
+                        }
+                    }
+
+                    sort(dist.begin(), dist.end());
+                    if (dist[0] == dist[1] && dist[0] == dist[2] && dist[0] == dist[3] && dist[0] * 2 == dist[4] && dist[0] * 2 == dist[5]) {
+                        // printvec(dist);
+                        // printf("i:%d j:%d k:%d l:%d\n", i, j, k, l);
+                        ans += 1;
+                    }
+                }
+            }
+        }
+    }
+    cout << ans << endl;
+
+    return 0;
 } // end of main

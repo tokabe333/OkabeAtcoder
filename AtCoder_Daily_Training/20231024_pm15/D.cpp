@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -99,18 +105,40 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
-
 int main() {
     preprocess();
+    vvi masu(10, vi(10, 0));
+    rep(i, 10) {
+        string s;
+        cin >> s;
+        rep(j, 10) {
+            if (s[j] == '#') masu[i][j] = 1;
+        }
+    }
 
-    vi a = {1, 2};
-    vi b = {1, 3};
-    vi c = {1, 2};
+    int a, b, c, d;
+    rep(i, 10) {
+        rep(j, 10) {
+            if (masu[i][j] == 0) continue;
+            a = i + 1;
+            c = j + 1;
+            goto hoge;
+        }
+    }
+hoge:
 
-    cout << a == b << endl;
+    for (int i = 9; i >= 0; --i) {
+        for (int j = 9; j >= 0; --j) {
+            if (masu[i][j] == 0) continue;
+            b = i + 1;
+            d = j + 1;
+            goto fuga;
+        }
+    }
+fuga:
+
+    cout << a << " " << b << endl
+         << c << " " << d << endl;
+
+    return 0;
 } // end of main

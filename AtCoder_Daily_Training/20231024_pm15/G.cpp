@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -99,18 +105,53 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
+// return right
+int dfs(string s, vi count, int left) {
+    int i = left;
+    while (i < s.size()) {
+        if (s[i] == ')')
+            return i;
+        else if (s[i] == '(') {
+            int res = dfs(s, count, i);
+            if (res == -1) return -1;
+        } else {
+            int index = s[i] - 'a';
+            if (count[index] > 0) return -1;
+            count[index] += 1;
+        }
+    }
+
+    return -100;
 }
 
 int main() {
     preprocess();
+    string s;
+    cin >> s;
 
-    vi a = {1, 2};
-    vi b = {1, 3};
-    vi c = {1, 2};
+    int               depth = 0;
+    set<char>         sc;
+    vector<set<char>> vsc(s.size());
+    rep(i, s.size()) {
+        if (s[i] == '(') {
+            depth += 1;
+        } else if (s[i] == ')') {
+            for (auto itr = vsc[depth].begin(); itr != vsc[depth].end(); ++itr) {
+                sc.erase(*itr);
+            }
+            depth -= 1;
+        } else {
+            if (sc.count(s[i]) == 1) {
+                cout << "No" << endl;
+                return 0;
+            }
+            vsc[depth].insert(s[i]);
+            sc.insert(s[i]);
+        }
+    }
 
-    cout << a == b << endl;
+    cout
+        << "Yes" << endl;
+
+    return 0;
 } // end of main
