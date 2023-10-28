@@ -58,7 +58,7 @@ def dfs(masu, depth, row, col, n)
 				masu[depth][j] = ketu[bc[0]]
 				(j + 1).upto(n - 1) do |k|
 					masu[depth][k] = ketu[(bc[1] + 1) % 2]
-					dfs(masu, depth + 1, row, col, n)
+					res = dfs(masu, depth + 1, row, col, n)
 					masu[depth][k] = 0
 				end
 				masu[depth][j] = 0
