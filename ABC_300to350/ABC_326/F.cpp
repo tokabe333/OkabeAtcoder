@@ -107,10 +107,36 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    int n = 3;
+    int n;
+    ll  x, y;
+    cin >> n >> x >> y;
 
-    vi hoge(2, 0);
-    for (int i = 1; i <= n; ++i) {
+    vll hori((n + 1) / 2), vert(n / 2);
+    rep(i, n) {
+        if (i % 2 == 0)
+            cin >> hori[i / 2];
+        else
+            cin >> vert[i / 2];
+    }
+
+    printvec(hori);
+    printvec(vert);
+
+    set<ll>  hoge;
+    set<ll> *prev = &hoge;
+    (*prev).insert(0);
+
+    rep(i, hori.size()) {
+        set<ll> next;
+        for (auto itr = (*prev).begin(); itr != (*prev).end(); ++itr) {
+            next.insert(*itr + hori[i]);
+            next.insert(*itr - hori[i]);
+        }
+        prev = &next;
+    }
+
+    for (auto itr = (*prev).begin(); itr != (*prev).end(); ++itr) {
+        cout << *itr << endl;
     }
 
     return 0;
