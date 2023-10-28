@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -71,13 +77,13 @@ const double PI = 3.141592653589793;
 const ll m107 = 1000000007;
 const ll m998 = 998244353;
 
-// ”’l‚ğ16Œ…‚Å•\¦(Œë·‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰)
+// æ•°å€¤ã‚’16æ¡ã§è¡¨ç¤º(èª¤å·®ãŒå³ã—ã„å•é¡Œã«å¯¾å¿œ)
 #define cout16 std::cout << std::fixed << std::setprecision(16)
 
-// endl no flush (flushˆ—‚Íd‚½‚¢)
+// endl no flush (flushå‡¦ç†ã¯é‡ãŸã„)
 #define elnf "\n"
 
-// ‹£ƒvƒ—pŠÂ‹«ƒZƒbƒeƒBƒ“ƒO
+// ç«¶ãƒ—ãƒ­ç”¨ç’°å¢ƒã‚»ãƒƒãƒ†ã‚£ãƒ³ã‚°
 void preprocess() {
     std::cin.tie(nullptr);
     std::ios_base::sync_with_stdio(false);
@@ -99,22 +105,29 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
-
 int main() {
     preprocess();
-    int n     = 3;
-    int count = 0;
-    for (int i = 0; i < n - 2; ++i) {
-        for (int j = i + 1; j < n - 1; ++j) {
-            for (int k = j + 1; k < n; ++k) {
-                count += 1;
-            }
-        }
+    int n, m;
+    cin >> n >> m;
+
+    vi arr(n);
+    rep(i, n) cin >> arr[i];
+
+    sort(arr.begin(), arr.end());
+
+    int ans = 0;
+    rep(i, n) {
+        int a  = arr[i];
+        int am = a + m;
+
+        auto itr  = lower_bound(arr.begin(), arr.end(), am);
+        int  dist = distance(arr.begin(), itr);
+        if (itr == arr.end() || *itr < arr[dist]) dist -= 1;
+        int num = dist - i;
+        // cout << "i:" << i << " num:" << num << endl;
+        ans = max(ans, num);
     }
-    cout << count << endl;
+    cout << ans << endl;
+
+    return 0;
 } // end of main

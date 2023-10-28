@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -99,22 +105,13 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
-
 int main() {
     preprocess();
-    int n     = 3;
-    int count = 0;
-    for (int i = 0; i < n - 2; ++i) {
-        for (int j = i + 1; j < n - 1; ++j) {
-            for (int k = j + 1; k < n; ++k) {
-                count += 1;
-            }
-        }
+    int n = 3;
+
+    vi hoge(2, 0);
+    for (int i = 1; i <= n; ++i) {
     }
-    cout << count << endl;
+
+    return 0;
 } // end of main

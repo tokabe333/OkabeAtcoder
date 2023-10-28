@@ -1,6 +1,7 @@
-a = 1
-b = 2
-c = 3
+import math
 
-print(a < b < c)
-print(a < c < b)
+a = math.log2(3 * (10 ** 5))
+print(a)
+
+a = [1,2,3,4]
+print(a[:-1])

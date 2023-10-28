@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -99,22 +105,37 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-ll calc(ll c, const vll &arr) {
-    ll num = 0;
-    rep(i, arr.size()) num += abs(c - arr[i]);
-    return num;
-}
-
 int main() {
     preprocess();
-    int n     = 3;
-    int count = 0;
-    for (int i = 0; i < n - 2; ++i) {
-        for (int j = i + 1; j < n - 1; ++j) {
-            for (int k = j + 1; k < n; ++k) {
-                count += 1;
-            }
-        }
+    int n, m;
+    cin >> n >> m;
+
+    vi arr(n);
+    rep(i, n) cin >> arr[i];
+    sort(arr.begin(), arr.end());
+
+    int left  = 0;
+    int right = 0;
+    int ans   = 0;
+    while (right < n) {
+        while (right < n && arr[right] - arr[left] < m)
+            right += 1;
+
+        ans = max(ans, right - left);
+        left += 1;
     }
-    cout << count << endl;
+
+    left  = n - 1;
+    right = n - 1;
+    while (0 <= left) {
+        while (0 <= left && arr[right] - arr[left] < m)
+            left -= 1;
+
+        ans = max(ans, right - left);
+        right -= 1;
+    }
+
+    cout << ans << endl;
+
+    return 0;
 } // end of main
