@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -101,12 +107,51 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    string s, t;
+    cin >> s >> t;
 
-    int a = 'a';
-    cout << a << endl;
+    set<char> ss;
+    ss.insert('a');
+    ss.insert('t');
+    ss.insert('c');
+    ss.insert('o');
+    ss.insert('d');
+    ss.insert('e');
+    ss.insert('r');
 
-    char c = (char)a;
-    cout << c << endl;
+    vi snum(500, 0), tnum(500, 0);
+    rep(i, s.size()) {
+        snum[(int)(s[i])] += 1;
+        tnum[(int)(t[i])] += 1;
+    }
+
+    int sa = snum[(int)('@')];
+    int ta = tnum[(int)('@')];
+
+    rep(i, snum.size()) {
+        if (i == (int)('@')) continue;
+        if (snum[i] == tnum[i]) continue;
+        if (ss.count((char)(i)) == 0) {
+            cout << "No" << endl;
+            return 0;
+        }
+
+        if (snum[i] < tnum[i]) {
+            sa -= abs(snum[i] - tnum[i]);
+            if (sa < 0) {
+                cout << "No" << endl;
+                return 0;
+            }
+        } else if (snum[i] > tnum[i]) {
+            ta -= abs(snum[i] - tnum[i]);
+            if (ta < 0) {
+                cout << "No" << endl;
+                return 0;
+            }
+        }
+    }
+
+    cout << "Yes" << endl;
 
     return 0;
 } // end of main

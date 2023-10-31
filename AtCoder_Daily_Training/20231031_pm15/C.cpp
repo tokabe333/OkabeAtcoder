@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -101,12 +107,48 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    string s;
+    cin >> s;
 
-    int a = 'a';
-    cout << a << endl;
+    int b1, b2;
+    int n = 8;
+    rep(i, n) {
+        if (s[i] != 'B') continue;
+        b1 = i;
+        break;
+    }
+    for (int i = n - 1; i >= 0; --i) {
+        if (s[i] != 'B') continue;
+        b2 = i;
+        break;
+    }
+    if (b1 % 2 == b2 % 2) {
+        cout << "No" << endl;
+        return 0;
+    }
 
-    char c = (char)a;
-    cout << c << endl;
+    int r1, r2, k;
+    rep(i, n) {
+        if (s[i] != 'R') continue;
+        r1 = i;
+        break;
+    }
+    for (int i = n - 1; i >= 0; --i) {
+        if (s[i] != 'R') continue;
+        r2 = i;
+        break;
+    }
+    rep(i, n) {
+        if (s[i] != 'K') continue;
+        k = i;
+        break;
+    }
+
+    if (r1 < k && k < r2) {
+        cout << "Yes" << endl;
+    } else {
+        cout << "No" << endl;
+    }
 
     return 0;
 } // end of main
