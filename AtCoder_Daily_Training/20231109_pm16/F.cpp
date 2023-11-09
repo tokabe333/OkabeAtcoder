@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -101,8 +107,50 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    int n, m;
+    cin >> n >> m;
+    vvi arr(m, vi(11, 0));
 
-    cout << sqrt(pow(10, 12)) << endl;
+    rep(i, m) {
+        int c, hoge;
+        cin >> c;
+        rep(j, c) {
+            cin >> hoge;
+            arr[i][hoge] = 1;
+        }
+    }
+
+    // cout << "arr" << endl;
+    // printvvec(arr);
+
+    // bit‘S’Tõ
+    int ans = 0;
+    for (int bit = 0; bit < (1 << m); ++bit) {
+        vector<int> s;
+        for (int i = 0; i < m; ++i) {
+            if (bit & (1 << i)) { // —ñ‹“‚É i ‚ªŠÜ‚Ü‚ê‚é‚©
+                s.emplace_back(i);
+            }
+        }
+
+        int flag1 = 1;
+        for (int num = 1; num <= n; ++num) {
+            int flag = 0;
+            rep(i, s.size()) {
+                if (arr[s[i]][num] == 1) {
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag == 0) {
+                flag1 = 0;
+                break;
+            }
+        }
+        ans += flag1;
+    }
+
+    cout << ans << endl;
 
     return 0;
 } // end of main

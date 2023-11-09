@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -101,8 +107,40 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    int n;
+    cin >> n;
 
-    cout << sqrt(pow(10, 12)) << endl;
+    map<int, priority_queue<int, vi, greater<int>>> mpq;
+    int                                             f, s;
+    rep(i, n) {
+        cin >> f >> s;
+        mpq[f].push(s);
+        if (mpq[f].size() > 2) mpq[f].pop();
+    }
+
+    int ans  = -1;
+    int maxs = -1000000;
+
+    for (auto itr = mpq.begin(); itr != mpq.end(); ++itr) {
+        // printf("i:%d size:%d  :  ", itr->first, itr->second.size());
+        vi hoge;
+        while (itr->second.empty() == false) {
+            hoge.emplace_back(itr->second.top());
+            // cout << itr->second.top() << " ";
+            itr->second.pop();
+        }
+        int fuga = hoge.back() + maxs;
+        ans      = max(fuga, ans);
+
+        if (hoge.size() == 2) {
+            fuga = hoge[1] + hoge[0] / 2;
+            ans  = max(fuga, ans);
+        }
+
+        maxs = max(maxs, hoge.back());
+    }
+
+    cout << ans << endl;
 
     return 0;
 } // end of main

@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -101,8 +107,37 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    int  n, m;
+    char c;
+    cin >> n >> m;
 
-    cout << sqrt(pow(10, 12)) << endl;
+    vvi arr(n, vi(m, 0));
+    rep(i, n) {
+        rep(j, m) {
+            cin >> c;
+            if (c == 'o') arr[i][j] = 1;
+        }
+    }
+
+    // printvvec(arr);
+    int ans = 0;
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            int hoge = 1;
+            rep(k, m) {
+                if (arr[i][k] + arr[j][k] == 0) {
+                    hoge = 0;
+                    break;
+                }
+            }
+            // if (hoge) {
+            //     printf("i:%d j:%d\n", i, j);
+            // }
+            ans += hoge;
+        }
+    }
+
+    cout << ans << endl;
 
     return 0;
 } // end of main
