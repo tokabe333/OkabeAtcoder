@@ -38,8 +38,11 @@ void foreach_comb(int n, int k, std::function<void(int *)> f) {
     recursive_comb(indexes, n - 1, k, f);
 }
 
-int main() {
-    foreach_comb(5, 3, [](int *indexes) {
-        std::cout << indexes[0] << ',' << indexes[1] << ',' << indexes[2] << std::endl;
-    });
-}
+// int main() {
+//     // foreach_comb(5, 3, [](int *indexes) {
+//     //     std::cout << indexes[0] << ',' << indexes[1] << ',' << indexes[2] << std::endl;
+//     // });
+//     foreach_permutation(8, 8, [](int *indexes) {
+//         std::cout << indexes[0] << ',' << indexes[1] << ',' << indexes[2] << std::endl;
+//     });
+// }
