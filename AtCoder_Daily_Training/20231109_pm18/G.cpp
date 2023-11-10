@@ -103,16 +103,27 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-const bool debug = true;
+const bool debug = false;
 
-// nPn‚Ì‡—ñ‚É‘Î‚µ‚Äˆ—‚ğÀs‚·‚é
-void foreach_permutation(int n, std::function<void(int *)> f) {
-    int indexes[n];
-    for (int i = 0; i < n; i++)
-        indexes[i] = i;
-    do {
-        f(indexes);
-    } while (std::next_permutation(indexes, indexes + n));
+bool dfs(const vvi &graph, vi &flag, int node, int color) {
+    flag[node] = color;
+    bool ret   = true;
+    rep(i, graph[node].size()) {
+        if (flag[graph[node][i]] == color) return false;
+        if (flag[graph[node][i]] != 0) continue;
+        ret = ret & dfs(graph, flag, graph[node][i], color * (-1));
+    }
+    return ret;
+}
+
+int count_dfs(const vvi &graph, set<int> &route, int node) {
+    route.insert(node);
+    int m = graph[node].size();
+    rep(i, graph[node].size()) {
+        if (route.count(graph[node][i]) == 1) continue;
+        m += count_dfs(graph, route, graph[node][i]);
+    }
+    return m;
 }
 
 int main() {
@@ -120,44 +131,58 @@ int main() {
     int n, m;
     cin >> n >> m;
 
-    vvi taka(n, vi(n, 0));
-    vvi aoki(n, vi(n, 0));
+    vvi graph(n);
     rep(i, m) {
-        int a, b;
-        cin >> a >> b;
-        a -= 1;
-        b -= 1;
-        taka[a][b] = 1;
-        taka[b][a] = 1;
-    }
-    rep(i, m) {
-        int a, b;
-        cin >> a >> b;
-        a -= 1;
-        b -= 1;
-        aoki[a][b] = 1;
-        aoki[b][a] = 1;
+        int u, v;
+        cin >> u >> v;
+        u -= 1;
+        v -= 1;
+        graph[u].emplace_back(v);
+        graph[v].emplace_back(u);
     }
 
-    int *code         = (int *)malloc(sizeof(int) * n);
-    rep(i, n) code[i] = i;
+    set<int> ok_graph;
+    vi       flag(n, 0);
 
-    do {
-        rep(i, n) {
-            rep(j, n) {
-                if (taka[i][j] != aoki[code[i]][code[j]]) {
+    int color = 1;
+    rep(i, n) {
+        if (flag[i] != 0) continue;
+        bool ret = dfs(graph, flag, i, color);
+        if (ret == true) ok_graph.insert(color);
+        color += 1;
+    }
 
-                    goto hoge;
-                }
-            }
+    if (debug) {
+        printvec(flag);
+        for (auto itr = ok_graph.begin(); itr != ok_graph.end(); ++itr)
+            cout << *itr << " ";
+        cout << endl;
+    }
+
+    vvi      katamari;
+    set<int> ok_flag;
+    rep(i, n) {
+        if (ok_graph.count(abs(flag[i])) == 0) continue;
+        if (ok_flag.count(abs(flag[i])) == 1) continue;
+        ok_flag.insert(abs(flag[i]));
+        set<int> route;
+        int      m    = count_dfs(graph, route, i);
+        vi       hoge = {route.size(), m / 2};
+        katamari.push_back(hoge);
+    }
+
+    if (debug) printvvec(katamari);
+
+    int ans = 0;
+    rep(i, katamari.size()) {
+        int black = katamari[i][0] / 2;
+        int white = (katamari[i][0] + 1) / 2;
+        ans += black * white - katamari[i][1];
+        for (int j = i + 1; j < katamari.size(); ++j) {
+            ans += katamari[i].size() * katamari[j].size();
         }
-        cout << "Yes" << endl;
-        return 0;
-    hoge:
-        1 + 1;
-    } while (std::next_permutation(code, code + n));
-
-    cout << "No" << endl;
+    }
+    cout << ans << endl;
 
     return 0;
 } // end of main
