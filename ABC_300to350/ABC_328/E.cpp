@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -99,15 +105,87 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
+typedef pair<int, ll>       pil;
+typedef vector<vector<pil>> vvpil;
+
+int n, m;
+ll  k;
+ll  ans = LLONG_MAX;
+
+bool dfs(const vvpil &graph, set<int> &route, int node, ll cost) {
+    // route.insert(node);
+    // if (route.size() == n) {
+    //     ans = min(ans, cost);
+    //     route.erase(node);
+    //     return true;
+    // }
+    // printf("node:%d route.size:%d\n", node, route.size());
+
+    int  n    = graph[node].size();
+    bool flag = false;
+    rep(i, n) {
+        if (route.count(graph[node][i].first) == 0) flag = true;
+    }
+    if (flag == false) return true;
+
+    // ビット全探索
+    for (int bit = 0; bit < (1 << n); ++bit) {
+        ll wcost = cost;
+        for (int i = 0; i < n; ++i) {
+            if (bit & (1 << i)) {
+                if (route.count(graph[node][i].first) == 0) {
+                    route.insert(graph[node][i].first);
+                    wcost = (wcost + graph[node][i].second) % k;
+                }
+            }
+        }
+
+        if (route.size() == n) {
+            ans = min(ans, wcost);
+        }
+
+        rep(i, n) {
+            int next = graph[node][i].first;
+            if (route.count(next) == 0) continue;
+            dfs(graph, route, next, wcost);
+        }
+
+        for (int i = 0; i < n; ++i) {
+            if (bit & (1 << i)) {
+                route.erase(graph[node][i].first);
+            }
+        }
+    }
+
+    return true;
+}
+
 int main() {
     preprocess();
 
-    stack<int> s;
-    s.push(0);
-    s.push(3);
-    cout << s.top() << endl;
-    s.pop();
-    cout << s.top() << endl;
+    cin >> n >> m >> k;
+
+    vvpil graph(n);
+    rep(i, m) {
+        int u, v;
+        ll  w;
+        cin >> u >> v >> w;
+        u -= 1;
+        v -= 1;
+        graph[u].emplace_back(pil(v, w));
+        graph[v].emplace_back(pil(u, w));
+    }
+
+    // rep(i, n) {
+    //     set<int> route;
+    //     route.insert(i);
+    //     dfs(graph, route, i, 0);
+    // }
+    set<int> route;
+    route.insert(0);
+    dfs(graph, route, 0, 0);
+
+    cout << ans << endl;
 
     return 0;
 } // end of main

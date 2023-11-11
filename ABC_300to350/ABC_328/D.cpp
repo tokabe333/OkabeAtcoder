@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -101,13 +107,31 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    string s;
+    cin >> s;
+    int n = s.size();
 
-    stack<int> s;
-    s.push(0);
-    s.push(3);
-    cout << s.top() << endl;
-    s.pop();
-    cout << s.top() << endl;
+    vector<char> stack;
+    rep(i, n) {
+        stack.emplace_back(s[i]);
+        if (stack.size() < 3 || s[i] != 'C') continue;
+
+        while (true) {
+            char a = stack[stack.size() - 3];
+            char b = stack[stack.size() - 2];
+            char c = stack[stack.size() - 1];
+
+            if (c == 'C' && b == 'B' && a == 'A') {
+                rep(i, 3) stack.pop_back();
+                continue;
+            }
+
+            break;
+        }
+    }
+
+    rep(i, stack.size()) cout << stack[i];
+    cout << endl;
 
     return 0;
 } // end of main

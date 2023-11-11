@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -101,13 +107,24 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    int n, q;
+    cin >> n >> q;
+    string s;
+    cin >> s;
 
-    stack<int> s;
-    s.push(0);
-    s.push(3);
-    cout << s.top() << endl;
-    s.pop();
-    cout << s.top() << endl;
+    vi arr(n + 1, 0);
+    rep1(i, n) {
+        arr[i] = arr[i - 1];
+        if (s[i] == s[i - 1]) arr[i] += 1;
+    }
+
+    //   printvec(arr);
+
+    rep(i, q) {
+        int l, r;
+        cin >> l >> r;
+        cout << arr[r - 1] - arr[l - 1] << elnf;
+    }
 
     return 0;
 } // end of main

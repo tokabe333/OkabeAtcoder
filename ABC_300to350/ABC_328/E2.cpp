@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -99,15 +105,34 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
+typedef pair<int, ll>       pil;
+typedef vector<vector<pil>> vvpil;
+
 int main() {
     preprocess();
+    int n, m;
+    ll  k;
+    ll  ans = LLONG_MAX;
 
-    stack<int> s;
-    s.push(0);
-    s.push(3);
-    cout << s.top() << endl;
-    s.pop();
-    cout << s.top() << endl;
+    cin >> n >> m >> k;
+
+    vvpil graph(n);
+    rep(i, m) {
+        int u, v;
+        ll  w;
+        cin >> u >> v >> w;
+        u -= 1;
+        v -= 1;
+        graph[u].emplace_back(pil(v, w));
+        graph[v].emplace_back(pil(u, w));
+    }
+
+    rep(i, n) {
+        queue<pil> que;
+        que.push(pil(i, 0));
+    }
+
+    cout << ans << endl;
 
     return 0;
 } // end of main
