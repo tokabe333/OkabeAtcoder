@@ -18,6 +18,12 @@
 using namespace std;
 
 typedef long long int                  ll;
+typedef pair<int, int>                 pii;
+typedef pair<int, string>              pis;
+typedef pair<string, int>              psi;
+typedef pair<ll, ll>                   pll;
+typedef pair<ll, string>               pls;
+typedef pair<string, ll>               psl;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -35,12 +41,12 @@ typedef vector<vector<double>>         vvd;
 typedef vector<vector<vector<double>>> vvvd;
 typedef vector<string>                 vs;
 typedef vector<vector<string>>         vvs;
-typedef pair<int, int>                 pii;
-typedef pair<int, string>              pis;
-typedef pair<string, int>              psi;
-typedef pair<ll, ll>                   pll;
-typedef pair<ll, string>               pls;
-typedef pair<string, ll>               psl;
+typedef vector<pii>                    vpii;
+typedef vector<vector<pii>>            vvpii;
+typedef vector<vector<vector<pii>>>    vvvpii;
+typedef vector<pll>                    vpll;
+typedef vector<vector<pll>>            vvpll;
+typedef vector<vector<vector<pll>>>    vvvpll;
 typedef unordered_map<char, char>      umcc;
 typedef unordered_map<char, int>       umci;
 typedef unordered_map<char, ll>        umcll;
@@ -101,10 +107,49 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    ll x, y, z;
+    cin >> x >> y >> z;
+    string s;
+    cin >> s;
 
-    ll hoge = 114514193333319810;
-    ll fuga = 334334334334334334;
-    cout << min(hoge, fuga) << endl;
+    vvll dp(2, vll(s.size() + 1, 1145141919));
+    dp[0][0] = 0;
+    rep(j, s.size()) {
+        ll hidari, shift, caps, shift_caps;
+        if (s[j] == 'a') {
+            hidari = dp[0][j] + x;
+            caps   = dp[1][j] + z + x;
+
+            shift      = dp[1][j] + y;
+            shift_caps = dp[0][j] + z + y;
+
+            dp[0][j + 1] = min(hidari, caps);
+            dp[1][j + 1] = min(shift, shift_caps);
+
+        } else {
+            hidari = dp[1][j] + x;
+            caps   = dp[0][j] + z + x;
+
+            shift      = dp[0][j] + y;
+            shift_caps = dp[1][j] + z + y;
+
+            dp[1][j + 1] = min(hidari, caps);
+            dp[0][j + 1] = min(shift, shift_caps);
+        }
+
+        ll ue   = dp[0][j + 1];
+        ll sita = dp[1][j + 1];
+        if (ue + z < dp[1][j + 1]) dp[1][j + 1] = ue + z;
+        if (sita + z < dp[0][j + 1]) dp[0][j + 1] = sita + z;
+    }
+
+    // printvvec(dp);
+
+    // //
+    cout << dp[0].back() << endl
+         << dp[1].back() << endl;
+
+    cout << min(dp[0].back(), dp[1].back()) << endl;
 
     return 0;
 } // end of main
