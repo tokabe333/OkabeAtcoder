@@ -103,37 +103,30 @@ void printvvec(vector<T> vec) {
     }
 } // end of func
 
-const bool debug = false;
+const bool debug = true;
 
-bool dfs(const vvi &graph, vi &flag, int node, int color) {
+bool dfs(const vvll &graph, vll &flag, int node, ll color, vll &box) {
     flag[node] = color;
-    bool ret   = true;
+    box[color] += 1;
+
+    bool ret        = true;
+    int  next_color = (color + 1) % 2;
     rep(i, graph[node].size()) {
         if (flag[graph[node][i]] == color) return false;
-        if (flag[graph[node][i]] != 0) continue;
-        ret = ret & dfs(graph, flag, graph[node][i], color * (-1));
+        if (flag[graph[node][i]] != -1) continue;
+        ret = ret && dfs(graph, flag, graph[node][i], next_color, box);
     }
     return ret;
 }
 
-int count_dfs(const vvi &graph, set<int> &route, int node) {
-    route.insert(node);
-    int m = graph[node].size();
-    rep(i, graph[node].size()) {
-        if (route.count(graph[node][i]) == 1) continue;
-        m += count_dfs(graph, route, graph[node][i]);
-    }
-    return m;
-}
-
 int main() {
     preprocess();
-    int n, m;
+    ll n, m;
     cin >> n >> m;
 
-    vvi graph(n);
+    vvll graph(n);
     rep(i, m) {
-        int u, v;
+        ll u, v;
         cin >> u >> v;
         u -= 1;
         v -= 1;
@@ -141,47 +134,29 @@ int main() {
         graph[v].emplace_back(u);
     }
 
-    set<int> ok_graph;
-    vi       flag(n, 0);
-
-    int color = 1;
+    vll  flag(n, -1);
+    vvll boxes;
     rep(i, n) {
-        if (flag[i] != 0) continue;
-        bool ret = dfs(graph, flag, i, color);
-        if (ret == true) ok_graph.insert(color);
-        color += 1;
-    }
-
-    if (debug) {
-        printvec(flag);
-        for (auto itr = ok_graph.begin(); itr != ok_graph.end(); ++itr)
-            cout << *itr << " ";
-        cout << endl;
-    }
-
-    vvi      katamari;
-    set<int> ok_flag;
-    rep(i, n) {
-        if (ok_graph.count(abs(flag[i])) == 0) continue;
-        if (ok_flag.count(abs(flag[i])) == 1) continue;
-        ok_flag.insert(abs(flag[i]));
-        set<int> route;
-        int      m    = count_dfs(graph, route, i);
-        vi       hoge = {route.size(), m / 2};
-        katamari.push_back(hoge);
-    }
-
-    if (debug) printvvec(katamari);
-
-    int ans = 0;
-    rep(i, katamari.size()) {
-        int black = katamari[i][0] / 2;
-        int white = (katamari[i][0] + 1) / 2;
-        ans += black * white - katamari[i][1];
-        for (int j = i + 1; j < katamari.size(); ++j) {
-            ans += katamari[i].size() * katamari[j].size();
+        vll box(2, 0);
+        if (flag[i] != -1) continue;
+        bool ret = dfs(graph, flag, i, 0, box);
+        if (ret == false) {
+            cout << 0 << endl;
+            return 0;
         }
+        boxes.push_back(box);
     }
+
+    // printvvec(boxes);
+
+    ll ans = n * (n - 1) / 2 - m;
+    rep(i, boxes.size()) {
+        ll black = boxes[i][0];
+        ll white = boxes[i][1];
+        ans -= black * (black - 1) / 2;
+        ans -= white * (white - 1) / 2;
+    }
+
     cout << ans << endl;
 
     return 0;
