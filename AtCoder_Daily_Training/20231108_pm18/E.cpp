@@ -107,49 +107,31 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    ll x, y, z;
-    cin >> x >> y >> z;
-    string s;
-    cin >> s;
+    int n;
+    cin >> n;
 
-    vvll dp(2, vll(s.size() + 1, 1145141919));
-    dp[0][0] = 0;
-    rep(j, s.size()) {
-        ll hidari, shift, caps, shift_caps;
-        if (s[j] == 'a') {
-            hidari = dp[0][j] + x;
-            caps   = dp[1][j] + z + x;
+    vi arr(n);
+    rep(i, n) cin >> arr[i];
+    int ans = INT_MAX;
 
-            shift      = dp[1][j] + y;
-            shift_caps = dp[0][j] + z + y;
+    for (int bit = 1; bit < (1 << n); ++bit) {
+        int xor_ = 0;
+        int or_  = 0;
+        for (int i = 0; i < n; ++i) {
+            or_ = or_ | arr[i];
+            if (bit & (1 << i)) { // —ñ‹“‚É i ‚ªŠÜ‚Ü‚ê‚é‚©
+                xor_ = xor_ ^ or_;
 
-            dp[0][j + 1] = min(hidari, caps);
-            dp[1][j + 1] = min(shift, shift_caps);
-
-        } else {
-            hidari = dp[1][j] + x;
-            caps   = dp[0][j] + z + x;
-
-            shift      = dp[0][j] + y;
-            shift_caps = dp[1][j] + z + y;
-
-            dp[1][j + 1] = min(hidari, caps);
-            dp[0][j + 1] = min(shift, shift_caps);
+                //  cout << "or:" << or_ << " xor:" << xor_ << endl;
+                or_ = 0;
+            }
         }
-
-        ll ue   = dp[0][j + 1];
-        ll sita = dp[1][j + 1];
-        if (ue + z < dp[1][j + 1]) dp[1][j + 1] = ue + z;
-        if (sita + z < dp[0][j + 1]) dp[0][j + 1] = sita + z;
+        xor_ = xor_ ^ or_;
+        //  cout << "xor:" << xor_ << endl;
+        ans = min(ans, xor_);
     }
 
-    // printvvec(dp);
-
-    // //
-    // cout << dp[0].back() << endl
-    //      << dp[1].back() << endl;
-
-    cout << min(dp[0].back(), dp[1].back()) << endl;
+    cout << ans << endl;
 
     return 0;
 } // end of main

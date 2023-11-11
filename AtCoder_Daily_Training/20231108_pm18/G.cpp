@@ -105,51 +105,58 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
-int main() {
-    preprocess();
-    ll x, y, z;
-    cin >> x >> y >> z;
-    string s;
-    cin >> s;
+bool dfs(const vvi &graph, vi &flag, int node) {
+    flag[node] = 1;
 
-    vvll dp(2, vll(s.size() + 1, 1145141919));
-    dp[0][0] = 0;
-    rep(j, s.size()) {
-        ll hidari, shift, caps, shift_caps;
-        if (s[j] == 'a') {
-            hidari = dp[0][j] + x;
-            caps   = dp[1][j] + z + x;
-
-            shift      = dp[1][j] + y;
-            shift_caps = dp[0][j] + z + y;
-
-            dp[0][j + 1] = min(hidari, caps);
-            dp[1][j + 1] = min(shift, shift_caps);
-
-        } else {
-            hidari = dp[1][j] + x;
-            caps   = dp[0][j] + z + x;
-
-            shift      = dp[0][j] + y;
-            shift_caps = dp[1][j] + z + y;
-
-            dp[1][j + 1] = min(hidari, caps);
-            dp[0][j + 1] = min(shift, shift_caps);
+    if (graph[node].size() > 2) return false;
+    if (graph[node].size() == 0) return true;
+    if (graph[node].size() == 1) {
+        if (flag[graph[node][0]] == 1)
+            return true;
+        else {
+            return dfs(graph, flag, graph[node][0]);
         }
-
-        ll ue   = dp[0][j + 1];
-        ll sita = dp[1][j + 1];
-        if (ue + z < dp[1][j + 1]) dp[1][j + 1] = ue + z;
-        if (sita + z < dp[0][j + 1]) dp[0][j + 1] = sita + z;
     }
 
-    // printvvec(dp);
+    if (flag[graph[node][0]] == 1 && flag[graph[node][1]] == 1) return false;
 
-    // //
-    // cout << dp[0].back() << endl
-    //      << dp[1].back() << endl;
+    bool f = true;
+    rep(i, graph[node].size()) {
+        if (flag[graph[node][i]] == 1) continue;
+        f = f && dfs(graph, flag, graph[node][i]);
+    }
 
-    cout << min(dp[0].back(), dp[1].back()) << endl;
+    return f;
+}
+
+int main() {
+    preprocess();
+    int n, m;
+    cin >> n >> m;
+
+    vvi arr(n);
+    rep(i, m) {
+        int a, b;
+        cin >> a >> b;
+        a -= 1;
+        b -= 1;
+        arr[a].emplace_back(b);
+        arr[b].emplace_back(a);
+    }
+
+    vi flag(n, 0);
+    rep(i, n) {
+        // cout << "i:" << i << endl;
+
+        if (flag[i] == 1) continue;
+        bool ret = dfs(arr, flag, i);
+        //  printvec(flag);
+        if (ret == false) {
+            cout << "No" << endl;
+            return 0;
+        }
+    }
+    cout << "Yes" << endl;
 
     return 0;
 } // end of main

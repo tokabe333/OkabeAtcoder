@@ -105,51 +105,42 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
+bool dfs(const vvi &graph, vi &flag, int node, vi &route, int dist) {
+    // printf("node:%d\n", node);
+    route.emplace_back(node + 1);
+    flag[node] = 1;
+    if (node == dist) return true;
+
+    rep(i, graph[node].size()) {
+        if (flag[graph[node][i]] == 1) continue;
+        bool ret = dfs(graph, flag, graph[node][i], route, dist);
+        if (ret == true) return true;
+    }
+    route.pop_back();
+    return false;
+}
+
 int main() {
     preprocess();
-    ll x, y, z;
-    cin >> x >> y >> z;
-    string s;
-    cin >> s;
+    int n, x, y;
+    cin >> n >> x >> y;
+    x -= 1;
+    y -= 1;
 
-    vvll dp(2, vll(s.size() + 1, 1145141919));
-    dp[0][0] = 0;
-    rep(j, s.size()) {
-        ll hidari, shift, caps, shift_caps;
-        if (s[j] == 'a') {
-            hidari = dp[0][j] + x;
-            caps   = dp[1][j] + z + x;
-
-            shift      = dp[1][j] + y;
-            shift_caps = dp[0][j] + z + y;
-
-            dp[0][j + 1] = min(hidari, caps);
-            dp[1][j + 1] = min(shift, shift_caps);
-
-        } else {
-            hidari = dp[1][j] + x;
-            caps   = dp[0][j] + z + x;
-
-            shift      = dp[0][j] + y;
-            shift_caps = dp[1][j] + z + y;
-
-            dp[1][j + 1] = min(hidari, caps);
-            dp[0][j + 1] = min(shift, shift_caps);
-        }
-
-        ll ue   = dp[0][j + 1];
-        ll sita = dp[1][j + 1];
-        if (ue + z < dp[1][j + 1]) dp[1][j + 1] = ue + z;
-        if (sita + z < dp[0][j + 1]) dp[0][j + 1] = sita + z;
+    vvi tree(n);
+    rep(i, n - 1) {
+        int u, v;
+        cin >> u >> v;
+        u -= 1;
+        v -= 1;
+        tree[u].emplace_back(v);
+        tree[v].emplace_back(u);
     }
 
-    // printvvec(dp);
-
-    // //
-    // cout << dp[0].back() << endl
-    //      << dp[1].back() << endl;
-
-    cout << min(dp[0].back(), dp[1].back()) << endl;
+    vi flag(n, 0);
+    vi route;
+    dfs(tree, flag, x, route, y);
+    printvec(route);
 
     return 0;
 } // end of main

@@ -107,49 +107,19 @@ const bool debug = true;
 
 int main() {
     preprocess();
-    ll x, y, z;
-    cin >> x >> y >> z;
-    string s;
-    cin >> s;
+    set<string> ss;
 
-    vvll dp(2, vll(s.size() + 1, 1145141919));
-    dp[0][0] = 0;
-    rep(j, s.size()) {
-        ll hidari, shift, caps, shift_caps;
-        if (s[j] == 'a') {
-            hidari = dp[0][j] + x;
-            caps   = dp[1][j] + z + x;
+    string s, t;
+    cin >> s >> t;
 
-            shift      = dp[1][j] + y;
-            shift_caps = dp[0][j] + z + y;
+    ss.insert(s);
+    ss.insert(t);
 
-            dp[0][j + 1] = min(hidari, caps);
-            dp[1][j + 1] = min(shift, shift_caps);
-
-        } else {
-            hidari = dp[1][j] + x;
-            caps   = dp[0][j] + z + x;
-
-            shift      = dp[0][j] + y;
-            shift_caps = dp[1][j] + z + y;
-
-            dp[1][j + 1] = min(hidari, caps);
-            dp[0][j + 1] = min(shift, shift_caps);
-        }
-
-        ll ue   = dp[0][j + 1];
-        ll sita = dp[1][j + 1];
-        if (ue + z < dp[1][j + 1]) dp[1][j + 1] = ue + z;
-        if (sita + z < dp[0][j + 1]) dp[0][j + 1] = sita + z;
-    }
-
-    // printvvec(dp);
-
-    // //
-    // cout << dp[0].back() << endl
-    //      << dp[1].back() << endl;
-
-    cout << min(dp[0].back(), dp[1].back()) << endl;
+    auto itr = ss.begin();
+    if (s == *itr)
+        cout << "Yes" << endl;
+    else
+        cout << "No" << endl;
 
     return 0;
 } // end of main
