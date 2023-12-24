@@ -108,29 +108,108 @@ const bool debug = true;
 typedef pair<int, ll>       pil;
 typedef vector<vector<pil>> vvpil;
 
+void recursive_comb(int *indexes, int s, int rest, std::function<void(int *)> f) {
+    if (rest == 0) {
+        f(indexes);
+    } else {
+        if (s < 0) return;
+        recursive_comb(indexes, s - 1, rest, f);
+        indexes[rest - 1] = s;
+        recursive_comb(indexes, s - 1, rest - 1, f);
+    }
+}
+
+// nCkの組み合わせに対して処理を実行する
+void foreach_comb(int n, int k, std::function<void(int *)> f) {
+    int indexes[k];
+    recursive_comb(indexes, n - 1, k, f);
+}
+
+typedef int uf_type;
+class UnionFind {
+  public:
+    UnionFind() = default;
+
+    // n 個の要素
+    explicit UnionFind(size_t n)
+        : m_parentsOrSize(n, -1) {}
+
+    // i の root を返す
+    uf_type find(uf_type i) {
+        if (m_parentsOrSize[i] < 0) {
+            return i;
+        }
+
+        // 経路圧縮
+        return (m_parentsOrSize[i] = find(m_parentsOrSize[i]));
+    }
+
+    // a の木と b の木を統合
+    void merge(uf_type a, uf_type b) {
+        a = find(a);
+        b = find(b);
+
+        if (a != b) {
+            // union by size (小さいほうが子になる）
+            if (-m_parentsOrSize[a] < -m_parentsOrSize[b]) {
+                std::swap(a, b);
+            }
+
+            m_parentsOrSize[a] += m_parentsOrSize[b];
+            m_parentsOrSize[b] = a;
+        }
+    }
+
+    // a と b が同じ木に属すかを返す
+    bool connected(uf_type a, uf_type b) {
+        return (find(a) == find(b));
+    }
+
+    // i が属するグループの要素数を返す
+    uf_type size(uf_type i) {
+        return -m_parentsOrSize[find(i)];
+    }
+
+  private:
+    // m_parentsOrSize[i] は i の 親,
+    // ただし root の場合は (-1 * そのグループに属する要素数)
+    std::vector<uf_type> m_parentsOrSize;
+};
+
+ll  ans = LLONG_MAX;
 int main() {
     preprocess();
-    int n, m;
     ll  k;
-    ll  ans = LLONG_MAX;
-
+    int n, m;
     cin >> n >> m >> k;
 
-    vvpil graph(n);
+    vvll edge(m, vll(3, 0));
     rep(i, m) {
-        int u, v;
-        ll  w;
-        cin >> u >> v >> w;
-        u -= 1;
-        v -= 1;
-        graph[u].emplace_back(pil(v, w));
-        graph[v].emplace_back(pil(u, w));
+        cin >> edge[i][0] >> edge[i][1] >> edge[i][2];
+        edge[i][0] -= 1;
+        edge[i][1] -= 1;
     }
 
-    rep(i, n) {
-        queue<pil> que;
-        que.push(pil(i, 0));
-    }
+    // nCkの組み合わせに対して処理を実行する
+    foreach_comb(m, n - 1, [n, m, k, edge](int *indexes) {
+        UnionFind uf(n);
+        ll        cost = 0;
+
+        rep(i, n - 1) {
+            int index = indexes[i];
+            uf.merge(edge[index][0], edge[index][1]);
+            cost = (cost + edge[index][2]) % k;
+        }
+
+        bool flag = true;
+        rep(i, n) {
+            if (uf.connected(0, i) == false) {
+                flag = false;
+                break;
+            }
+        }
+        if (flag) ans = min(ans, cost);
+    });
 
     cout << ans << endl;
 
