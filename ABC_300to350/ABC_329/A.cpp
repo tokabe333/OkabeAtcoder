@@ -107,6 +107,11 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    string s;
+    cin >> s;
+
+    rep(i, s.size()) cout << s[i] << " ";
+    cout << endl;
 
     return 0;
 } // end of main

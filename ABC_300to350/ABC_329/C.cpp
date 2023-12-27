@@ -108,5 +108,30 @@ const bool debug = true;
 int main() {
     preprocess();
 
+    vi num(26, 0);
+
+    int n;
+    cin >> n;
+
+    string s;
+    cin >> s;
+    s += "_";
+
+    char prev  = s[0];
+    int  count = 1;
+    for (int i = 1; i < s.size(); ++i) {
+        if (s[i] == prev) {
+            count += 1;
+            continue;
+        }
+
+        num[prev - 'a'] = max(num[prev - 'a'], count);
+
+        prev  = s[i];
+        count = 1;
+    }
+
+    // printvec(num);
+    cout << accumulate(num.begin(), num.end(), 0) << endl;
     return 0;
 } // end of main

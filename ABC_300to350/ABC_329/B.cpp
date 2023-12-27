@@ -108,5 +108,18 @@ const bool debug = true;
 int main() {
     preprocess();
 
+    int n;
+    cin >> n;
+    vi arr(n);
+    rep(i, n) cin >> arr[i];
+
+    int m = *max_element(arr.begin(), arr.end());
+    sort(arr.rbegin(), arr.rend());
+    rep(i, n) {
+        if (arr[i] == m) continue;
+        cout << arr[i] << endl;
+        return 0;
+    }
+
     return 0;
 } // end of main

@@ -108,5 +108,30 @@ const bool debug = true;
 int main() {
     preprocess();
 
+    int n, m;
+    cin >> n >> m;
+
+    vector<set<int>> ans(200005);
+    vector<int>      cand(n + 1, 0);
+    vector<int>      arr(m);
+    rep(i, m) cin >> arr[i];
+
+    int mp = 0;
+    rep(i, m) {
+        int current = cand[arr[i]];
+        ans[current + 1].insert(arr[i]);
+        cand[arr[i]] += 1;
+        mp       = max(mp, current + 1);
+        auto itr = ans[mp].begin();
+        cout << *itr << "\n";
+
+        // rep(j, 5) {
+        //     cout << "j:" << j << " : ";
+        //     for (auto x : ans[j])
+        //         cout << x << " ";
+        //     cout << endl;
+        // }
+    }
+
     return 0;
 } // end of main
