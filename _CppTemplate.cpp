@@ -90,13 +90,13 @@ void preprocess() {
 } // end of func
 
 template <class T>
-void printvec(vector<T> vec) {
+void printvec(const vector<T> &vec) {
     rep(i, vec.size()) cout << vec[i] << " ";
     cout << endl;
 } // end of func
 
 template <class T>
-void printvvec(vector<T> vec) {
+void printvvec(const vector<T> &vec) {
     rep(i, vec.size()) {
         rep(j, vec[i].size()) cout << vec[i][j] << " ";
         cout << endl;
