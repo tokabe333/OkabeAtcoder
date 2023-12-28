@@ -108,5 +108,23 @@ const bool debug = true;
 int main() {
     preprocess();
 
+    int n, l, r;
+    cin >> n >> l >> r;
+    vi arr(n);
+    rep(i, n) cin >> arr[i];
+
+    rep(i, n) {
+        int a   = arr[i];
+        int ans = 334;
+        if (a <= l)
+            ans = l;
+        else if (r <= a)
+            ans = r;
+        else
+            ans = a;
+        cout << ans << " ";
+    }
+    cout << endl;
+
     return 0;
 } // end of main
