@@ -10,8 +10,7 @@ while count <= 333
 		count += 1
 	end
 	abc = abc.map{|a| a / 10}
-	p abc 
-	break
+	abc[]
 end
 
 p arr.length
