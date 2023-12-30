@@ -110,46 +110,39 @@ int main() {
 
     int n, k;
     cin >> n >> k;
-    vi arr(n, 0);
-    rep(i, k) {
-        int a;
-        cin >> a;
-        arr[a - 1] = 1;
+    vi arr(k);
+    rep(i, k) cin >> arr[i];
+
+    if (k % 2 == 0) {
+        int ans = 0;
+        for (int i = 0; i < k; i += 2) {
+            ans += abs(arr[i] - arr[i + 1]);
+        }
+        cout << ans << endl;
+        return 0;
     }
 
-    if (k % 2 == 1) {
-        int index = 0;
-        int dist  = 0;
-        rep(i, n) {
-            if (arr[i] == 0) continue;
-            index = i;
-            break;
-        }
-        for (int i = index; i < n; ++i) {
-            if (arr[i] == 0) continue;
-            if (dist < i - index) {
-                index = i;
-                dist  = i - index;
-            }
-            index = i;
-        }
-        arr[index] = 0;
-        printvec(arr);
-        cout << "index:" << index << endl;
+    vi  diff1(k / 2 + 1), diff2(k / 2 + 1);
+    int len = diff2.size();
+    rep(i, k / 2) {
+        diff1[i + 1]       = diff1[i] + abs(arr[i * 2] - arr[i * 2 + 1]);
+        diff2[len - i - 2] = diff2[len - i - 1] + abs(arr[k - i * 2 - 1] - arr[k - i * 2 - 2]);
     }
 
-    int index = 0;
-    int ans   = 0;
-    rep(i, n) {
-        if (arr[i] == 0) continue;
-        if (index != 0) {
-            ans += i - index;
-            index = 0;
-        } else {
-            index = i;
-        }
-    }
+    // printvec(diff1);
+    // printvec(diff2);
 
+    int ans = INT_MAX;
+    rep(i, diff1.size()) {
+        // int left = 0, right = 0;
+        // // if (0 < i) {
+        // //     left = diff1[i - 1];
+        // // }
+        // // if (i + 1 < k) {
+        // //     right = diff2[i + 1];
+        // // }
+        ans = min(ans, diff1[i] + diff2[i]);
+    }
     cout << ans << endl;
 
     return 0;
