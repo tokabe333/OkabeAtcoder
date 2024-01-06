@@ -108,18 +108,12 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    vi   arr = {1, 3, 5, 7, 7, 8, 9};
-    auto itr = lower_bound(arr.begin(), arr.end(), 333);
+    vll  hoge = {3, 6, 7, 8, 10};
+    ll   ngo  = 5;
+    auto it   = upper_bound(hoge.rbegin(), hoge.rend(), ngo);
 
-    cout << *itr << endl;
-    cout << distance(arr.begin(), itr) << endl;
-    itr--;
-    cout << *itr << endl;
-
-    auto itr2 = itr;
-    cout << itr2 << endl;
-    itr--;
-    cout << itr2 << endl;
+    ll num = *it;
+    cout << num << " " << distance(hoge.rbegin(), it) << endl;
 
     return 0;
 } // end of main

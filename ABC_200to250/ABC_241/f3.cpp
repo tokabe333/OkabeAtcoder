@@ -107,62 +107,116 @@ const bool debug = true;
 
 struct Unchi {
   public:
-    int      node;
-    set<int> route;
-    Unchi() {
-        this->node = 0;
-        this->route.insert(0);
-    }
-    Unchi(int n) {
-        this->node = n;
-        this->route.insert(0);
-    }
+    ll x, y, d;
+    Unchi() {}
+    Unchi(ll yy, ll xx, ll dd) : y(yy), x(xx), d(dd) {}
 };
 
 int main() {
     preprocess();
 
-    int n, m;
-    cin >> n >> m;
-    vvi graph(n);
-    rep(i, m) {
-        int u, v;
-        cin >> u >> v;
-        u -= 1;
-        v -= 1;
-        graph[u].emplace_back(v);
-        graph[v].emplace_back(u);
+    ll h, w, n;
+    cin >> h >> w >> n;
+    ll sx, sy, gx, gy;
+    cin >> sy >> sx;
+    cin >> gy >> gx;
+
+    unordered_map<ll, set<ll>> xs, ys;
+    rep(i, n) {
+        ll x, y;
+        cin >> y >> x;
+        ys[y].insert(x);
+        xs[x].insert(y);
     }
 
-    vll counts(n, 0);
-    counts[0] = 1;
     queue<Unchi> que;
-    que.push(Unchi(0));
-    while (que.empty() == false) {
-        Unchi d = que.front();
+    que.push(Unchi(sy, sx, 0));
+    set<pll> visit;
+    while (!que.empty()) {
+        auto data = que.front();
         que.pop();
-        rep(i, graph[d.node].size()) {
-            if (d.route.count(graph[d.node][i]) == 1) continue;
-            Unchi e = d;
-            e.node = graph[d.node][i];
-            e.route.insert(d.node);
-            cout << "d.node:" << d.node << " d.route : ";
-            for (auto x : d.route)
-                cout << x << " ";
-            cout << endl;
-            cout << "e.node:" << e.node << " e.route : ";
-            for (auto x : e.route)
-                cout << x << " ";
-            cout << endl;
-            printvec(counts);
-            cout << endl;
+        ll x = data.x;
+        ll y = data.y;
+        ll d = data.d;
 
-            counts[e.node] += counts[d.node];
-            que.push(e);
+        if (debug) printf("\nx:%lld y:%lld d:%lld\n", x, y, d);
+
+        if (visit.count({y, x}) == 1) continue;
+        visit.insert({y, x});
+
+        // 上
+        if (xs[x].size() > 0) {
+            if (debug) {
+                cout << "上下に移動するぞー" << endl;
+                for (auto hoge : xs[x])
+                    cout << hoge << " ";
+                cout << endl;
+            }
+
+            auto it = xs[x].upper_bound(y);
+            if (it != xs[x].end()) {
+                if (x == gx && y <= gy && gy <= *it) {
+                    cout << d + 1 << endl;
+                    return 0;
+                }
+                que.push(Unchi(*it - 1, x, d + 1));
+                if (debug) printf("上に行った dx:%lld dy:%lld dd:%lld\n", x, *it - 1, d + 1);
+            }
+
+            // 下
+            it = xs[x].lower_bound(y);
+            while (it != xs[x].begin() && *it >= y)
+                it--;
+
+            cout << "begin? : " << (it == xs[x].begin()) << "  *it:" << *it << " dist:" << distance(xs[x].begin(), it) << endl;
+            if (*it + 1 < y) {
+                if (x == gx && *it + 1 <= gy && gy <= y) {
+                    cout << d + 1 << endl;
+                    return 0;
+                }
+                que.push(Unchi(*it + 1, x, d + 1));
+                if (debug) printf("下に行った dx:%lld dy:%lld dd:%lld\n", x, *it + 1, d + 1);
+            }
+        }
+
+        if (ys[y].size() > 0) {
+            if (debug) {
+                cout << "左右に移動するぞー" << endl;
+                for (auto hoge : ys[y])
+                    cout << hoge << " ";
+                cout << endl;
+            }
+
+            // 右
+            auto it = ys[y].upper_bound(x);
+            if (it != ys[y].end()) {
+                if (y == gy && x <= gx && gx <= *it) {
+                    cout << d + 1 << endl;
+                    return 0;
+                }
+                que.push(Unchi(y, *it - 1, d + 1));
+                if (debug) printf("右に行った dx:%lld dy:%lld dd:%lld\n", *it - 1, y, d + 1);
+            }
+
+            // 左
+            it = ys[y].lower_bound(x);
+            while (it != ys[y].begin() && *it > x)
+                it--;
+            if (*it + 1 < x) {
+                if (y == gy && *it + 1 <= gx && gx <= x) {
+                    cout << d + 1 << endl;
+                    return 0;
+                }
+                que.push(Unchi(y, *it + 1, d + 1));
+                // cout << "hoge[y].size() : " << ys[y].size() << endl;
+                // for (auto hoge : ys[y])
+                //     cout << hoge << " ";
+                // cout << endl;
+                if (debug) printf("左に行った dx:%lld dy:%lld dd:%lld\n", *it + 1, y, d + 1);
+            }
         }
     }
 
-    printvec(counts);
-
+    cout << -1 << endl;
     return 0;
 } // end of main
