@@ -90,13 +90,13 @@ void preprocess() {
 } // end of func
 
 template <class T>
-void printvec(vector<T> vec) {
+void printvec(const vector<T> &vec) {
     rep(i, vec.size()) cout << vec[i] << " ";
     cout << endl;
 } // end of func
 
 template <class T>
-void printvvec(vector<T> vec) {
+void printvvec(const vector<T> &vec) {
     rep(i, vec.size()) {
         rep(j, vec[i].size()) cout << vec[i][j] << " ";
         cout << endl;
@@ -105,15 +105,94 @@ void printvvec(vector<T> vec) {
 
 const bool debug = true;
 
+vvi rotate90(const vvi &poly) {
+    vvi masu(4, vi(4));
+    rep(i, 4) {
+        rep(j, 4) {
+            masu[i][j] = poly[j][3 - i];
+        }
+    }
+    return masu;
+}
+
+bool check(const vvi &masu) {
+    rep(i, 4) {
+        rep(j, 4) {
+            if (masu[i][j] == 0) return false;
+        }
+    }
+    return true;
+}
+
+bool put(vvi &masu, const vvi &poly, int y, int x) {
+    rep(i, 4) {
+        rep(j, 4) {
+            if (poly[i][j] == 0) continue;
+            if (y + i < 0 || 4 <= y + i) return false;
+            if (x + j < 0 || 4 <= x + j) return false;
+            if (masu[y + i][x + j] == 1) return false;
+            masu[y + i][x + j] = 1;
+        }
+    }
+    return true;
+}
+
+void dfs(const vvi &masu, const vvvi &poly, int depth) {
+    // cout << "depth:" << depth << endl;
+    // printvvec(masu);
+    // cout << endl;
+
+    if (depth == 3) {
+        bool ret = check(masu);
+        if (ret == true) {
+            cout << "Yes" << endl;
+            exit(0);
+        } else {
+            return;
+        }
+    }
+
+    vvi pol = poly[depth];
+    rep(k, 4) {
+        for (int i = -3; i <= 3; ++i) {
+            for (int j = -3; j <= 3; ++j) {
+                vvi  hoge = masu;
+                bool ret  = put(hoge, pol, i, j);
+                if (ret == false) continue;
+                dfs(hoge, poly, depth + 1);
+            }
+        }
+        pol = rotate90(pol);
+    }
+}
+
 int main() {
     preprocess();
 
-    vvi hoge   = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    vvi fuga   = hoge;
-    fuga[0][0] = 334;
-    printvvec(hoge);
-    cout << endl;
-    printvvec(fuga);
+    vvvi polys(3, vvi(4, vi(4, 0)));
+    rep(k, 3) {
+        rep(i, 4) {
+            rep(j, 4) {
+                char c;
+                cin >> c;
+                if (c == '#') polys[k][i][j] = 1;
+            }
+        }
+    }
 
+    vvi masu(4, vi(4, 0));
+    dfs(masu, polys, 0);
+    // vvi hoge = rotate90(polys[0]);
+    // printvvec(hoge);
+    // cout << endl;
+    // vvi hoge2 = rotate90(hoge);
+    // printvvec(hoge2);
+    // cout << endl;
+    // vvi hoge3 = rotate90(hoge2);
+    // printvvec(hoge3);
+    // cout << endl;
+    // vvi hoge4 = rotate90(hoge3);
+    // printvvec(hoge4);
+    cout << "No" << endl;
     return 0;
 } // end of main

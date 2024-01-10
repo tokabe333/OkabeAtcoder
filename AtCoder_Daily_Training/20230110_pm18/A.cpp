@@ -90,13 +90,13 @@ void preprocess() {
 } // end of func
 
 template <class T>
-void printvec(vector<T> vec) {
+void printvec(const vector<T> &vec) {
     rep(i, vec.size()) cout << vec[i] << " ";
     cout << endl;
 } // end of func
 
 template <class T>
-void printvvec(vector<T> vec) {
+void printvvec(const vector<T> &vec) {
     rep(i, vec.size()) {
         rep(j, vec[i].size()) cout << vec[i][j] << " ";
         cout << endl;
@@ -107,13 +107,12 @@ const bool debug = true;
 
 int main() {
     preprocess();
-
-    vvi hoge   = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    vvi fuga   = hoge;
-    fuga[0][0] = 334;
-    printvvec(hoge);
-    cout << endl;
-    printvvec(fuga);
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
+    if (a * 60 * 60 + b * 60 < c * 60 * 60 + d * 60 + 1)
+        cout << "Takahashi" << endl;
+    else
+        cout << "Aoki" << endl;
 
     return 0;
 } // end of main

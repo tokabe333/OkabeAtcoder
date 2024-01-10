@@ -90,13 +90,13 @@ void preprocess() {
 } // end of func
 
 template <class T>
-void printvec(vector<T> vec) {
+void printvec(const vector<T> &vec) {
     rep(i, vec.size()) cout << vec[i] << " ";
     cout << endl;
 } // end of func
 
 template <class T>
-void printvvec(vector<T> vec) {
+void printvvec(const vector<T> &vec) {
     rep(i, vec.size()) {
         rep(j, vec[i].size()) cout << vec[i][j] << " ";
         cout << endl;
@@ -107,13 +107,24 @@ const bool debug = true;
 
 int main() {
     preprocess();
+    int n, m;
+    cin >> n >> m;
+    vector<set<int>> graph(n);
 
-    vvi hoge   = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    vvi fuga   = hoge;
-    fuga[0][0] = 334;
-    printvvec(hoge);
-    cout << endl;
-    printvvec(fuga);
+    rep(i, m) {
+        int a, b;
+        cin >> a >> b;
+        a -= 1, b -= 1;
+        graph[a].insert(b);
+        graph[b].insert(a);
+    }
+
+    rep(i, n) {
+        cout << graph[i].size() << " ";
+        for (auto x : graph[i])
+            cout << (x + 1) << " ";
+        cout << endl;
+    }
 
     return 0;
 } // end of main

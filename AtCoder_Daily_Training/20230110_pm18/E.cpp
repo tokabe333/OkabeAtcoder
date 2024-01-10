@@ -90,13 +90,13 @@ void preprocess() {
 } // end of func
 
 template <class T>
-void printvec(vector<T> vec) {
+void printvec(const vector<T> &vec) {
     rep(i, vec.size()) cout << vec[i] << " ";
     cout << endl;
 } // end of func
 
 template <class T>
-void printvvec(vector<T> vec) {
+void printvvec(const vector<T> &vec) {
     rep(i, vec.size()) {
         rep(j, vec[i].size()) cout << vec[i][j] << " ";
         cout << endl;
@@ -108,12 +108,44 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    vvi hoge   = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    vvi fuga   = hoge;
-    fuga[0][0] = 334;
-    printvvec(hoge);
-    cout << endl;
-    printvvec(fuga);
+    int n;
+    cin >> n;
+
+    vvi arr(n, vi(2));
+    rep(i, n) {
+        cin >> arr[i][0] >> arr[i][1];
+    }
+
+    string s;
+    cin >> s;
+
+    // y, x
+    map<int, int> rights, lefts;
+    rep(i, n) {
+        int y = arr[i][1];
+        int x = arr[i][0];
+        if (s[i] == 'R') {
+            if (rights.find(y) == rights.end())
+                rights[y] = x;
+            else
+                rights[y] = min(rights[y], x);
+        } else {
+            lefts[y] = max(lefts[y], x);
+        }
+    }
+
+    for (auto kv : rights) {
+        int y = kv.first;
+        int x = kv.second;
+        //   cout << "y:" << y << " x:" << x << endl;
+
+        if (lefts.find(y) == lefts.end()) continue;
+        if (x < lefts[y]) {
+            cout << "Yes" << endl;
+            return 0;
+        }
+    }
+    cout << "No" << endl;
 
     return 0;
 } // end of main
