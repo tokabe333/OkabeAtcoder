@@ -1,7 +1,7 @@
 #include "../_CppTemplate.cpp"
 
 /// @brief ダイクストラ法である始点から全てのノードまでの距離を探索
-/// @param graph vector<vector<pair<cost, node>>>
+/// @param graph vector<vector<pair<cost, node>>> i行目→頂点i j列目→{距離, 次の頂点}
 /// @param start node
 /// @return 距離を列挙した配列
 // 問題に合わせてバイト数を変更
