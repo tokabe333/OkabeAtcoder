@@ -105,8 +105,40 @@ void printvvec(const vector<T> &vec) {
 
 const bool debug = true;
 
+int dfs(const vvi &arr, vvi flag, int m, int ind) {
+    while (true) {
+    }
+}
+
 int main() {
     preprocess();
+
+    int n;
+    cin >> n;
+
+    vvi arr(3, vi(n));
+    rep(i, 3) {
+        string s;
+        cin >> s;
+        rep(j, n) {
+            arr[i][j] = s[j] - '0';
+        }
+    }
+
+    rep(i, 10) {
+        vi flag(3, 0);
+        rep(j, 3) {
+            rep(k, n) {
+                if (arr[j][k] == i) flag[j] = 1;
+            }
+        }
+        if (accumulate(flag.begin(), flag.end(), 0) == 3) continue;
+        cout << -1 << endl;
+        return 0;
+    }
+
+    rep(i, 10) {
+    }
 
     return 0;
 } // end of main
