@@ -24,6 +24,8 @@ typedef pair<string, int>              psi;
 typedef pair<ll, ll>                   pll;
 typedef pair<ll, string>               pls;
 typedef pair<string, ll>               psl;
+typedef pair<float, float>             pff;
+typedef pair<double, double>           pdd;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
