@@ -116,18 +116,19 @@ struct Edge {
     Edge(int f, int t, bf_type c) : from(f), to(t), cost(c) {}
 };
 
-bool Bellman_Ford(vector<bf_type> &dist, const vector<Edge> &edges, int start_node, bf_type cost_max = 0) {
+bool Bellman_Ford(vector<bf_type> &dist, const vector<Edge> &edges, int start_node) {
 
     // start_nodeÇ©ÇÁÇÃãóó£ÇinfÇ≈èâä˙âª
 
-    bf_type inf                 = sizeof(bf_type) == 4 ? INT_MAX - cost_max : LLONG_MAX - cost_max;
+    bf_type inf                 = sizeof(bf_type) == 4 ? INT_MAX : LLONG_MAX;
     rep(i, dist.size()) dist[i] = inf;
     dist[start_node]            = 0;
 
     // äeí∏ì_ÇÕçÇÅX1âÒÇµÇ©í ÇÁÇ»Ç¢
-    int n = dist.size();
-    int m = edges.size();
-    rep(i, n * 2) {
+    int          n = dist.size();
+    int          m = edges.size();
+    vector<bool> posi(n, true);
+    rep(i, n) {
         rep(j, m) {
             int     from = edges[j].from;
             int     to   = edges[j].to;
@@ -136,10 +137,18 @@ bool Bellman_Ford(vector<bf_type> &dist, const vector<Edge> &edges, int start_no
             if (dist[from] == inf) continue;
             if (dist[to] <= dist[from] + cost) continue;
             dist[to] = dist[from] + cost;
-            if (i >= n - 1) return false;
+            if (i >= n - 1) posi[from] = false;
         }
     }
-    return true;
+
+    rep(i, n) {
+        rep(j, m) {
+            int from = edges[j].from;
+            int to   = edges[j].to;
+            if (posi[from] == false) posi[to] = false;
+        }
+    }
+    return posi[n - 1];
 }
 
 int main() {
@@ -162,7 +171,7 @@ int main() {
     // }
 
     vll  dist(n);
-    bool ret = Bellman_Ford(dist, edges, 0, 11451419019810931);
+    bool ret = Bellman_Ford(dist, edges, 0);
     // printvec(dist);
     if (ret == false)
         cout << "inf" << endl;
