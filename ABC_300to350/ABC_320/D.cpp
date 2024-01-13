@@ -24,6 +24,8 @@ typedef pair<string, int>              psi;
 typedef pair<ll, ll>                   pll;
 typedef pair<ll, string>               pls;
 typedef pair<string, ll>               psl;
+typedef pair<float, float>             pff;
+typedef pair<double, double>           pdd;
 typedef vector<bool>                   vb;
 typedef vector<vector<bool>>           vvb;
 typedef vector<vector<vector<bool>>>   vvvb;
@@ -83,6 +85,10 @@ const ll m998 = 998244353;
 // endl no flush (flush処理は重たい)
 #define elnf "\n"
 
+// pairで座標を表示するとき
+#define X second
+#define Y first
+
 // 競プロ用環境セッティング
 void preprocess() {
     std::cin.tie(nullptr);
@@ -105,40 +111,57 @@ void printvvec(const vector<T> &vec) {
 
 const bool debug = true;
 
-int dfs(const vvi &arr, vvi flag, int m, int ind) {
-    while (true) {
+struct Edge {
+    int from, to;
+    ll  dx, dy;
+    Edge() {}
+    Edge(int f, int t, ll x, ll y) : from(f), to(t), dx(x), dy(y) {}
+};
+
+bool pii_equal(const pii &a, const pii &b) {
+    return (a.X == b.X && a.Y == b.Y);
+}
+
+ll   inf = LLONG_MAX;
+void dfs(vector<pll> &hito, const vector<vector<Edge>> &graph, int node) {
+    rep(i, graph[node].size()) {
+        int to = graph[node][i].to;
+        // printf("from:%d to:%d hito[%d]:{%lld, %lld} equal:%d\n", node, to, to, hito[to].X, hito[to].Y, pii_equal(hito[to], {inf, inf}));
+        if (pii_equal(hito[to], {inf, inf}) == false) continue;
+
+        ll x     = hito[node].X;
+        ll y     = hito[node].Y;
+        ll dx    = graph[node][i].dx;
+        ll dy    = graph[node][i].dy;
+        hito[to] = {y + dy, x + dx};
+        dfs(hito, graph, to);
     }
 }
 
 int main() {
     preprocess();
 
-    int m;
-    cin >> m;
-    vvi masu(3, vi(m));
-    rep(i, 3) {
-        string s;
-        cin >> s;
-        rep(j, m) masu[i][j] = s[j] - '0';
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<Edge>> graph(n);
+    rep(i, m) {
+        int a, b;
+        ll  x, y;
+        cin >> a >> b >> x >> y;
+        graph[a - 1].push_back(Edge(a - 1, b - 1, x, y));
+        graph[b - 1].push_back(Edge(b - 1, a - 1, -x, -y));
     }
 
-    // printvvec(masu);
+    vector<pll> hito(n, {inf, inf});
+    hito[0] = {0, 0};
+    dfs(hito, graph, 0);
 
-    int ans = INT_MAX;
-    rep(i, m * 3) {
-        rep(j, m * 3) {
-            if (i == j) continue;
-            rep(k, m * 3) {
-                if (j == k || k == i) continue;
-                if (masu[0][i % m] == masu[1][j % m] && masu[1][j % m] == masu[2][k % m]) {
-                    ans = min(ans, max(i, (max(j, k))));
-                    // printf("i:%d j:%d k:%d si:%d sj:%d sk:%d\n", i, j, k, masu[0][i], masu[1][j], masu[2][k]);
-                }
-            }
-        }
+    rep(i, n) {
+        if (pii_equal(hito[i], {inf, inf}))
+            cout << "undecidable\n";
+        else
+            cout << hito[i].X << " " << hito[i].Y << "\n";
     }
-
-    if (ans == INT_MAX) ans = -1;
-    cout << ans << endl;
     return 0;
 } // end of main
