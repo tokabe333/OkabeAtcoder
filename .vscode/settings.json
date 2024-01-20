@@ -295,7 +295,9 @@
 		"unordered_set": "cpp",
 		"variant": "cpp",
 		"memory_resource": "cpp",
-		"cinttypes": "cpp"
+		"cinttypes": "cpp",
+		"any": "cpp",
+		"stacktrace": "cpp"
 	},
 	"jupyter.interactiveWindow.textEditor.executeSelection": false,
 }

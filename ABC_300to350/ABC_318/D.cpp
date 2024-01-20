@@ -105,17 +105,54 @@ void printvvec(const vector<T> &vec) {
     }
 } // end of func
 
-const bool debug = true;
+struct Edge {
+    ll w, a, b;
+    Edge() {}
+    Edge(ll ww, ll aa, ll bb) : w(ww), a(aa), b(bb) {}
+
+    // bool operator<(const Edge &e1, const Edge &e2) {
+    //     return e1.w < e2.w;
+    // }
+    // bool operator>(const Edge &e1, const Edge &e2) {
+    //     return e1.w > e2.w;
+    // }
+    bool operator<(const Edge &e1) const {
+        return this->w < e1.w;
+    }
+    bool operator>(const Edge &e1) const {
+        return this->w > e1.w;
+    }
+    bool operator==(const Edge &e1) const {
+        return this->w == e1.w;
+    }
+};
 
 int main() {
     preprocess();
 
-    priority_queue<int> pq;
-    pq.push(3);
-    pq.push(22);
-    cout << pq.top() << endl;
-    pq.pop();
-    cout << pq.top() << endl;
+    int n;
+    cin >> n;
 
-    return 0;
-} // end of main
+    priority_queue<Edge> pq;
+    rep(i, n) {
+        for (int j = i + 1; j < n; ++j) {
+            int hoge;
+            cin >> hoge;
+            Edge e(hoge, i, j);
+            pq.push(e);
+        }
+    }
+
+    ll      ans = 0;
+    set<ll> nodes;
+    while (pq.empty() == false) {
+        auto e = pq.top();
+        pq.pop();
+        if (nodes.count(e.a) == 1 || nodes.count(e.b) == 1) continue;
+        nodes.insert(e.a);
+        nodes.insert(e.b);
+        ans += e.w;
+    }
+
+    cout << ans << end;
+}
