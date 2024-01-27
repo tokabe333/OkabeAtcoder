@@ -149,6 +149,18 @@ vector<T> dijkstra(const vector<vector<pair<T, T>>> &graph, int start) {
 
 const bool debug = true;
 
+int dfs(const vector<vector<pii>> &graph, set<int> &s, int node, int cost) {
+    s.insert(node);
+    int ans = cost;
+    rep(i, graph[node].size()) {
+        if (s.count(graph[node][i].first) == 1) continue;
+        int ret = dfs(graph, s, graph[node][i].first, cost + graph[node][i].second);
+        ans     = max(ans, ret);
+    }
+    s.erase(node);
+    return ans;
+}
+
 int main() {
     preprocess();
 
@@ -161,12 +173,18 @@ int main() {
         cin >> a >> b >> c;
         a -= 1;
         b -= 1;
-        graph[a].emplace_back({c, b});
-        graph[b].emplace_back({c, a});
+        graph[a].push_back({b, c});
+        graph[b].push_back({a, c});
     }
 
-    auto dij = dijkstra<int>(graph, 0);
-    cout << "ngo" << endl;
+    int ans = 0;
+    rep(i, n) {
+        set<int> s;
+        int      ret = dfs(graph, s, i, 0);
+        ans          = max(ans, ret);
+    }
+
+    cout << ans << endl;
 
     return 0;
 } // end of main
