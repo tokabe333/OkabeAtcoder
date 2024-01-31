@@ -123,34 +123,19 @@ int main() {
         en[b] = i;
     }
 
-    // printvec(en);
-
-    // —×Ú‚ğ’T‚·
-    int start = -1;
-    rep(i, nn) {
-        if (en[i] == en[(i + 1) % nn]) {
-            start = (i + 1) % nn;
-            break;
-        }
-    }
-    if (start == -1) {
-        cout << "Yes" << endl;
-        return 0;
-    }
-
     stack<int> st;
-    rep(i, n) st.push(en[(start + i) % nn]);
-
-    rep(i, n) {
-        int top = st.top();
-        st.pop();
-        if (en[(start + n + i) % nn] != top) {
+    vi         flag(nn, 0);
+    rep(i, nn) {
+        if (st.empty() == true || flag[en[i]] == 0) {
+            st.push(en[i]);
+            flag[en[i]] = 1;
+        } else if (st.top() == en[i]) {
+            st.pop();
+        } else {
             cout << "Yes" << endl;
-            // printf("en:%d top:%d start:%d i:%d\n", en[(start + n + i) % nn], top, start, i);
             return 0;
         }
     }
-
     cout << "No" << endl;
 
     return 0;
