@@ -110,12 +110,69 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    int                 *hoge = new int[4];
-    unordered_set<int *> s;
-    s.insert(hoge);
-    hoge[3] = 334;
-    s.insert(hoge);
-    cout << s.size() << endl;
+    int n;
+    cin >> n;
+    int p1 = -1;
+    int p2 = -1;
+
+    // 0¨HA1¨•Ç
+    vvi masu(n, vi(n, 0));
+    rep(i, n) {
+        string s;
+        cin >> s;
+        rep(j, n) {
+            if (s[j] == 'P') {
+                if (p1 == -1) {
+                    p1 = i * n + j;
+                } else {
+                    p2 = i * n + j;
+                }
+
+            } else if (s[j] == '#') {
+                masu[i][j] = 1;
+            }
+        }
+    }
+
+    vvi flag(61 * 61, vi(61 * 61, 0));
+
+    queue<vi> que;
+    que.push({0, p1, p2});
+    while (true) {
+        cout << que.size() << "  ";
+        int depth = que.front()[0];
+        int p1    = que.front()[1];
+        int p2    = que.front()[2];
+        que.pop();
+        if (flag[p1][p2] == 1) continue;
+        if (depth == 60) continue;
+        flag[p1][p2] = 1;
+
+        int p1y = p1 / n;
+        int p1x = p1 % n;
+        int p2y = p2 / n;
+        int p2x = p2 % n;
+
+        // ue
+        int ue1 = 0 < p1y && masu[p1y - 1][p1x] == 0 ? p1y - 1 : p1y;
+        int ue2 = 0 < p2y && masu[p2y - 1][p2x] == 0 ? p2y - 1 : p2y;
+        que.push({depth + 1, ue1 * n + p1x, ue2 * n + p2x});
+
+        // sita
+        int sita1 = p1y < n - 1 && masu[p1y + 1][p1x] == 0 ? p1y + 1 : p1y;
+        int sita2 = p2y < n - 1 && masu[p2y + 1][p2x] == 0 ? p2y + 1 : p2y;
+        que.push({depth + 1, sita1 * n + p1x, sita2 * n + p2x});
+
+        // hidari
+        int hi1 = 0 < p1x && masu[p1y][p1x - 1] == 0 ? p1x - 1 : p1x;
+        int hi2 = 0 < p2x && masu[p2y][p2x - 1] == 0 ? p2x - 1 : p2x;
+        que.push({depth + 1, p1y * n + hi1, p2y * n + hi2});
+
+        // migi
+        int mi1 = p1x < n - 1 && masu[p1y][p1x + 1] == 0 ? p1x + 1 : p1x;
+        int mi2 = p2x < n - 1 && masu[p2y][p2x + 1] == 0 ? p2x + 1 : p2x;
+        que.push({depth + 1, p1y * n + mi1, p2y * n + mi2});
+    }
 
     return 0;
 } // end of main

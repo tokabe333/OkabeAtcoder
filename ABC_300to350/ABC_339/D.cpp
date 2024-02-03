@@ -106,16 +106,85 @@ void printvvec(const vector<T> &vec) {
 } // end of func
 
 const bool debug = true;
+#define Y first
+#define X second
+
+struct Data {
+    int depth;
+    pii p1;
+    pii p2;
+    Data() {}
+    Data(int d, pii pp, pii ppp) {
+        depth = d;
+        p1    = pp;
+        p2    = ppp;
+    }
+};
 
 int main() {
     preprocess();
 
-    int                 *hoge = new int[4];
-    unordered_set<int *> s;
-    s.insert(hoge);
-    hoge[3] = 334;
-    s.insert(hoge);
-    cout << s.size() << endl;
+    int n;
+    cin >> n;
+    vector<pii> player;
+
+    // 0¨HA1¨•ÇA2¨P
+    vvi masu(n, vi(n, 0));
+    rep(i, n) {
+        string s;
+        cin >> s;
+        rep(j, n) {
+            if (s[j] == 'P') {
+                player.push_back({i, j});
+            } else if (s[j] == '#') {
+                masu[i][j] = 1;
+            }
+        }
+    }
+
+    queue<Data> que;
+    que.push(Data(0, player[0], player[1]));
+    while (true) {
+        int depth = que.front().depth;
+        pii p1    = que.front().p1;
+        pii p2    = que.front().p2;
+        que.pop();
+
+        // printf("depth:%d p1:{%d, %d} p2:{%d, %d}\n", depth, p1.Y + 1, p1.X + 1, p2.Y + 1, p2.X + 1);
+
+        if (p1.Y == p2.Y && p1.X == p2.X) {
+            cout << depth << endl;
+            return 0;
+        }
+
+        // ã
+        pii ue1 = p1;
+        pii ue2 = p2;
+        if (1 < ue1.Y && masu[ue1.Y - 1][ue1.X] == 0) ue1.Y -= 1;
+        if (1 < ue2.Y && masu[ue2.Y - 1][ue2.X] == 0) ue2.Y -= 1;
+        que.push(Data(depth + 1, ue1, ue2));
+
+        // ‰º
+        pii sita1 = p1;
+        pii sita2 = p2;
+        if (sita1.Y < n - 1 && masu[sita1.Y + 1][sita1.X] == 0) sita1.Y += 1;
+        if (sita2.Y < n - 1 && masu[sita2.Y + 1][sita2.X] == 0) sita2.Y += 1;
+        que.push(Data(depth + 1, sita1, sita2));
+
+        // ¶
+        pii hi1 = p1;
+        pii hi2 = p2;
+        if (1 < hi1.X && masu[hi1.Y][hi1.X - 1] == 0) hi1.X -= 1;
+        if (1 < hi2.X && masu[hi2.Y][hi2.X - 1] == 0) hi2.X -= 1;
+        que.push(Data(depth + 1, hi1, hi2));
+
+        // ¶
+        pii migi1 = p1;
+        pii migi2 = p2;
+        if (migi1.X < n - 1 && masu[migi1.Y][migi1.X - 1] == 0) migi1.X -= 1;
+        if (migi2.X < n - 1 && masu[migi2.Y][migi2.X - 1] == 0) migi2.X -= 1;
+        que.push(Data(depth + 1, migi1, migi2));
+    }
 
     return 0;
 } // end of main

@@ -1,3 +1,4 @@
+
 #include <algorithm>
 #include <climits>
 #include <cmath>
@@ -107,15 +108,71 @@ void printvvec(const vector<T> &vec) {
 
 const bool debug = true;
 
+static const int max_n = pow(10, 7); // 数列a_iの最大の要素数を設定する
+int              seg_tree[2 * max_n];
+int              n;
+
+// 初期化を行う関数
+void init(int n_) {
+    // 完全二分木にするため、データ数を2の倍数にする。
+    n = 1;
+    while (n < n_)
+        n *= 2;
+
+    // RMQを考えたいので、セグ木の各値はINT_MAXに設定しておく
+    rep(i, 2 * n) seg_tree[i] = 0;
+}
+
+// index番目の値をxに変更する関数
+void update(int index, int x) {
+    index += n - 1; // 最も下のレイヤーにおいて、1番目の値はseg_treeの中ではn番目だから
+    seg_tree[index] = x;
+    while (index > 0) {
+        index           = (index - 1) / 2; // 親のノードのindex
+        seg_tree[index] = min(seg_tree[2 * index + 1], seg_tree[2 * index + 2]);
+    }
+}
+
+// 区間[a,b)における最小値を求める関数
+// indexはseg_treeにおける番号で、left,rightはseg_tree[index]の区間に対応
+// query(a,b,0,0,n)として呼ぶことを考える。
+int query(int a, int b, int index, int left, int right) {
+    // 考えようとしている区間が、[a,b)に全く含まれないなら、INT_MAXを返して、操作に影響しないようにする。
+    if (a >= right || b <= left) return 0;
+
+    // 考えようとしている区間が[a,b)に完全に含まれているなら、その値を返せばよい。
+    if (a <= left && b >= right) return seg_tree[index];
+
+    // どちらでもない場合、seg_tree[index]の2つの子ノードに対して再帰的に操作を行う。
+    int value_1 = query(a, b, 2 * index + 1, left, (left + right) / 2);
+    int value_2 = query(a, b, 2 * index + 2, (left + right) / 2, right);
+    return min(value_1, value_2);
+}
+
 int main() {
     preprocess();
 
-    int                 *hoge = new int[4];
-    unordered_set<int *> s;
-    s.insert(hoge);
-    hoge[3] = 334;
-    s.insert(hoge);
-    cout << s.size() << endl;
+    int nn, d;
+    cin >> nn >> d;
+    vi arr(nn);
+    rep(i, nn) cin >> arr[i];
+
+    n = 5 * pow(10, 5) + 10;
+    init(n);
+
+    rep(i, nn) {
+        int sita = max(0, arr[i] - d);
+        int ue   = min(n, arr[i] + d);
+
+        int tibi = query(sita, ue + 1, 0, 0, n);
+        // printf("sita:%d ue:%d tibi:%d\n", sita, ue, tibi);
+
+        update(arr[i], tibi - 1);
+        // tibi = query(sita, ue + 1, 0, 0, n);
+        // printf("sita:%d ue:%d tibi:%d\n\n", sita, ue, tibi);
+    }
+
+    cout << (-1) * query(0, n, 0, 0, n) << endl;
 
     return 0;
 } // end of main
