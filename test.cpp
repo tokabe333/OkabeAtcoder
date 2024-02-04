@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <atcoder/all>
 #include <climits>
 #include <cmath>
 #include <deque>
@@ -16,6 +17,7 @@
 #include <unordered_set>
 #include <vector>
 using namespace std;
+using namespace atcoder;
 
 typedef long long int                  ll;
 typedef pair<int, int>                 pii;
@@ -109,13 +111,6 @@ const bool debug = true;
 
 int main() {
     preprocess();
-
-    int                 *hoge = new int[4];
-    unordered_set<int *> s;
-    s.insert(hoge);
-    hoge[3] = 334;
-    s.insert(hoge);
-    cout << s.size() << endl;
 
     return 0;
 } // end of main

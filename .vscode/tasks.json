@@ -9,6 +9,8 @@
 				"-g",
 				"${file}",
 				"-o",
+				"-I",
+				"${workspaceFolder}",
 				"${fileDirname}\\${fileBasenameNoExtension}.exe"
 			],
 			"options": {

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <atcoder/all>
 #include <climits>
 #include <cmath>
 #include <deque>
@@ -16,6 +17,7 @@
 #include <unordered_set>
 #include <vector>
 using namespace std;
+using namespace atcoder;
 
 typedef long long int                  ll;
 typedef pair<int, int>                 pii;
