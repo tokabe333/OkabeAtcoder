@@ -107,22 +107,71 @@ void printvvec(const vector<T> &vec) {
     }
 } // end of func
 
-const bool debug = true;
+const bool debug = false;
+
+using mint = modint998244353;
+
+using S = ll;
+using F = ll;
+
+S op(S a, S b) {
+    return max(a, b);
+}
+
+S mapping(F f, S x) {
+    return x + f;
+}
+
+F composition(F f, F g) {
+    return f + g;
+}
+
+S e() { return 0; }
+
+F id() { return 0; }
 
 int main() {
     preprocess();
 
-    map<ll, ll> m;
-    m[3] = 334;
-    m[5] = 555;
+    int n, m;
+    cin >> n >> m;
+    vll arr(n), brr(m);
+    rep(i, n) cin >> arr[i];
+    rep(i, m) cin >> brr[i];
 
-    int count = 0;
-    for (auto kv : m) {
-        cout << "key : " << kv.first << endl;
-        m[kv.first + 5] = 333;
-        count += 1;
-        if (count == 5) break;
+    lazy_segtree<S, op, e, F, mapping, composition, id> tree(arr);
+
+    auto f = [&] {rep(i, n) cout << tree.prod(i, i + 1) <<" ";cout << endl; };
+
+    rep(i, m) {
+        int ind = brr[i];
+        ll  num = tree.prod(ind, ind + 1);
+        if (debug) f();
+
+        tree.apply(ind, ind + 1, -num);
+        if (debug) f();
+
+        tree.apply(0, n, num / n);
+        if (debug) f();
+
+        ll mod = num % n;
+        if (ind == n - 1) {
+            tree.apply(0, mod, 1);
+        } else if (ind + mod >= n) {
+            tree.apply(ind + 1, n, 1);
+            tree.apply(0, mod - (n - ind) + 1, 1);
+        } else {
+            tree.apply(ind + 1, ind + mod + 1, 1);
+        }
+
+        if (debug) {
+            f();
+            cout << endl;
+        }
     }
+
+    f();
+    cout << endl;
 
     return 0;
 } // end of main

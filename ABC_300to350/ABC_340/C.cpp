@@ -107,22 +107,36 @@ void printvvec(const vector<T> &vec) {
     }
 } // end of func
 
-const bool debug = true;
+const bool  debug = true;
+map<ll, ll> memo;
+
+ll func(ll x) {
+    if (memo.find(x) != memo.end()) {
+        return memo[x];
+    }
+
+    ll down = x / 2;
+    ll up   = (x + 1) / 2;
+
+    ll a = 0, b = 0;
+    if (down >= 2) a = func(down);
+    if (up >= 2) b = func(up);
+    memo[x] = a + b + x;
+    return a + b + x;
+}
 
 int main() {
     preprocess();
 
-    map<ll, ll> m;
-    m[3] = 334;
-    m[5] = 555;
+    ll n;
+    cin >> n;
 
-    int count = 0;
-    for (auto kv : m) {
-        cout << "key : " << kv.first << endl;
-        m[kv.first + 5] = 333;
-        count += 1;
-        if (count == 5) break;
-    }
+    map<ll, ll> kokuban;
+    kokuban[n] = 1;
+
+    ll ans = func(n);
+
+    cout << ans << endl;
 
     return 0;
 } // end of main
