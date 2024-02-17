@@ -297,7 +297,8 @@
 		"memory_resource": "cpp",
 		"cinttypes": "cpp",
 		"any": "cpp",
-		"stacktrace": "cpp"
+		"stacktrace": "cpp",
+		"all": "cpp"
 	},
 	"jupyter.interactiveWindow.textEditor.executeSelection": false,
 }
