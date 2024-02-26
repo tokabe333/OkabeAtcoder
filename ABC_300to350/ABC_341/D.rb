@@ -18,48 +18,30 @@ def LCM(m, n)
 end
 
 n, m, k = gets.chomp.split.map(&:to_i)
+k -= 1
 
+gcd = GCD(n, m)
+n = n / gcd 
+m = m / gcd
 
-
+once = n + m - 2
 lcm = LCM(n, m)
+ans = lcm * (k / once)
+kk = k % once 
 
-nn = lcm / n - 1
-mm = lcm / m - 1
 
-once = nn + mm 
-kaisu = k / once 
-k = k % once 
-
-if k == 0
-	kaisu -= 1
-	k = once
-end	
-
-l = 0
-r = lcm + 1000
-mid = 0
-# while (l - r).abs > 1
-while(true)
-	mid = (l + r) / 2
-
-	num = mid / n + mid / m 
-
-	if num < k  
-		l = mid
-	elsif num > k
-		r = mid
-	elsif num == k
-		
-		 puts "l:#{l} r:#{r} mid:#{mid}"
-		mid = mid / [n, m].max * [n, m].max 
-		break
+nn = n 
+mm = m 
+kk.times do
+	if nn < mm 
+		nn += n  
+	else
+		mm += m  
 	end
-
-
 end
 
+#puts "ans:#{ans} nn:#{nn} mm:#{mm}"
+ans += [nn, mm].min 
 
+puts ans * gcd
 
-puts "lcm:#{lcm} kaisu:#{kaisu} once:#{once} mid:#{mid} k:#{k}"
-
-puts lcm * kaisu + mid
