@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <atcoder/all>
 #include <climits>
 #include <cmath>
 #include <deque>
@@ -16,6 +17,7 @@
 #include <unordered_set>
 #include <vector>
 using namespace std;
+using namespace atcoder;
 
 typedef long long int                  ll;
 typedef pair<int, int>                 pii;
@@ -105,61 +107,38 @@ void printvvec(const vector<T> &vec) {
     }
 } // end of func
 
-struct Edge {
-    ll w, a, b;
-    Edge() {}
-    Edge(ll ww, ll aa, ll bb) : w(ww), a(aa), b(bb) {}
-
-    // bool operator<(const Edge &e1, const Edge &e2) {
-    //     return e1.w < e2.w;
-    // }
-    // bool operator>(const Edge &e1, const Edge &e2) {
-    //     return e1.w > e2.w;
-    // }
-    bool operator<(const Edge &e1) const {
-        return this->w < e1.w;
-    }
-    bool operator>(const Edge &e1) const {
-        return this->w > e1.w;
-    }
-    bool operator==(const Edge &e1) const {
-        return this->w == e1.w;
-    }
-};
-
-vvll graph;
-
-ll dfs(ll depth, ll sum, ll node, vi &flag) {
-    flag[node] = 0;
-    ll m       = 0;
-    rep(i, graph.size()) {
-        if (flag[i] == 0) continue;
-        flag[i] = 0;
-        m       = max(m, dfs(depth + 1, sum + graph[node][i], i, flag));
-        flag[i] = 1;
-    }
-    printf("depth:%lld sum:%lld node:%lld m:%lld\n", depth, sum, node, m);
-    return max(m, sum);
-}
+const bool debug = true;
 
 int main() {
     preprocess();
 
     int n;
     cin >> n;
-    rep(i, n) graph.emplace_back(vll(n));
 
-    rep(i, n - 1) {
-        rep(j, n - i - 1) {
-            ll hoge;
-            cin >> hoge;
-            graph[i][i + j + 1] = hoge;
-            graph[i + j + 1][i] = hoge;
+    vvll fs(n, vll(2));
+    rep(i, n) {
+        cin >> fs[i][0] >> fs[i][1];
+    }
+
+    ll ms = 0, mf = 0, mi = 0;
+    rep(i, n) {
+        if (ms < fs[i][1]) {
+            ms = fs[i][1];
+            mf = fs[i][0];
+            mi = i;
         }
     }
 
-    printvvec(graph);
+    ll ans = 0;
+    rep(i, n) {
+        if (i == mi) continue;
+        if (fs[i][0] == mf) {
+            ans = max(ans, ms + fs[i][1] / 2);
+        } else {
+            ans = max(ans, ms + fs[i][1]);
+        }
+    }
+    cout << ans << endl;
 
-    vi flag(n, 1);
-    cout << dfs(0, 0, 0, flag) << endl;
-}
+    return 0;
+} // end of main

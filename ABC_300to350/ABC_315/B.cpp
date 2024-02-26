@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <atcoder/all>
 #include <climits>
 #include <cmath>
 #include <deque>
@@ -16,6 +17,7 @@
 #include <unordered_set>
 #include <vector>
 using namespace std;
+using namespace atcoder;
 
 typedef long long int                  ll;
 typedef pair<int, int>                 pii;
@@ -105,61 +107,28 @@ void printvvec(const vector<T> &vec) {
     }
 } // end of func
 
-struct Edge {
-    ll w, a, b;
-    Edge() {}
-    Edge(ll ww, ll aa, ll bb) : w(ww), a(aa), b(bb) {}
-
-    // bool operator<(const Edge &e1, const Edge &e2) {
-    //     return e1.w < e2.w;
-    // }
-    // bool operator>(const Edge &e1, const Edge &e2) {
-    //     return e1.w > e2.w;
-    // }
-    bool operator<(const Edge &e1) const {
-        return this->w < e1.w;
-    }
-    bool operator>(const Edge &e1) const {
-        return this->w > e1.w;
-    }
-    bool operator==(const Edge &e1) const {
-        return this->w == e1.w;
-    }
-};
-
-vvll graph;
-
-ll dfs(ll depth, ll sum, ll node, vi &flag) {
-    flag[node] = 0;
-    ll m       = 0;
-    rep(i, graph.size()) {
-        if (flag[i] == 0) continue;
-        flag[i] = 0;
-        m       = max(m, dfs(depth + 1, sum + graph[node][i], i, flag));
-        flag[i] = 1;
-    }
-    printf("depth:%lld sum:%lld node:%lld m:%lld\n", depth, sum, node, m);
-    return max(m, sum);
-}
+const bool debug = true;
 
 int main() {
     preprocess();
 
-    int n;
-    cin >> n;
-    rep(i, n) graph.emplace_back(vll(n));
+    int m;
+    cin >> m;
 
-    rep(i, n - 1) {
-        rep(j, n - i - 1) {
-            ll hoge;
-            cin >> hoge;
-            graph[i][i + j + 1] = hoge;
-            graph[i + j + 1][i] = hoge;
+    vi arr(m);
+    rep(i, m) cin >> arr[i];
+
+    int sum = accumulate(arr.begin(), arr.end(), 0);
+    sum     = (sum + 1) / 2;
+
+    rep(i, m) {
+        if (arr[i] < sum) {
+            sum -= arr[i];
+        } else {
+            printf("%d %d\n", i + 1, sum);
+            return 0;
         }
     }
 
-    printvvec(graph);
-
-    vi flag(n, 1);
-    cout << dfs(0, 0, 0, flag) << endl;
-}
+    return 0;
+} // end of main
