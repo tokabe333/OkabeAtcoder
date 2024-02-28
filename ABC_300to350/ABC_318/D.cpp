@@ -158,8 +158,42 @@ int main() {
         }
     }
 
-    printvvec(graph);
+    vll dp(1 << n, 0);
 
-    vi flag(n, 1);
-    cout << dfs(0, 0, 0, flag) << endl;
+    rep(b, (1 << n) - 1) {
+        rep(i, n - 1) {
+            // int l = -1;
+            // rep(i, n) {
+            //     if ((b >> i & 1) == 0) {
+            //         l = i;
+            //         break;
+            //     }
+            // }
+            // rep(i, n) {
+            //     if ((b >> i & 1) == 0) {
+            //         ll hoge  = b | (1 << l) | (1 << i);
+            //         dp[hoge] = max(dp[hoge], dp[b] + graph[l][i]);
+            //     }
+            // }
+            rep(i, n - 1) {
+                for (int j = i + 1; j < n; ++j) {
+                    if (b >> i & 1 || b >> j & 1) continue;
+                    int nb = b | (1 << i) | (1 << j);
+                    dp[nb] = max(dp[nb], dp[b] + graph[i][j]);
+                }
+            }
+        }
+    }
+    // rep(i, dp.size()) {
+    //     printf("i:%3d ", i);
+    //     int    ii = i;
+    //     string s  = "";
+    //     while (ii > 0) {
+    //         s += to_string(ii & 1);
+    //         ii >>= 1;
+    //     }
+    //     reverse(s.begin(), s.end());
+    //     cout << s << "  vale:" << dp[i] << endl;
+    // }
+    cout << dp.back() << endl;
 }
