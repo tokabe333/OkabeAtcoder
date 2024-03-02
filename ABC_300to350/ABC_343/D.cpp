@@ -112,13 +112,24 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    map<int, int> hoge;
-    hoge[1] = 3;
-    hoge[2] = 3;
-    hoge[2] = 4;
-    cout << hoge.size() << endl;
-    hoge.erase(2);
-    cout << hoge.size() << endl;
+    int n, t;
+    cin >> n >> t;
+
+    vll         tokuten(n + 1, 0);
+    map<ll, ll> ma;
+    ma[0] = n;
+    rep(i, t) {
+        ll a, b;
+        cin >> a >> b;
+        ma[tokuten[a]] -= 1;
+        if (ma[tokuten[a]] <= 0) ma.erase(tokuten[a]);
+        ma[tokuten[a] + b] += 1;
+        tokuten[a] += b;
+        cout << ma.size() << "\n";
+        // for (auto kv : ma) {
+        //     printf("k:%lld v:%lld\n", kv.first, kv.second);
+        // }
+    }
 
     return 0;
 } // end of main

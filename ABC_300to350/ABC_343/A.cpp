@@ -112,13 +112,14 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    map<int, int> hoge;
-    hoge[1] = 3;
-    hoge[2] = 3;
-    hoge[2] = 4;
-    cout << hoge.size() << endl;
-    hoge.erase(2);
-    cout << hoge.size() << endl;
+    int a, b;
+    cin >> a >> b;
+    rep(i, 10) {
+        if (a + b != i) {
+            cout << i << endl;
+            return 0;
+        }
+    }
 
     return 0;
 } // end of main

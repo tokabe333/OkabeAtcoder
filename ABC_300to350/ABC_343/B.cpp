@@ -112,13 +112,21 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    map<int, int> hoge;
-    hoge[1] = 3;
-    hoge[2] = 3;
-    hoge[2] = 4;
-    cout << hoge.size() << endl;
-    hoge.erase(2);
-    cout << hoge.size() << endl;
+    int n;
+    cin >> n;
+    vvi masu(n, vi(n));
+    rep(i, n) {
+        rep(j, n) {
+            cin >> masu[i][j];
+        }
+    }
+
+    rep(i, n) {
+        rep(j, n) {
+            if (masu[i][j] == 1) cout << (j + 1) << " ";
+        }
+        cout << endl;
+    }
 
     return 0;
 } // end of main

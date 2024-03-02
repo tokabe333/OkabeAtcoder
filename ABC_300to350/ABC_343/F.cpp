@@ -109,16 +109,106 @@ void printvvec(const vector<T> &vec) {
 
 const bool debug = true;
 
+class second {
+  public:
+    ll a;
+    ll b;
+
+    second(ll aa, ll bb) : a(aa), b(bb){};
+
+    void compare(second s) {
+        vll hoge = {a, b, s.a, s.b};
+        sort(hoge.rbegin(), hoge.rend());
+        a = hoge[0];
+        b = hoge[1];
+    }
+};
+
+template <class T>
+class SegmentTree {
+  public:
+    // 要素を格納する
+    vector<T> node;
+
+    // モノイド(min, max, sumなどの関数)
+    function<T(T, T)> func;
+
+    SegmentTree(int num, function<T(T, T)> f, T init = 0) {
+        func = f;
+
+        // 完全二分木にするため、データ数を2の倍数にする。
+        int n = 1;
+        while (n < num)
+            n *= 2;
+
+        // funcに応じた初期値を設定する minならばinf, maxなら0など
+        node.resize(2 * n);
+        rep(i, 2 * n) {
+            node[i] = init;
+        }
+    }
+
+    // index番目の値をxに変更する関数
+    void update(int index, T data) {
+        // 最も下のレイヤーにおいて、1番目の値はseg_treeの中ではn番目だから
+        index += node.size() - 1;
+        node[index] = data;
+
+        while (index > 0) {
+            cout << "update index:" << index << endl;
+            // 親のノードのindex
+            index = (index - 1) / 2;
+
+            // 親ノードを更新する　
+            node[index] = func(node[2 * index + 1], node[2 * index + 2]);
+        }
+    }
+
+    // 区間[a,b)における最小値を求める関数
+    // indexはseg_treeにおける番号で、left,rightはseg_tree[index]の区間に対応
+    // query(a,b,0,0,n)として呼ぶことを考える。
+    T query(int a, int b, int index, int left, int right) {
+        // 考えようとしている区間が、[a,b)に全く含まれないなら、INT_MAXを返して、操作に影響しないようにする。
+        if (a >= right || b <= left) return 0;
+
+        // 考えようとしている区間が[a,b)に完全に含まれているなら、その値を返せばよい。
+        if (a <= left && b >= right) return node[index];
+
+        // どちらでもない場合、seg_tree[index]の2つの子ノードに対して再帰的に操作を行う。
+        T value_1 = query(a, b, 2 * index + 1, left, (left + right) / 2);
+        T value_2 = query(a, b, 2 * index + 2, (left + right) / 2, right);
+        return func(value_1, value_2);
+    }
+};
+
+ll mini(ll a, ll b) {
+    return min(a, b);
+}
+
 int main() {
     preprocess();
 
-    map<int, int> hoge;
-    hoge[1] = 3;
-    hoge[2] = 3;
-    hoge[2] = 4;
-    cout << hoge.size() << endl;
-    hoge.erase(2);
-    cout << hoge.size() << endl;
+    int n, q;
+    cin >> n >> q;
+    SegmentTree<ll> tree(n, mini, 0);
+    rep(_, q) {
+        int a;
+        cin >> a;
+        if (a == 0) {
+            int s, t;
+            ll  x;
+            cin >> s >> t >> x;
+            for (int i = s; i < t; ++i) {
+                ll num = tree.query(0, 0, 0, i, i + 1);
+                tree.update(i, num + x);
+            }
+
+        } else {
+            int s, t;
+            ll  ans = tree.query(0, 0, 0, s, t + 1);
+            cout << ans << endl;
+        }
+    }
 
     return 0;
 } // end of main

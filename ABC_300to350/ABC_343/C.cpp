@@ -112,13 +112,28 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    map<int, int> hoge;
-    hoge[1] = 3;
-    hoge[2] = 3;
-    hoge[2] = 4;
-    cout << hoge.size() << endl;
-    hoge.erase(2);
-    cout << hoge.size() << endl;
+    ll n;
+    cin >> n;
+
+    ll a   = 1;
+    ll ans = 0;
+    ll a3  = a * a * a;
+    while (a3 <= n) {
+        string s    = to_string(a3);
+        bool   flag = true;
+        rep(i, s.size() / 2) {
+            if (s[i] != s[s.size() - i - 1]) {
+                flag = false;
+                break;
+            }
+        }
+
+        if (flag) ans = a3;
+        a += 1;
+        a3 = a * a * a;
+    }
+
+    cout << ans << endl;
 
     return 0;
 } // end of main
