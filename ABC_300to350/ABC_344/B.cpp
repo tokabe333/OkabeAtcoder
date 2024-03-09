@@ -112,13 +112,17 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    int n, q;
-    cin >> n >> q;
+    vll arr;
+    while (true) {
+        ll a;
+        cin >> a;
+        arr.emplace_back(a);
 
-    vll arr(n);
-    rep(i, n) cin >> arr[i];
+        if (a == 0) break;
+    }
 
-    rep(_, q) {
+    rep(i, arr.size()) {
+        cout << arr[arr.size() - i - 1] << "\n";
     }
 
     return 0;

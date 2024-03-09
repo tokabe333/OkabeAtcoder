@@ -112,14 +112,97 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    int n, q;
-    cin >> n >> q;
+    int n;
+    cin >> n;
 
-    vll arr(n);
-    rep(i, n) cin >> arr[i];
+    ll inf = LLONG_MAX / 10000;
 
-    rep(_, q) {
+    vvll prr(n, vll(n)), rrr(n, vll(n)), drr(n, vll(n));
+    rep(i, n) {
+        rep(j, n) {
+            cin >> prr[i][j];
+        }
     }
+    rep(i, n) {
+        rep(j, n - 1) {
+            cin >> rrr[i][j];
+        }
+    }
+    rep(i, n - 1) {
+        rep(j, n) {
+            cin >> drr[i][j];
+        }
+    }
+    // rep(i, n) rrr[i][n - 1] = inf;
+    // rep(j, n) drr[n - 1][j] = inf;
+
+    // 各点からゴールまでの距離
+    vvll saiteki(n, vll(n, inf));
+    saiteki[n - 1][n - 1] = 0;
+    // rep(i, n) {
+    //     rep(j, n) {
+    //         if (i == n - 1 && j == n - 1) continue;
+    //         // 右端でない
+    //         if (j < n - 1) {
+    //             saiteki[i][j + 1] = min(saiteki[i][j + 1], saiteki[i][j] + rrr[i][j]);
+    //         }
+    //         // 下段でない
+    //         if (i < n - 1) {
+    //             saiteki[i + 1][j] = min(saiteki[i + 1][j], saiteki[i][j] + drr[i][j]);
+    //         }
+    //     }
+    // }
+    for (int i = n - 1; i >= 0; --i) {
+        for (int j = n - 1; j >= 0; --j) {
+            if (i == 0 && j == 0) continue;
+            // 左端でない
+            if (0 < j) {
+                saiteki[i][j - 1] = min(saiteki[i][j - 1], saiteki[i][j] + rrr[i][j - 1]);
+            }
+            // 下段でない
+            if (0 < i) {
+                saiteki[i - 1][j] = min(saiteki[i - 1][j], saiteki[i][j] + drr[i - 1][j]);
+            }
+        }
+    }
+
+    // printvvec(saiteki);
+
+    // vvll charge(n, vll(n, 0));
+    // rep(i, n) {
+    //     rep(j, n) {
+    //         int amari    = saiteki[i][j] % prr[i][j] == 0 ? 0 : 1;
+    //         charge[i][j] = saiteki[i][j] / prr[i][j] + amari;
+    //     }
+    // }
+
+    vvll dp(n, vll(n, 0));
+    for (int i = n - 1; i >= 0; --i) {
+        for (int j = n - 1; j >= 0; --j) {
+            // if (i == 0 && j == 0) continue;
+            if (i == n - 1 && j == n - 1) continue;
+
+            ll sonoba = inf, migi = inf, sita = inf, amari;
+            // // その場でゴールまで稼ぐ
+            amari  = saiteki[i][j] % prr[i][j] == 0LL ? 0LL : 1LL;
+            sonoba = saiteki[i][j] / prr[i][j] + amari;
+
+            // 右に1個動けるまで稼いで移動する
+            if (j < n - 1) {
+                amari = rrr[i][j] % prr[i][j] == 0LL ? 0LL : 1LL;
+                migi  = rrr[i][j] / prr[i][j] + amari + dp[i][j + 1];
+            }
+
+            // 下に1個動けるまで稼いで移動する
+            if (i < n - 1) {
+                amari = drr[i][j] % prr[i][j] == 0LL ? 0LL : 1LL;
+                sita  = drr[i][j] % prr[i][j] + amari + dp[i + 1][j];
+            }
+            dp[i][j] = min(min(sonoba, migi), sita);
+        }
+    }
+    cout << endl;
+    printvvec(dp);
 
     return 0;
 } // end of main

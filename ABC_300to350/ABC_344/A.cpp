@@ -112,14 +112,19 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    int n, q;
-    cin >> n >> q;
+    string s;
+    cin >> s;
 
-    vll arr(n);
-    rep(i, n) cin >> arr[i];
+    bool flag = true;
+    rep(i, s.size()) {
+        if (s[i] == '|') {
+            flag = !flag;
+            continue;
+        }
 
-    rep(_, q) {
+        if (flag) cout << s[i];
     }
+    cout << endl;
 
     return 0;
 } // end of main

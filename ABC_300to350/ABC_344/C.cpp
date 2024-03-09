@@ -112,13 +112,35 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    int n, q;
-    cin >> n >> q;
-
+    int n, m, l;
+    cin >> n;
     vll arr(n);
     rep(i, n) cin >> arr[i];
+    cin >> m;
+    vll brr(m);
+    rep(i, m) cin >> brr[i];
+    cin >> l;
+    vll crr(l);
+    rep(i, l) cin >> crr[i];
 
-    rep(_, q) {
+    set<ll> s;
+    rep(i, n) {
+        rep(j, m) {
+            rep(k, l) {
+                s.insert(arr[i] + brr[j] + crr[k]);
+            }
+        }
+    }
+
+    int q;
+    cin >> q;
+    rep(i, q) {
+        ll x;
+        cin >> x;
+        if (s.count(x) == 1)
+            cout << "Yes\n";
+        else
+            cout << "No\n";
     }
 
     return 0;

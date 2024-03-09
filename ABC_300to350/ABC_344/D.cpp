@@ -109,17 +109,61 @@ void printvvec(const vector<T> &vec) {
 
 const bool debug = true;
 
+string        t;
+vvs           arr;
+map<pii, int> memo;
+
+int dfs(int depth, int index, int count) {
+    if (index == t.size()) return count;
+    if (depth >= arr.size()) return 114514;
+
+    pii di = {depth, index};
+    if (memo.find(di) != memo.end() && memo[di] <= count) return 114514;
+    memo[di] = count;
+
+    int ans = dfs(depth + 1, index, count);
+
+    rep(i, arr[depth].size()) {
+        bool   flag = true;
+        string s    = arr[depth][i];
+        rep(j, s.size()) {
+            if (t[index + j] != s[j]) {
+                flag = false;
+                break;
+            }
+        }
+
+        if (flag == false) continue;
+        int ret = dfs(depth + 1, index + s.size(), count + 1);
+        ans     = min(ans, ret);
+    }
+    return ans;
+}
+
 int main() {
     preprocess();
 
-    int n, q;
-    cin >> n >> q;
+    cin >> t;
+    int n;
+    cin >> n;
+    arr.resize(n);
 
-    vll arr(n);
-    rep(i, n) cin >> arr[i];
-
-    rep(_, q) {
+    rep(i, n) {
+        int a;
+        cin >> a;
+        rep(j, a) {
+            string s;
+            cin >> s;
+            arr[i].emplace_back(s);
+        }
     }
+
+    // printvvec(arr);
+
+    int ans = dfs(0, 0, 0);
+
+    if (ans == 114514) ans = -1;
+    cout << ans << endl;
 
     return 0;
 } // end of main
