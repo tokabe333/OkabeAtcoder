@@ -45,6 +45,15 @@
 				}
 			],
 			"preLaunchTask": "C/C++: g++.exe アクティブなファイルのビルド",
+		},
+		{
+			"name": "Win dart debug",
+			"type": "dart",
+			"request": "launch",
+			"program": "${fileDirname}/${fileBasenameNoExtension}.dart",
+			"args": [],
+			"cwd": "${fileDirname}",
+			"console": "terminal",
 		}
 	]
 }

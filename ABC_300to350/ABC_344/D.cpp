@@ -127,6 +127,7 @@ int dfs(int depth, int index, int count) {
         bool   flag = true;
         string s    = arr[depth][i];
         rep(j, s.size()) {
+            printf("t.size:%d index:%d j:%d index+j:%d\n", t.size(), index, j, index + j);
             if (t[index + j] != s[j]) {
                 flag = false;
                 break;
@@ -158,7 +159,7 @@ int main() {
         }
     }
 
-    // printvvec(arr);
+    printvvec(arr);
 
     int ans = dfs(0, 0, 0);
 
