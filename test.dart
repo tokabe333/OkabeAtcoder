@@ -13,11 +13,6 @@ typedef mid = Map<int, double>;
 typedef mis = Map<int, String>;
 typedef msi = Map<String, int>;
 typedef msd = Map<String, double>;
-typedef hmii = HashMap<int, int>;
-typedef hmid = HashMap<int, double>;
-typedef hmis = HashMap<int, String>;
-typedef hmssi = HashMap<String, int>;
-typedef hmssd = HashMap<String, double>;
 typedef si = Set<int>;
 typedef sd = Set<double>;
 
@@ -66,47 +61,9 @@ listgen(num, {init = null}) => List.generate(num, (_) => init);
 llistgen(height, width, {init = null}) => List.generate(height, (_) => List.generate(width, (__) => init));
 
 void main() {
-  int n = readint();
-  var arr = readints();
-  arr.insert(0, 0);
-  arr.add(-1);
-
-  final next = hmii();
-  final prev = hmii();
-  for (int i = 0; i < arr.length - 1; ++i) {
-    prev[arr[i + 1]] = arr[i];
-    next[arr[i]] = arr[i + 1];
-  }
-
-  int q = readint();
-  int hoge, x, y;
-  for (int qqq = 0; qqq < q; ++qqq) {
-    final line = readints();
-    if (line[0] == 1) {
-      x = line[1];
-      y = line[2];
-      final tugi = next[x]!;
-      next[x] = y;
-      prev[y] = x;
-      next[y] = tugi;
-      prev[tugi] = y;
-    } else {
-      x = line[1];
-      prev[next[x]!] = prev[x]!;
-      next[prev[x]!] = next[x]!;
-      prev.remove(x);
-      next.remove(x);
-    }
-  }
-
-  final ans = [];
-  hoge = next[0]!;
-  while (hoge != -1) {
-    // stdout.write("${hoge} ");
-    ans.add(hoge);
-    hoge = next[hoge]!;
-  }
-  print(ans.join(" "));
+  var hoge = (334, "yaju");
+  print(hoge.$1);
+  print(hoge.$2);
 
   return;
 } // end of main
