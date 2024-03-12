@@ -13,8 +13,15 @@ typedef mid = Map<int, double>;
 typedef mis = Map<int, String>;
 typedef msi = Map<String, int>;
 typedef msd = Map<String, double>;
+typedef hmii = HashMap<int, int>;
+typedef hmid = HashMap<int, double>;
+typedef hmis = HashMap<int, String>;
+typedef hmsi = HashMap<String, int>;
+typedef hmsd = HashMap<String, double>;
 typedef si = Set<int>;
 typedef sd = Set<double>;
+typedef hsi = HashSet<int>;
+typedef hsd = HashSet<double>;
 
 // 1次元配列の出力
 void printlist(List list) {
