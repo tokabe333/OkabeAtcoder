@@ -1,5 +1,6 @@
 {
 	// ---------------- Editor Settings ----------------
+	"terminal.integrated.defaultLocation": "view",
 	"C_Cpp.errorSquiggles": "Disabled",
 	"editor.mouseWheelZoom": true,
 	"editor.tabSize": 4,
