@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using static System.Console;
+using static Util;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -69,77 +70,80 @@ using static System.Console;
 // using usets = System.Collections.Generic.HashSet<string>;
 
 
-public class Kyopuro {
-	const double PI = 3.141592653589793;
-	const long m107 = 1000000007;
-	const long m998 = 998244353;
+public class Util {
+	public static double PI = 3.141592653589793;
+	public static long m107 = 1000000007;
+	public static long m998 = 998244353;
 
-	/// ¬”“_ˆÈ‰º‚ğ16Œ…‚Å•\¦(¸“x‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰)
-	void WriteLine16<T>(T num) {
+	/// å°æ•°ç‚¹ä»¥ä¸‹ã‚’16æ¡ã§è¡¨ç¤º(ç²¾åº¦ãŒå³ã—ã„å•é¡Œã«å¯¾å¿œ)
+	public static void WriteLine16<T>(T num) {
 		WriteLine(string.Format("{0:0.################ }", num));
 	} // end of func
 
-	/// 1ŸŒ³List‚ğo—Í
-	void printvec<T>(List<T> list) {
+	/// 1æ¬¡å…ƒListã‚’å‡ºåŠ›
+	public static void printvec<T>(List<T> list) {
 		WriteLine(string.Join(" ", list));
 	} // end of func
 
-	/// 1ŸŒ³”z—ñ‚ğo—Í
-	void printvec<T>(T[] list) {
+	/// 1æ¬¡å…ƒé…åˆ—ã‚’å‡ºåŠ›
+	public static void printvec<T>(T[] list) {
 		WriteLine(string.Join(" ", list));
 	} // end of func
 
-	/// 2ŸŒ³ƒŠƒXƒg‚ğo—Í
-	void printvvec<T>(List<List<T>> list) {
+	/// 2æ¬¡å…ƒãƒªã‚¹ãƒˆã‚’å‡ºåŠ›
+	public static void printvvec<T>(List<List<T>> list) {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
 	} // end of func
 
-	/// 2ŸŒ³”z—ñ‚ğo—Í
-	void printvvec<T>(T[][] list) {
+	/// 2æ¬¡å…ƒé…åˆ—ã‚’å‡ºåŠ›
+	public static void printvvec<T>(T[][] list) {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
 	} // end of func
 
-	/// ”š‚ğ1‚ÂintŒ^‚Å“Ç‚İ‚İ
-	int readint() {
+	/// æ•°å­—ã‚’1ã¤intå‹ã§èª­ã¿è¾¼ã¿
+	public static int readint() {
 		return int.Parse(ReadLine());
 	} // end of func
 
-	/// ”š‚ğ1‚ÂlongŒ^‚Å“Ç‚İ‚İ
-	long readlong() {
+	/// æ•°å­—ã‚’1ã¤longå‹ã§èª­ã¿è¾¼ã¿
+	public static long readlong() {
 		return long.Parse(ReadLine());
 	}
 
-	/// ”š‚ğƒXƒy[ƒX‹æØ‚è‚ÅintŒ^‚Å“ü—Í
-	int[] readints() {
+	/// æ•°å­—ã‚’ã‚¹ãƒšãƒ¼ã‚¹åŒºåˆ‡ã‚Šã§intå‹ã§å…¥åŠ›
+	public static int[] readints() {
 		return ReadLine().Split(" ").Select(_ => int.Parse(_)).ToArray();
 	} // end of func
 
-	/// ”š‚ğƒXƒy[ƒX‹æØ‚è‚ÅlongŒ^‚Å“ü—Í
-	long[] readlongs() {
+	/// æ•°å­—ã‚’ã‚¹ãƒšãƒ¼ã‚¹åŒºåˆ‡ã‚Šã§longå‹ã§å…¥åŠ›
+	public static long[] readlongs() {
 		return ReadLine().Split(" ").Select(_ => long.Parse(_)).ToArray();
 	} // end of func
 
-	/// •¶š—ñ‚ğƒXƒy[ƒX‹æØ‚è‚Å“ü—Í
-	string[] readstrings() {
+	/// æ–‡å­—åˆ—ã‚’ã‚¹ãƒšãƒ¼ã‚¹åŒºåˆ‡ã‚Šã§å…¥åŠ›
+	public static string[] readstrings() {
 		return ReadLine().Split(" ").ToArray();
 	} // end of func
 
-	/// o—Í‚Ìflushíœ
-	void preprocess() {
+	/// å‡ºåŠ›ã®flushå‰Šé™¤
+	public static void preprocess() {
 		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
 		System.Console.SetOut(sw);
 	} // end of func
 
-	/// o—Í‚ğflush
-	void finalprocess() {
+	/// å‡ºåŠ›ã‚’flush
+	public static void finalprocess() {
 		System.Console.Out.Flush();
 	} // end of func
+} // end of class
 
-	void main() {
+
+public class Kyopuro {
+	public static void Main() {
 		preprocess();
 
 		var a = readints();
@@ -147,6 +151,4 @@ public class Kyopuro {
 
 		finalprocess();
 	} // end of func
-
 } // end of class
-
