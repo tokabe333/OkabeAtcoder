@@ -116,17 +116,17 @@ public class Util {
 
 	/// 数字をスペース区切りでint型で入力
 	public static int[] readints() {
-		return ReadLine().Split(" ").Select(_ => int.Parse(_)).ToArray();
+		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
 	} // end of func
 
 	/// 数字をスペース区切りでlong型で入力
 	public static long[] readlongs() {
-		return ReadLine().Split(" ").Select(_ => long.Parse(_)).ToArray();
+		return ReadLine().Split(' ').Select(_ => long.Parse(_)).ToArray();
 	} // end of func
 
 	/// 文字列をスペース区切りで入力
 	public static string[] readstrings() {
-		return ReadLine().Split(" ").ToArray();
+		return ReadLine().Split(' ').ToArray();
 	} // end of func
 
 	/// 出力のflush削除
