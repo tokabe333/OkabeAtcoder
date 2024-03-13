@@ -2,7 +2,7 @@
 *.dSYM
 
 bin/
-
+Debug/
 
 
 # Prerequisites
