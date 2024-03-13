@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using static System.Console;
+using static Util;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -68,80 +69,85 @@ using static System.Console;
 // using usetl = System.Collections.Generic.HashSet<long>;
 // using usets = System.Collections.Generic.HashSet<string>;
 
-const double PI   = 3.141592653589793;
-const long   m107 = 1000000007;
-const long   m998 = 998244353;
+Mainn.Main();
+static class Util {
 
-/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
-void WriteLine16<T>(T num) {
-    WriteLine(string.Format("{0:0.################ }", num));
-} // end of func
+	public static double PI = 3.141592653589793;
+	public static long m107 = 1000000007;
+	public static long m998 = 998244353;
 
-/// 1次元Listを出力
-void printvec<T>(List<T> list) {
-    WriteLine(string.Join(" ", list));
-} // end of func
+	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
+	public static void WriteLine16<T>(T num) {
+		WriteLine(string.Format("{0:0.################ }", num));
+	} // end of func
 
-/// 1次元配列を出力
-void printvec<T>(T[] list) {
-    WriteLine(string.Join(" ", list));
-} // end of func
+	/// 1次元Listを出力
+	public static void printvec<T>(List<T> list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
 
-/// 2次元リストを出力
-void printvvec<T>(List<List<T>> list) {
-    foreach (var l in list) {
-        WriteLine(string.Join(" ", l));
-    }
-} // end of func
+	/// 1次元配列を出力
+	public static void printvec<T>(T[] list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
 
-/// 2次元配列を出力
-void printvvec<T>(T[][] list) {
-    foreach (var l in list) {
-        WriteLine(string.Join(" ", l));
-    }
-} // end of func
+	/// 2次元リストを出力
+	public static void printvvec<T>(List<List<T>> list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
 
-/// 数字を1つint型で読み込み
-int readint() {
-    return int.Parse(ReadLine());
-} // end of func
+	/// 2次元配列を出力
+	public static void printvvec<T>(T[][] list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
 
-/// 数字を1つlong型で読み込み
-long readlong() {
-    return long.Parse(ReadLine());
+	/// 数字を1つint型で読み込み
+	public static int readint() {
+		return int.Parse(ReadLine());
+	} // end of func
+
+	/// 数字を1つlong型で読み込み
+	public static long readlong() {
+		return long.Parse(ReadLine());
+	}
+
+	/// 数字をスペース区切りでint型で入力
+	public static int[] readints() {
+		return ReadLine().Split(" ").Select(_ => int.Parse(_)).ToArray();
+	} // end of func
+
+	/// 数字をスペース区切りでlong型で入力
+	public static long[] readlongs() {
+		return ReadLine().Split(" ").Select(_ => long.Parse(_)).ToArray();
+	} // end of func
+
+	/// 文字列をスペース区切りで入力
+	public static string[] readstrings() {
+		return ReadLine().Split(" ").ToArray();
+	} // end of func
+
+	/// 出力のflush削除
+	public static void preprocess() {
+		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
+		System.Console.SetOut(sw);
+	} // end of func
+
+	/// 出力をflush
+	public static void finalprocess() {
+		System.Console.Out.Flush();
+	} // end of func
+
+} // end of class
+static class Mainn {
+	public static void Main() {
+
+		preprocess();
+		var a = readints();
+		printvec(a);
+		finalprocess();
+	}
 }
-
-/// 数字をスペース区切りでint型で入力
-int[] readints() {
-    return ReadLine().Split(" ").Select(_ = > int.Parse(_)).ToArray();
-} // end of func
-
-/// 数字をスペース区切りでlong型で入力
-long[] readlongs() {
-    return ReadLine().Split(" ").Select(_ = > long.Parse(_)).ToArray();
-} // end of func
-
-/// 文字列をスペース区切りで入力
-string[] readstrings() {
-    return ReadLine().Split(" ").ToArray();
-} // end of func
-
-/// 出力のflush削除
-void preprocess() {
-    var sw = new StreamWriter(Console.OpenStandardOutput()){AutoFlush = false};
-    System.Console.SetOut(sw);
-} // end of func
-
-/// 出力をflush
-void finalprocess() {
-    System.Console.Out.Flush();
-} // end of func
-
-void main() {
-    var a = readints();
-    printvec(a);
-} // end of func
-
-preprocess();
-main();
-finalprocess();
