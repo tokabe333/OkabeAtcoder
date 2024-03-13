@@ -76,67 +76,67 @@ static class Util {
 	public static long m107 = 1000000007;
 	public static long m998 = 998244353;
 
-	/// ¬”“_ˆÈ‰º‚ğ16Œ…‚Å•\¦(¸“x‚ªŒµ‚µ‚¢–â‘è‚É‘Î‰)
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½È‰ï¿½ï¿½ï¿½16ï¿½ï¿½ï¿½Å•\ï¿½ï¿½(ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É‘Î‰ï¿½)
 	public static void WriteLine16<T>(T num) {
 		WriteLine(string.Format("{0:0.################ }", num));
 	} // end of func
 
-	/// 1ŸŒ³List‚ğo—Í
+	/// 1ï¿½ï¿½ï¿½ï¿½Listï¿½ï¿½ï¿½oï¿½ï¿½
 	public static void printvec<T>(List<T> list) {
 		WriteLine(string.Join(" ", list));
 	} // end of func
 
-	/// 1ŸŒ³”z—ñ‚ğo—Í
+	/// 1ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½ï¿½oï¿½ï¿½
 	public static void printvec<T>(T[] list) {
 		WriteLine(string.Join(" ", list));
 	} // end of func
 
-	/// 2ŸŒ³ƒŠƒXƒg‚ğo—Í
+	/// 2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½oï¿½ï¿½
 	public static void printvvec<T>(List<List<T>> list) {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
 	} // end of func
 
-	/// 2ŸŒ³”z—ñ‚ğo—Í
+	/// 2ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½ï¿½oï¿½ï¿½
 	public static void printvvec<T>(T[][] list) {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
 	} // end of func
 
-	/// ”š‚ğ1‚ÂintŒ^‚Å“Ç‚İ‚İ
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½intï¿½^ï¿½Å“Ç‚İï¿½ï¿½ï¿½
 	public static int readint() {
 		return int.Parse(ReadLine());
 	} // end of func
 
-	/// ”š‚ğ1‚ÂlongŒ^‚Å“Ç‚İ‚İ
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½longï¿½^ï¿½Å“Ç‚İï¿½ï¿½ï¿½
 	public static long readlong() {
 		return long.Parse(ReadLine());
 	}
 
-	/// ”š‚ğƒXƒy[ƒX‹æØ‚è‚ÅintŒ^‚Å“ü—Í
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½yï¿½[ï¿½Xï¿½ï¿½Ø‚ï¿½ï¿½intï¿½^ï¿½Å“ï¿½ï¿½ï¿½
 	public static int[] readints() {
 		return ReadLine().Split(" ").Select(_ => int.Parse(_)).ToArray();
 	} // end of func
 
-	/// ”š‚ğƒXƒy[ƒX‹æØ‚è‚ÅlongŒ^‚Å“ü—Í
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½yï¿½[ï¿½Xï¿½ï¿½Ø‚ï¿½ï¿½longï¿½^ï¿½Å“ï¿½ï¿½ï¿½
 	public static long[] readlongs() {
 		return ReadLine().Split(" ").Select(_ => long.Parse(_)).ToArray();
 	} // end of func
 
-	/// •¶š—ñ‚ğƒXƒy[ƒX‹æØ‚è‚Å“ü—Í
+	/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½yï¿½[ï¿½Xï¿½ï¿½Ø‚ï¿½Å“ï¿½ï¿½ï¿½
 	public static string[] readstrings() {
 		return ReadLine().Split(" ").ToArray();
 	} // end of func
 
-	/// o—Í‚Ìflushíœ
+	/// ï¿½oï¿½Í‚ï¿½flushï¿½íœ
 	public static void preprocess() {
 		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
 		System.Console.SetOut(sw);
 	} // end of func
 
-	/// o—Í‚ğflush
+	/// ï¿½oï¿½Í‚ï¿½flush
 	public static void finalprocess() {
 		System.Console.Out.Flush();
 	} // end of func
