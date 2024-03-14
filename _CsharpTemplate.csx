@@ -75,30 +75,58 @@ public class Util {
 	public static long m107 = 1000000007;
 	public static long m998 = 998244353;
 
-	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
-	public static void WriteLine16<T>(T num) {
-		WriteLine(string.Format("{0:0.################ }", num));
+	/// 任意の要素数・初期値の配列を作って初期化する
+	public static T[] makearr<T>(int num, T value) {
+		var arr = new T[num];
+		for (int i = 0; i < num; ++i) arr[i] = value;
+		return arr;
+	} // end of func
+
+	/// 任意の要素数・初期値の２次元配列を作って初期化する
+	public static T[][] makearr2<T>(int height, int width, T value) {
+		var arr = new T[height][];
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new T[width];
+			for (int j = 0; j < width; ++j) {
+				arr[i][j] = value;
+			}
+		}
+		return arr;
+	} // end of func
+
+	/// 任意の要素数・初期値のListを作って初期化する
+	public static List<T> makelist<T>(int num, T value) {
+		return new List<T>(makearr(num, value));
+	} // end of func
+
+	/// 任意の要素数・初期値の2次元Listを作って初期化する
+	public static List<List<T>> makelist2<T>(int height, int width, T value) {
+		var arr = new List<List<T>>();
+		for (int i = 0; i < height; ++i) {
+			arr.Add(makelist(width, value));
+		}
+		return arr;
 	} // end of func
 
 	/// 1次元Listを出力
-	public static void printvec<T>(List<T> list) {
+	public static void printlist<T>(List<T> list) {
 		WriteLine(string.Join(" ", list));
 	} // end of func
 
 	/// 1次元配列を出力
-	public static void printvec<T>(T[] list) {
+	public static void printlist<T>(T[] list) {
 		WriteLine(string.Join(" ", list));
 	} // end of func
 
 	/// 2次元リストを出力
-	public static void printvvec<T>(List<List<T>> list) {
+	public static void printlist2<T>(List<List<T>> list) {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
 	} // end of func
 
 	/// 2次元配列を出力
-	public static void printvvec<T>(T[][] list) {
+	public static void printlist2<T>(T[][] list) {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
@@ -126,7 +154,12 @@ public class Util {
 
 	/// 文字列をスペース区切りで入力
 	public static string[] readstrings() {
-		return ReadLine().Split(' ').ToArray();
+		return ReadLine().Split(' ');
+	} // end of func
+
+	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
+	public static void WriteLine16<T>(T num) {
+		WriteLine(string.Format("{0:0.################}", num));
 	} // end of func
 
 	/// 出力のflush削除
@@ -146,9 +179,10 @@ public class Kyopuro {
 	public static void Main() {
 		preprocess();
 
-		var a = readints();
-		printvec(a);
+		int n;
 
 		finalprocess();
 	} // end of func
 } // end of class
+
+Kyopuro.Main();
