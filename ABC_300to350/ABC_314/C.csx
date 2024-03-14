@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using static System.Console;
 using static Util;
-using Microsoft.CodeAnalysis.Text;
+using static System.Math;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -76,6 +76,19 @@ public class Util {
 	public static long m107 = 1000000007;
 	public static long m998 = 998244353;
 
+	/// 打ちやすいように
+	public static string read() => ReadLine();
+	public static void write(string s) => Write(s);
+	public static void write(char c) => Write(c);
+	public static void write(int num) => Write(num);
+	public static void write(long num) => Write(num);
+	public static void write(double num) => Write(num);
+	public static void writeln(string s) => WriteLine(s);
+	public static void writeln(char c) => WriteLine(c);
+	public static void writeln(int num) => WriteLine(num);
+	public static void writeln(long num) => WriteLine(num);
+	public static void writeln(double num) => WriteLine(num);
+
 	/// 任意の要素数・初期値の配列を作って初期化する
 	public static T[] makearr<T>(int num, T value) {
 		var arr = new T[num];
@@ -141,7 +154,7 @@ public class Util {
 	/// 数字を1つlong型で読み込み
 	public static long readlong() {
 		return long.Parse(ReadLine());
-	}
+	} // end of func
 
 	/// 数字をスペース区切りでint型で入力
 	public static int[] readints() {
@@ -156,6 +169,42 @@ public class Util {
 	/// 文字列をスペース区切りで入力
 	public static string[] readstrings() {
 		return ReadLine().Split(' ');
+	} // end of func
+
+	/// 読み込んだint2つをタプルで返す(分解代入用)
+	public static (int, int) readintt2() {
+		var arr = readints();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// 読み込んだint3つをタプルで返す(分解代入用)
+	public static (int, int, int) readintt3() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// 読み込んだlong2つをタプルで返す(分解代入用)
+	public static (long, long) readlongt2() {
+		var arr = readlongs();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// 読み込んだ数long3つをタプルで返す(分解代入用)
+	public static (long, long, long) readlongt3() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// 読み込んだstring2つをタプルで返す(分解代入用)
+	public static (string, string) readstringt2() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// 読み込んだstring3つをタプルで返す(分解代入用)
+	public static (string, string, string) readstringt3() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
@@ -180,13 +229,33 @@ public class Kyopuro {
 	public static void Main() {
 		preprocess();
 
-		var list = new LinkedList<int>();
-		list.AddLast(1);
-		int i = list.First.Next.Value;
-		WriteLine(i);
+		var (n, m) = readintt2();
+		string s = ReadLine();
+		var arr = readints().Select(x => x - 1).ToArray();
+
+		var zyunkai = new List<LinkedList<int>>();
+		for (int i = 0; i < m; ++i) zyunkai.Add(new LinkedList<int>());
+		for (int i = 0; i < n; ++i) zyunkai[arr[i]].AddLast(i);
+		for (int i = 0; i < m; ++i) {
+			int hoge = zyunkai[i].Last.Value;
+			zyunkai[i].RemoveLast();
+			zyunkai[i].AddFirst(hoge);
+		}
+
+
+
+		for (int i = 0; i < n; ++i) {
+			int ind = zyunkai[arr[i]].First.Value;
+			zyunkai[arr[i]].RemoveFirst();
+			write(s[ind]);
+		}
+		WriteLine();
+
+
+
+
 
 		finalprocess();
 	} // end of func
 } // end of class
-
 Kyopuro.Main();
