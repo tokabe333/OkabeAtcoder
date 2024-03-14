@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using static System.Console;
 using static Util;
 using static System.Math;
+using System.Runtime.InteropServices;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -77,7 +78,7 @@ public class Util {
 	public static long m998 = 998244353;
 
 	/// 打ちやすいように
-	public static string read() => ReadLine();
+	public static string readln() => ReadLine();
 	public static void write(string s) => Write(s);
 	public static void write(char c) => Write(c);
 	public static void write(int num) => Write(num);
@@ -88,6 +89,16 @@ public class Util {
 	public static void writeln(int num) => WriteLine(num);
 	public static void writeln(long num) => WriteLine(num);
 	public static void writeln(double num) => WriteLine(num);
+	public static void print(string s) => Write(s);
+	public static void print(char c) => Write(c);
+	public static void print(int num) => Write(num);
+	public static void print(long num) => Write(num);
+	public static void print(double num) => Write(num);
+	public static void println(string s) => WriteLine(s);
+	public static void println(char c) => WriteLine(c);
+	public static void println(int num) => WriteLine(num);
+	public static void println(long num) => WriteLine(num);
+	public static void println(double num) => WriteLine(num);
 
 	/// 任意の要素数・初期値の配列を作って初期化する
 	public static T[] makearr<T>(int num, T value) {
@@ -141,6 +152,30 @@ public class Util {
 
 	/// 2次元配列を出力
 	public static void printlist2<T>(T[][] list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func	
+
+	/// 1次元Listを出力
+	public static void printarr<T>(List<T> list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// 1次元配列を出力
+	public static void printarr<T>(T[] list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// 2次元リストを出力
+	public static void printarr2<T>(List<List<T>> list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
+
+	/// 2次元配列を出力
+	public static void printarr2<T>(T[][] list) {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
