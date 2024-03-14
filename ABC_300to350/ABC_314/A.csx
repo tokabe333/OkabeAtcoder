@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using static System.Console;
 using static Util;
-using Microsoft.CodeAnalysis.Text;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -180,10 +179,12 @@ public class Kyopuro {
 	public static void Main() {
 		preprocess();
 
-		var list = new LinkedList<int>();
-		list.AddLast(1);
-		int i = list.First.Next.Value;
-		WriteLine(i);
+		string s = "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679";
+		int n = readint();
+		for (int i = 0; i < n + 2; ++i) {
+			Write(s[i]);
+		}
+		WriteLine();
 
 		finalprocess();
 	} // end of func

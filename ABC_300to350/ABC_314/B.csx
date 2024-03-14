@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using static System.Console;
 using static Util;
-using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -180,10 +180,31 @@ public class Kyopuro {
 	public static void Main() {
 		preprocess();
 
-		var list = new LinkedList<int>();
-		list.AddLast(1);
-		int i = list.First.Next.Value;
-		WriteLine(i);
+		int n = readint();
+		var arr = new List<List<int>>();
+		for (int i = 0; i < n; ++i) {
+			int hoge = readint();
+			arr.Add(new List<int>(readints().Select(x => x + 1)));
+		}
+
+		int x = readint() + 1;
+		int min = 114514;
+		for (int i = 0; i < n; ++i) {
+			if (arr[i].Find(y => y == x) == 0) continue;
+			min = Math.Min(min, arr[i].Count);
+		}
+
+
+		var ans = new List<int>();
+		for (int i = 0; i < n; ++i) {
+			if (arr[i].Find(y => y == x) == 0) continue;
+			if (arr[i].Count > min) continue;
+			ans.Add(i + 1);
+		}
+
+		WriteLine(ans.Count);
+		printlist(ans);
+
 
 		finalprocess();
 	} // end of func
