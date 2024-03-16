@@ -1,3 +1,4 @@
+
 #include <algorithm>
 #include <atcoder/all>
 #include <climits>
@@ -109,10 +110,90 @@ void printvvec(const vector<T> &vec) {
 
 const bool debug = true;
 
+typedef vector<vector<vector<vector<int>>>> vvvvi;
+
+vvi piece;
+int n;
+
+bool kasaneru(vvi &masu, int h, int w, int y, int x) {
+    for (int i = y; i < y + h; ++i) {
+        for (int j = x; j < x + w; ++j) {
+            if (masu[i][j] == 1) return false;
+        }
+    }
+
+    for (int i = y; i < y + h; ++i) {
+        for (int j = x; j < x + w; ++j) {
+            masu[i][j] = 1;
+        }
+    }
+    return true;
+}
+
+void modosu(vvi &masu, int h, int w, int y, int x) {
+    for (int i = y; i < y + h; ++i) {
+        for (int j = x; j < x + w; ++j) {
+            masu[i][j] = 0;
+        }
+    }
+}
+
+bool check(vvi &masu) {
+    rep(i, masu.size()) {
+        rep(j, masu[i].size()) {
+            if (masu[i][j] == 0) return false;
+        }
+    }
+    return true;
+}
+
+bool dfs(vvi &masu, int depth) {
+    // printvvec(masu);
+    // printf("depth:%d\n", depth);
+    if (depth == n) {
+        return check(masu);
+    }
+
+    bool ret = dfs(masu, depth + 1);
+    if (ret) return true;
+
+    rep(k, 2) {
+        int h = piece[depth][2 * k];
+        int w = piece[depth][2 * k + 1];
+        if (masu.size() < h) continue;
+        for (int i = 0; i <= masu.size() - h; ++i) {
+            if (masu[0].size() < w) continue;
+            for (int j = 0; j <= masu[0].size() - w; ++j) {
+                if (masu[i][j] == 1) continue;
+                bool kasa = kasaneru(masu, h, w, i, j);
+                if (kasa == false) continue;
+                ret = dfs(masu, depth + 1);
+                modosu(masu, h, w, i, j);
+                if (ret == true) return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 int main() {
     preprocess();
 
-    int n;
+    int h, w;
+    cin >> n >> h >> w;
+    // vvvvi piece(n, vvvi(2));
+    piece.resize(n);
+    rep(i, n) {
+        int a, b;
+        cin >> a >> b;
+        piece[i] = {a, b, b, a};
+    }
+
+    vvi    masu(h, vi(w, 0));
+    bool   ret = dfs(masu, 0);
+    string ans = ret ? "Yes" : "No";
+    cout << ans << endl;
 
     return 0;
 } // end of main

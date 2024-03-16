@@ -1,3 +1,4 @@
+
 #include <algorithm>
 #include <atcoder/all>
 #include <climits>
@@ -112,7 +113,33 @@ const bool debug = true;
 int main() {
     preprocess();
 
-    int n;
+    string s;
+    cin >> s;
+    vll arr(30, 0);
+    ll  n = s.size();
+    rep(i, n) {
+        arr[s[i] - 'a'] += 1LL;
+    }
+
+    ll ans = 0;
+
+    // printvec(arr);
+    rep(i, n) {
+        ll c = arr[s[i] - 'a'];
+        ans  = ans + (n - c);
+    }
+
+    // cout << ans << endl;
+    ans /= 2;
+
+    rep(i, 30) {
+        if (arr[i] >= 2) {
+            ans += 1;
+            break;
+        }
+    }
+
+    cout << max(1LL, ans) << endl;
 
     return 0;
 } // end of main
