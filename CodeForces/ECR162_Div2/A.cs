@@ -298,6 +298,7 @@ using static System.Console;
 using static Util;
 using static System.Math;
 using System.Runtime.InteropServices;
+using System.Buffers;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -382,6 +383,11 @@ public class Util {
 	public static void writeln(int num) => WriteLine(num);
 	public static void writeln(long num) => WriteLine(num);
 	public static void writeln(double num) => WriteLine(num);
+	public static void writeline(string s) => WriteLine(s);
+	public static void writeline(char c) => WriteLine(c);
+	public static void writeline(int num) => WriteLine(num);
+	public static void writeline(long num) => WriteLine(num);
+	public static void writeline(double num) => WriteLine(num);
 	public static void print(string s) => Write(s);
 	public static void print(char c) => Write(c);
 	public static void print(int num) => Write(num);
@@ -557,10 +563,34 @@ public class Kyopuro {
 	public static void Main() {
 		preprocess();
 
-		int n;
+		int q = readint();
+		for (int _ = 0; _ < q; ++_) {
+			int n = readint();
+			var arr = readints();
+			int count = 0;
+			int sentou = 0;
+			int ketu = 0;
+			for (int i = 0; i < n; ++i) {
+				if (arr[i] == 1) {
+					sentou = i;
+					break;
+				}
+			}
+			for (int i = n - 1; i >= 0; --i) {
+				if (arr[i] == 1) {
+					ketu = i;
+					break;
+				}
+			}
+
+			for (int i = sentou; i <= ketu; ++i) {
+				if (arr[i] == 0) count += 1;
+			}
+
+			writeline(count);
+		}
 
 		finalprocess();
 	} // end of func
 } // end of class
 
-Kyopuro.Main();
