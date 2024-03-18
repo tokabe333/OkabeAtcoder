@@ -42,6 +42,7 @@
 	},
 	// ---------------- Code Run Settings ----------------
 	"code-runner.runInTerminal": true,
+	"code-runner.showExecutionMessage": false,
 	"code-runner.executorMap": {
 		"javascript": "node",
 		"java": "cd $dir && javac $fileName && java $fileNameWithoutExt",
@@ -60,7 +61,7 @@
 		"bat": "cmd /c",
 		"shellscript": "bash",
 		"fsharp": "fsi",
-		"csharp": "cp $fullFileName $workspaceRoot/BuildRunEnv/KyopuroCsharpLocal/Program.cs; cd $workspaceRoot/BuildRunEnv/KyopuroCsharpLocal; dotnet run",
+		"csharp": "cp $fullFileName $workspaceRoot/BuildRunEnv/KyopuroCsharpLocal/Program.cs; cd $workspaceRoot/BuildRunEnv/KyopuroCsharpLocal; dotnet run --nowarn",
 		// "csharp": "cd $workspaceRoot/DockerEnv/KyopuroCsharp; docker-compose up -d;docker cp $fileName kyopurocs:/App/Program.cs; docker exec -it kyopurocs bash -c 'dotnet run'",
 		// "csharp": "dotnet script",
 		// "csharp": "cd $dir && dotnet run",

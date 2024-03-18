@@ -273,36 +273,51 @@ public class Util {
 
 
 public class Kyopuro {
-	public static void Main() {
-		preprocess();
-
-		Solve();
-
-		finalprocess();
-	} // end of func
-
-
 	public static void Solve() {
-		int n = readint();
-		var set = new HashSet<String>();
+
+		var (n, m) = readintt2();
+		var arr = makearr2(n, m + 5, 0);
+		for (int i = 0; i < n; ++i) {
+			var line = readints();
+			arr[i][0] = line[0];
+			arr[i][1] = line[1];
+			for (int j = 2; j < line.Length; ++j) {
+				arr[i][line[j] + 1] = 1;
+			}
+		}
+
 
 		for (int i = 0; i < n; ++i) {
-			string s = read();
-			set.Add(s);
-			set.Add(new string(s.Reverse().ToArray()));
-		}
+			for (int j = 0; j < n; ++j) {
+				if (i == j) continue;
+				bool flag = true;
 
-		int ans = 0;
-		foreach (var s in set) {
-			int count = 2;
-			for (int i = 0; i < s.Length / 2; ++i) {
-				if (s[i] != s[s.Length - i - 1]) {
-					count = 1;
-					break;
+				for (int k = 2; k < m + 3; ++k) {
+					if (arr[i][k] == 1 && arr[j][k] == 0) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag == false) continue;
+				//同じ値段
+				if (arr[i][0] == arr[j][0]) {
+					if (arr[i][1] < arr[j][1]) {
+						writeline("Yes");
+						return;
+					}
+				} else if (arr[i][0] > arr[j][0]) {
+					writeline("Yes");
+					return;
+
 				}
 			}
-			ans += count;
 		}
-		writeline(ans / 2);
+		writeline("No");
 	}
+
+	public static void Main() {
+		preprocess();
+		Solve();
+		finalprocess();
+	} // end of func
 } // end of class

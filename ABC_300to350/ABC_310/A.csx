@@ -276,33 +276,13 @@ public class Kyopuro {
 	public static void Main() {
 		preprocess();
 
-		Solve();
+		var (n, p, q) = readintt3();
+		var arr = readints();
+
+		int a = arr.Min();
+		int ans = Min(p, q + a);
+		writeline(ans);
 
 		finalprocess();
 	} // end of func
-
-
-	public static void Solve() {
-		int n = readint();
-		var set = new HashSet<String>();
-
-		for (int i = 0; i < n; ++i) {
-			string s = read();
-			set.Add(s);
-			set.Add(new string(s.Reverse().ToArray()));
-		}
-
-		int ans = 0;
-		foreach (var s in set) {
-			int count = 2;
-			for (int i = 0; i < s.Length / 2; ++i) {
-				if (s[i] != s[s.Length - i - 1]) {
-					count = 1;
-					break;
-				}
-			}
-			ans += count;
-		}
-		writeline(ans / 2);
-	}
 } // end of class

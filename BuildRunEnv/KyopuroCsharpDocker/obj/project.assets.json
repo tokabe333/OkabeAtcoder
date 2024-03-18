@@ -13,9 +13,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroCsharp.csproj",
-      "projectName": "KyopuroCsharp",
-      "projectPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroCsharp.csproj",
+      "projectUniqueName": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroApp.csproj",
+      "projectName": "KyopuroApp",
+      "projectPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroApp.csproj",
       "packagesPath": "C:\\Users\\tokab\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\obj\\",
       "projectStyle": "PackageReference",

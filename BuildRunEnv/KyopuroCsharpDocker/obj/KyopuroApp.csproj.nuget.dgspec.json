@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/okabesouta/Downloads/KyopuroApp/KyopuroApp.csproj": {}
+    "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroApp.csproj": {}
   },
   "projects": {
-    "/Users/okabesouta/Downloads/KyopuroApp/KyopuroApp.csproj": {
+    "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/okabesouta/Downloads/KyopuroApp/KyopuroApp.csproj",
+        "projectUniqueName": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroApp.csproj",
         "projectName": "KyopuroApp",
-        "projectPath": "/Users/okabesouta/Downloads/KyopuroApp/KyopuroApp.csproj",
-        "packagesPath": "/Users/okabesouta/.nuget/packages/",
-        "outputPath": "/Users/okabesouta/Downloads/KyopuroApp/obj/",
+        "projectPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroApp.csproj",
+        "packagesPath": "C:\\Users\\tokab\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/okabesouta/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\tokab\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,11 +34,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -58,7 +55,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
