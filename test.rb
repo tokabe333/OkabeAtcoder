@@ -1,6 +1,14 @@
-a = [[1, 2,3], [4,5,6],[7,8,9]]
-b = a.map(&:dup)
-b[0][0] = 334
+s = "aacfdafreqrewquiopbuipdsanmhdsjafsadfyuiyvcxzovuyczxoiufa"
+hash = Hash.new(0)
+s.length.times do |i|
+	s.length.times do |j|
+		t = s + ""
+		c = t[i]
+		t[i] = t[j]
+		t[j] = c
+		hash[t] += 1
+	end
+end
 
-a.each do |aa| p aa end 
-b.each do |bb| p bb  end
+p hash.keys
+p hash.keys.length

@@ -1,3 +1,4 @@
+
 #include <algorithm>
 #include <atcoder/all>
 #include <climits>
@@ -109,10 +110,94 @@ void printvvec(const vector<T> &vec) {
 
 const bool debug = true;
 
+typedef vector<vector<vector<vector<int>>>> vvvvi;
+
+vvvvi piece;
+int   n;
+
+bool kasaneru(vvi &masu, vvi &piece, int y, int x) {
+    int h   = piece.size();
+    int w   = piece[0].size();
+    int ms  = masu.size();
+    int mms = masu[0].size();
+    for (int i = y; i < y + h; ++i) {
+        if (ms <= i) return false;
+        for (int j = x; j < x + w; ++j) {
+            if (mms <= j) return false;
+            if (masu[i][j] == 1) return false;
+        }
+    }
+
+    for (int i = y; i < y + h; ++i) {
+        for (int j = x; j < x + w; ++j) {
+            masu[i][j] = 1;
+        }
+    }
+    return true;
+}
+
+bool check(vvi &masu) {
+    rep(i, masu.size()) {
+        rep(j, masu[i].size()) {
+            if (masu[i][j] == 0) return false;
+        }
+    }
+    return true;
+}
+
+bool dfs(vvi &masu, int depth) {
+    // printvvec(masu);
+    // printf("depth:%d\n", depth);
+    if (check(masu)) return true;
+    if (depth == n) return false;
+
+    vvi  hoge(masu);
+    bool ret = dfs(hoge, depth + 1);
+    hoge     = masu;
+    if (ret) return true;
+    int ms  = masu.size();
+    int mms = masu[0].size();
+    rep(k, 2) {
+        int h = piece[depth][k].size();
+        if (ms < h) continue;
+        for (int i = 0; i <= masu.size() - h; ++i) {
+            int w = piece[depth][k][0].size();
+            if (mms < w) continue;
+            for (int j = 0; j <= masu[i].size() - w; ++j) {
+                bool kasa = kasaneru(hoge, piece[depth][k], i, j);
+                // printf("kasaneru masu[i].size():%d h:%d w:%d i:%d j:%d\n", masu[i].size() - w, h, w, i, j);
+                // printvvec(piece[depth][k]);
+                // printf("kasa : %d\n", kasa);
+                // cout << endl;
+                if (kasa == false) continue;
+                ret  = dfs(hoge, depth + 1);
+                hoge = masu;
+                if (ret == true) return true;
+            }
+        }
+    }
+    return false;
+}
+
 int main() {
     preprocess();
 
-    int n;
+    int h, w;
+    cin >> n >> h >> w;
+    // vvvvi piece(n, vvvi(2));
+    piece.resize(n);
+    rep(i, n) {
+        piece[i].resize(2);
+        int a, b;
+        cin >> a >> b;
+        piece[i][0] = vvi(a, vi(b, 1));
+        piece[i][1] = vvi(b, vi(a, 1));
+    }
+
+    vvi    masu(h, vi(w, 0));
+    bool   ret = dfs(masu, 0);
+    string ans = ret ? "Yes" : "No";
+    cout << ans << endl;
 
     return 0;
 } // end of main

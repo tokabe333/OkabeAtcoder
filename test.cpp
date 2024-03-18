@@ -109,17 +109,23 @@ void printvvec(const vector<T> &vec) {
 
 const bool debug = true;
 
+void func(vvi &hoge) {
+    vvi fuga(hoge);
+    printvvec(fuga);
+    fuga[0][0] = 334;
+    printvvec(fuga);
+    printvvec(hoge);
+    fuga = hoge;
+    printvvec(fuga);
+    fuga[0][0] = 334;
+    printvvec(fuga);
+    printvvec(hoge);
+}
 int main() {
     preprocess();
 
-    int n, q;
-    cin >> n >> q;
-
-    vll arr(n);
-    rep(i, n) cin >> arr[i];
-
-    rep(_, q) {
-    }
+    vvi hoge = {{1, 2, 34}, {2, 3, 4}, {3, 4, 5}};
+    func(hoge);
 
     return 0;
 } // end of main
