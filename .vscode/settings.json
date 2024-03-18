@@ -2,6 +2,8 @@
 	// ---------------- Editor Settings ----------------
 	"terminal.integrated.defaultLocation": "view",
 	"C_Cpp.errorSquiggles": "Disabled",
+	"csharp.suppressBuildAssetsNotification": true,
+	"csharp.suppressWarnings": true,
 	"editor.mouseWheelZoom": true,
 	"editor.tabSize": 4,
 	"editor.detectIndentation": false,
@@ -38,17 +40,6 @@
 		},
 		"editor.defaultFormatter": "vscode.markdown-language-features"
 	},
-	"[tex]": {
-		"editor.suggest.snippetsPreventQuickSuggestions": false,
-		"editor.tabSize": 4
-	},
-	"[latex]": {
-		"editor.suggest.snippetsPreventQuickSuggestions": false,
-		"editor.tabSize": 4
-	},
-	"[bibtex]": {
-		"editor.tabSize": 4
-	},
 	// ---------------- Code Run Settings ----------------
 	"code-runner.runInTerminal": true,
 	"code-runner.executorMap": {
@@ -69,7 +60,8 @@
 		"bat": "cmd /c",
 		"shellscript": "bash",
 		"fsharp": "fsi",
-		"csharp": "cd $workspaceRoot/DockerEnv/KyopuroCsharp; docker-compose up -d;docker cp $fileName kyopurocs:/App/Program.cs; docker exec -it kyopurocs bash -c 'dotnet run'",
+		"csharp": "cp $fullFileName $workspaceRoot/BuildRunEnv/KyopuroCsharpLocal/Program.cs; cd $workspaceRoot/BuildRunEnv/KyopuroCsharpLocal; dotnet run",
+		// "csharp": "cd $workspaceRoot/DockerEnv/KyopuroCsharp; docker-compose up -d;docker cp $fileName kyopurocs:/App/Program.cs; docker exec -it kyopurocs bash -c 'dotnet run'",
 		// "csharp": "dotnet script",
 		// "csharp": "cd $dir && dotnet run",
 		"vbscript": "cscript //Nologo",
@@ -124,71 +116,6 @@
 	"diffEditor.wordWrap": "on",
 	"git.confirmSync": false,
 	"vscode-pets.petSize": "medium",
-	// ---------------- Latex Workshop ----------------
-	"latex-workshop.latex.recipes": [
-		{
-			"name": "platex",
-			"tools": [
-				"uplatex",
-				//"pbibtex",
-				// "uplatex",
-				// "uplatex",
-				"dvipdfmx"
-			]
-		}
-	],
-	"latex-workshop.latex.tools": [
-		{
-			"name": "platex",
-			"command": "platex",
-			"args": [
-				"-synctex=1",
-				"-interaction=nonstopmode",
-				"-file-line-error",
-				"-kanji=utf8",
-				"-shell-escape",
-				"%DOC%"
-			]
-		},
-		{
-			"name": "dvipdfmx",
-			"command": "dvipdfmx",
-			"args": [
-				"%DOCFILE%.dvi"
-			]
-		},
-		{
-			"name": "pbibtex",
-			"command": "pbibtex",
-			"args": [
-				"-kanji=utf8",
-				"%DOCFILE%"
-			]
-		},
-		{
-			"name": "uplatex",
-			"command": "uplatex",
-			"args": [
-				"-synctex=1",
-				"-interaction=nonstopmode",
-				"-file-line-error",
-				"-kanji=utf8",
-				"-shell-escape",
-				"%DOC%"
-			]
-		},
-		{
-			"name": "upbibtex",
-			"command": "upbibtex",
-			"args": [
-				"-kanji=utf8",
-				"%DOCFILE%"
-			]
-		}
-	],
-	"latex-workshop.intellisense.package.enabled": true, // 使用パッケージのコマンドや環境の補完を有効にする
-	"latex-workshop.view.pdf.viewer": "tab", // 「Ctrl + Alt + v」で使うPDFビューワをタブに設定
-	"latex-workshop.latex.autoClean.run": "onBuilt", // ビルド時に一時ファイル(.auxなど)を削除
 	// ---------------- Cpp IntelliSense ----------------
 	"files.associations": {
 		"xstring": "cpp",
@@ -303,5 +230,4 @@
 		"stacktrace": "cpp",
 		"all": "cpp"
 	},
-	"jupyter.interactiveWindow.textEditor.executeSelection": false,
 }
