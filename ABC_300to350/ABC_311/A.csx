@@ -280,38 +280,18 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	HashSet<int> set;
-	int[][] graph;
-
-	bool dfs(int d) {
-		if (set.Contains(d)) return true;
-		set.Add(d);
-
-		foreach (var next in graph[d]) {
-			if (set.Contains(next)) continue;
-			bool ret = dfs(next);
-			if (ret == true) {
-				write(d + " ");
-				return true;
-			}
-		}
-		return false;
-	}
 
 	public void Solve() {
 		int n = readint();
-		var arr = readints().Select(x => x - 1).ToArray();
+		string s = read();
 
-		graph = makearr2(n, n, 0);
-		for (int i = 0; i < arr.Length; ++i) {
-			graph[i][arr[i]] = 1;
-			graph[arr[i]][i] = 1;
-		}
-
-		for (int i = 0; i < arr.Length; ++i) {
-			set = new HashSet<int>();
-			bool ret = dfs(i);
-			if (ret) break;
+		int[] flag = new int[3];
+		for (int i = 0; i < n; ++i) {
+			flag[s[i] - 'A'] = 1;
+			if (flag.Sum() == 3) {
+				writeline(i + 1);
+				return;
+			}
 		}
 	}
 } // end of class

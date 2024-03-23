@@ -275,14 +275,13 @@ public class Util {
 public class Kyopuro {
 	public static void Main() {
 		preprocess();
-
-		Solve();
-
+		var kyopuro = new Kyopuro();
+		kyopuro.Solve();
 		finalprocess();
 	} // end of func
 
 
-	public static void Solve() {
+	public void Solve() {
 		int n;
 	}
 } // end of class

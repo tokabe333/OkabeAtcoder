@@ -5,6 +5,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Diagnostics.Contracts;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -275,43 +276,50 @@ public class Util {
 public class Kyopuro {
 	public static void Main() {
 		preprocess();
-		var kyopuro = new Kyopuro();
-		kyopuro.Solve();
+		var k = new Kyopuro();
+		k.Solve();
 		finalprocess();
 	} // end of func
 
-	HashSet<int> set;
-	int[][] graph;
+	int[] arr;
+	int[] brr;
 
-	bool dfs(int d) {
-		if (set.Contains(d)) return true;
-		set.Add(d);
-
-		foreach (var next in graph[d]) {
-			if (set.Contains(next)) continue;
-			bool ret = dfs(next);
-			if (ret == true) {
-				write(d + " ");
-				return true;
-			}
+	bool check(int num) {
+		int a = 0, b = 0;
+		for (int i = 0; i < arr.Length; ++i) {
+			if (arr[i] <= num) a += 1;
 		}
-		return false;
+		for (int i = 0; i < brr.Length; ++i) {
+			if (brr[i] >= num) b += 1;
+		}
+		return a >= b;
 	}
 
 	public void Solve() {
-		int n = readint();
-		var arr = readints().Select(x => x - 1).ToArray();
+		var (n, m) = readintt2();
+		arr = readints();
+		brr = readints();
 
-		graph = makearr2(n, n, 0);
-		for (int i = 0; i < arr.Length; ++i) {
-			graph[i][arr[i]] = 1;
-			graph[arr[i]][i] = 1;
+		var set = new SortedDictionary<int, bool>();
+		int l = 0, r = (int)(Pow(10, 9)) + 10;
+		while (true) {
+			int mid = (l + r) / 2;
+			if (set.ContainsKey(mid)) break;
+			bool c = check(mid);
+			set[mid] = c;
+			if (c) {
+				r = mid;
+			} else {
+				l = mid;
+			}
 		}
 
-		for (int i = 0; i < arr.Length; ++i) {
-			set = new HashSet<int>();
-			bool ret = dfs(i);
-			if (ret) break;
+		foreach (var kv in set) {
+			// writeline("key:" + kv.Key + " value:" + kv.Value);
+			if (kv.Value == true) {
+				writeline(kv.Key);
+				return;
+			}
 		}
 	}
 } // end of class
