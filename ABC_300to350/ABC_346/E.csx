@@ -5,6 +5,9 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+
+
+
 // using pii = (int, int);
 // using pll = (long, long);
 // using pdd = (double, double);
@@ -321,10 +324,24 @@ public class Kyopuro {
 	public void Solve() {
 		var (h, w, m) = readintt3();
 
+
 		var arr = makearr2(m, 3, 0);
-		for (int i = 0; i < m; ++i) {
-			arr[i] = readints();
+		for (int q = 0; q < m; ++q) {
+			arr[q] = readints();
+			arr[q][1] -= 1;
 		}
+		var tate = new HashSet<int>();
+		var yoko = new HashSet<int>();
+		for (int q = m - 1; q >= 0; --q) {
+			int rc = arr[q][1];
+			int col = arr[q][2];
+			if (arr[q][0] == 1) {
+				if (tate.Contains(rc)) continue;
+				tate.Add(rc);
+			}
+		}
+
+
 
 	}
 } // end of class

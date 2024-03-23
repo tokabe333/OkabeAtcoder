@@ -5,6 +5,9 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+
+
+
 // using pii = (int, int);
 // using pll = (long, long);
 // using pdd = (double, double);
@@ -317,96 +320,44 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	int n;
-	int[] srr;
-	long[] arr;
-
-	long[] zeroone;
-	long[] onezero;
-	long[] zeroonepref;
-	long[] onezeropref;
-	long zeroonesum = 0;
-	long onezerosum = 0;
-
-	// 固定させる箇所 i, i+1,  固定させる数字01 zo
-	long calc(int index, int zo) {
-		long c = 0;
-		if (srr[index] != zo) c += arr[index];
-		if (srr[index + 1] != zo) c += arr[index + 1];
-
-		return zo == 0 ? zeroonesum - c : onezerosum - c;
-	}
 
 	public void Solve() {
-		n = readint();
-		srr = read().ToCharArray().Select(x => int.Parse(x + "")).ToArray();
-		arr = readlongs();
+		var (h, w, m) = readintt3();
 
-		zeroone = new long[n];
-		onezero = new long[n];
-		zeroonepref = new long[n];
-		onezeropref = new long[n];
-		for (int i = 0; i < n; ++i) {
-			if (i % 2 == 0) {
-				// zerooneは黒、onezeroは白
-				zeroone[i] = srr[i] == 0 ? 0 : arr[i];
-				onezero[i] = srr[i] == 1 ? 0 : arr[i];
+		var masu = makearr2(h, w, -1);
+		var arr = makearr2(m, 3, 0);
+		for (int q = 0; q < m; ++q) {
+			arr[q] = readints();
+			arr[q][1] -= 1;
+		}
+		for (int q = m - 1; q >= 0; --q) {
+			if (arr[q][0] == 1) {
+				for (int j = 0; j < w; ++j) {
+					if (masu[arr[q][1]][j] != -1) continue;
+					masu[arr[q][1]][j] = arr[q][2];
+				}
 			} else {
-				zeroone[i] = srr[i] == 1 ? 0 : arr[i];
-				onezero[i] = srr[i] == 0 ? 0 : arr[i];
+				for (int i = 0; i < h; ++i) {
+					if (masu[i][arr[q][1]] != -1) continue;
+					masu[i][arr[q][1]] = arr[q][2];
+				}
 			}
 		}
-		zeroonesum = zeroone.Sum();
-		onezerosum = onezero.Sum();
 
-		// prefix
-		zeroonepref = new long[n + 1];
-		onezeropref = new long[n + 1];
-
-		for (int i = 0; i < n; ++i) {
-			zeroonepref[i + 1] = zeroonepref[i] + zeroone[i];
-			onezeropref[i + 1] = onezeropref[i] + onezero[i];
-		}
-
-		printarr(zeroone); printarr(zeroonepref);
-		printarr(onezero); printarr(onezeropref);
-		writeline("zeronesum:" + zeroonesum + " onezersum:" + onezerosum);
-
-
-
-		// 固定させるところを変える
-		long ans = (long)Pow(10, 16) + 114514;
-		for (int i = 0; i < n - 1; ++i) {
-			// 0にするコスト
-			long c0 = 0;
-			if (srr[i] == 1) c0 += arr[i];
-			if (srr[i + 1] == 1) c0 += arr[i + 1];
-			// 1にするコスト
-			long c1 = 0;
-			if (srr[i] == 0) c1 += arr[i];
-			if (srr[i + 1] == 0) c1 += arr[i + 1];
-
-			long a1, a2;
-			if (i % 2 == 1) {
-				// 00にするときは1からスタートしないといけない
-				a1 = onezeropref[i] + c0 + zeroonepref[n] - zeroonepref[i + 1];
-				// 11にするときは0から
-				a2 = zeroonepref[i] + c1 + onezeropref[n] - onezeropref[i + 1];
-			} else {
-				// 00にするときは0から
-				a1 = zeroonepref[i] + c0 + onezeropref[n] - onezeropref[i + 1];
-				// 11にするときは1から
-				a2 = onezeropref[i] + c1 + zeroonepref[n] - zeroonepref[i + 1];
+		var ans = new Dictionary<int, int>();
+		for (int i = 0; i < h; ++i) {
+			for (int j = 0; j < w; ++j) {
+				int col = masu[i][j] == -1 ? 0 : masu[i][j];
+				ans[col] = ans.ContainsKey(col) ? ans[col] + 1 : 1;
 			}
-
-
-			// writeline("zos:" + zos + " ozs:" + ozs + " c0:" + c0 + " c1:" + c1 + " a1:" + a1 + " a2:" + a2);
-			// writeline();
-
-			ans = Min(ans, Min(a1, a2));
-
-
 		}
-		writeline(ans);
-	} // end of class
-}
+
+		var keys = ans.Keys.ToArray();
+		Array.Sort(keys);
+		writeline(keys.Length);
+		foreach (var key in keys) {
+			writeline(key + " " + ans[key]);
+		}
+
+	}
+} // end of class
