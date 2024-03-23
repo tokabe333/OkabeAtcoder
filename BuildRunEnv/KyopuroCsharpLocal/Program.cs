@@ -280,38 +280,38 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	HashSet<int> set;
-	int[][] graph;
+	string[] srr;
 
-	bool dfs(int d) {
-		if (set.Contains(d)) return true;
-		set.Add(d);
-
-		foreach (var next in graph[d]) {
-			if (set.Contains(next)) continue;
-			bool ret = dfs(next);
-			if (ret == true) {
-				write(d + " ");
-				return true;
+	bool check(int d) {
+		bool flag = true;
+		for (int i = 0; i < srr.Length; ++i) {
+			if (srr[i][d] == 'x') {
+				flag = false;
+				break;
 			}
 		}
-		return false;
+		return flag;
 	}
 
 	public void Solve() {
-		int n = readint();
-		var arr = readints().Select(x => x - 1).ToArray();
-
-		graph = makearr2(n, n, 0);
-		for (int i = 0; i < arr.Length; ++i) {
-			graph[i][arr[i]] = 1;
-			graph[arr[i]][i] = 1;
+		var (n, d) = readintt2();
+		srr = new string[n];
+		for (int i = 0; i < n; ++i) {
+			srr[i] = read();
 		}
 
-		for (int i = 0; i < arr.Length; ++i) {
-			set = new HashSet<int>();
-			bool ret = dfs(i);
-			if (ret) break;
+		int ans = 0;
+		int start = 0;
+		for (int i = 0; i < d; ++i) {
+			bool c = check(i);
+			if (c == true) start += 1;
+			else if (c == false) {
+				start = 0;
+			}
+			ans = Max(ans, start);
+			// writeline("flag:" + c + " start:" + start);
 		}
+		writeline(ans);
+
 	}
 } // end of class

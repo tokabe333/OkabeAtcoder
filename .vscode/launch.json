@@ -81,6 +81,22 @@
 			},
 			"cwd": "${workspaceFolder}",
 			"stopAtEntry": false,
+		},
+		{
+			"name": ".NET Core Launch (console)",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "Csharp build",
+			"program": "${workspaceFolder}/BuildRunEnv/KyopuroCsharpLocal/bin/Debug/net8.0/KyopuroCsharpLocal.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/BuildRunEnv/KyopuroCsharpLocal",
+			"console": "internalConsole",
+			"stopAtEntry": false
+		},
+		{
+			"name": ".NET Core Attach",
+			"type": "coreclr",
+			"request": "attach"
 		}
 	]
 }

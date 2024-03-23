@@ -1,4 +1,5 @@
 {
+	"version": "2.0.0",
 	"tasks": [
 		{
 			"type": "cppbuild",
@@ -24,7 +25,42 @@
 				"isDefault": true
 			},
 			"detail": "デバッガーによって生成されたタスク。"
-		}
+		},
+		{
+			"label": "Csharp build",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary;ForceNoAlign"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "Csharp publish",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary;ForceNoAlign"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "Csharp watch",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"watch",
+				"run",
+				"--project",
+				"${workspaceFolder}/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj"
+			],
+			"problemMatcher": "$msCompile"
+		},
 	],
-	"version": "2.0.0"
 }
