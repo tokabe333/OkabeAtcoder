@@ -5,7 +5,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-
 // using pii = (int, int);
 // using pll = (long, long);
 // using pdd = (double, double);
@@ -81,31 +80,37 @@ public class Util {
 	public static string read() => ReadLine();
 	public static string readln() => ReadLine();
 	public static string readline() => ReadLine();
+	public static void write() => Write("");
 	public static void write(string s) => Write(s);
 	public static void write(char c) => Write(c);
 	public static void write(int num) => Write(num);
 	public static void write(long num) => Write(num);
 	public static void write(double num) => Write(num);
+	public static void writeln() => WriteLine("");
 	public static void writeln(string s) => WriteLine(s);
 	public static void writeln(char c) => WriteLine(c);
 	public static void writeln(int num) => WriteLine(num);
 	public static void writeln(long num) => WriteLine(num);
 	public static void writeln(double num) => WriteLine(num);
+	public static void writeline() => WriteLine("");
 	public static void writeline(string s) => WriteLine(s);
 	public static void writeline(char c) => WriteLine(c);
 	public static void writeline(int num) => WriteLine(num);
 	public static void writeline(long num) => WriteLine(num);
 	public static void writeline(double num) => WriteLine(num);
+	public static void print() => Write("");
 	public static void print(string s) => Write(s);
 	public static void print(char c) => Write(c);
 	public static void print(int num) => Write(num);
 	public static void print(long num) => Write(num);
 	public static void print(double num) => Write(num);
+	public static void println() => WriteLine("");
 	public static void println(string s) => WriteLine(s);
 	public static void println(char c) => WriteLine(c);
 	public static void println(int num) => WriteLine(num);
 	public static void println(long num) => WriteLine(num);
 	public static void println(double num) => WriteLine(num);
+	public static void printline() => WriteLine("");
 	public static void printline(string s) => WriteLine(s);
 	public static void printline(char c) => WriteLine(c);
 	public static void printline(int num) => WriteLine(num);
@@ -143,6 +148,38 @@ public class Util {
 			arr.Add(makelist(width, value));
 		}
 		return arr;
+	} // end of func
+
+	/// 1次元配列のディープコピーを行う
+	public static T[] copyarr<T>(T[] arr) {
+		T[] brr = new T[arr.Length];
+		Array.Copy(arr, brr, arr.Length);
+		return brr;
+	} // end of func 
+
+	/// 2次元配列のディープコピーを行う
+	public static T[][] copyarr2<T>(T[][] arr) {
+		T[][] brr = new T[arr.Length][];
+		for (int i = 0; i < arr.Length; ++i) {
+			brr[i] = new T[arr[i].Length];
+			Array.Copy(arr[i], brr[i], arr[i].Length);
+		}
+		return brr;
+	} // end of func
+
+	/// 1次元Listのディープコピーを行う
+	public static List<T> copylist<T>(List<T> list) {
+		return new List<T>(list);
+	} // end of func
+
+	/// 2次元Listのディープコピーを行う
+	public static List<List<T>> copylist2<T>(List<List<T>> list) {
+		List<List<T>> list2 = new List<List<T>>();
+		for (int i = 0; i < list.Count; ++i) {
+			List<T> tmp = new List<T>(list[i]);
+			list2.Add(tmp);
+		}
+		return list2;
 	} // end of func
 
 	/// 1次元Listを出力
@@ -280,66 +317,96 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	int n;
+	int[] srr;
+	long[] arr;
+
+	long[] zeroone;
+	long[] onezero;
+	long[] zeroonepref;
+	long[] onezeropref;
+	long zeroonesum = 0;
+	long onezerosum = 0;
+
+	// 固定させる箇所 i, i+1,  固定させる数字01 zo
+	long calc(int index, int zo) {
+		long c = 0;
+		if (srr[index] != zo) c += arr[index];
+		if (srr[index + 1] != zo) c += arr[index + 1];
+
+		return zo == 0 ? zeroonesum - c : onezerosum - c;
+	}
 
 	public void Solve() {
-		var (h, w) = readintt2();
-		var masu = makearr2(h, w, 0);
-		for (int i = 0; i < h; ++i) {
-			string s = read();
-			for (int j = 0; j < w; ++j) masu[i][j] = s[j] == '#' ? 1 : 0;
-		}
+		n = readint();
+		srr = read().ToCharArray().Select(x => int.Parse(x + "")).ToArray();
+		arr = readlongs();
 
-		// printarr2(masu);
-
-		var ans = makearr2(h, w, 0);
-		var set = new HashSet<int>();
-		var que = new Queue<int>();
-		que.Enqueue(w + 1);
-		while (que.Count > 0) {
-			int top = que.Dequeue();
-			if (set.Contains(top)) continue;
-			set.Add(top);
-			int y = top / w;
-			int x = top % w;
-
-			//上
-			for (int i = y; i >= 0; --i) {
-				if (masu[i][x] == 1) {
-					que.Enqueue((i + 1) * w + x);
-					break;
-				}
-				ans[i][x] = 1;
-			}
-			// 下
-			for (int i = y + 1; i < h; ++i) {
-				if (masu[i][x] == 1) {
-					que.Enqueue((i - 1) * w + x);
-					break;
-				}
-				ans[i][x] = 1;
-			}
-			// 左
-			for (int j = x - 1; j >= 0; --j) {
-				if (masu[y][j] == 1) {
-					que.Enqueue(y * w + (j + 1));
-					break;
-				}
-				ans[y][j] = 1;
-			}
-			// 右
-			for (int j = x + 1; j < w; ++j) {
-				if (masu[y][j] == 1) {
-					que.Enqueue(y * w + (j - 1));
-					break;
-				}
-				ans[y][j] = 1;
+		zeroone = new long[n];
+		onezero = new long[n];
+		zeroonepref = new long[n];
+		onezeropref = new long[n];
+		for (int i = 0; i < n; ++i) {
+			if (i % 2 == 0) {
+				// zerooneは黒、onezeroは白
+				zeroone[i] = srr[i] == 0 ? 0 : arr[i];
+				onezero[i] = srr[i] == 1 ? 0 : arr[i];
+			} else {
+				zeroone[i] = srr[i] == 1 ? 0 : arr[i];
+				onezero[i] = srr[i] == 0 ? 0 : arr[i];
 			}
 		}
+		zeroonesum = zeroone.Sum();
+		onezerosum = onezero.Sum();
 
-		// printarr2(ans);
-		int num = 0;
-		for (int i = 0; i < h; ++i) num += ans[i].Sum();
-		writeline(num);
+		// prefix
+		zeroonepref = new long[n + 1];
+		onezeropref = new long[n + 1];
 
-	}
-} // end of class
+		for (int i = 0; i < n; ++i) {
+			zeroonepref[i + 1] = zeroonepref[i] + zeroone[i];
+			onezeropref[i + 1] = onezeropref[i] + onezero[i];
+		}
+
+		printarr(zeroone); printarr(zeroonepref);
+		printarr(onezero); printarr(onezeropref);
+		writeline("zeronesum:" + zeroonesum + " onezersum:" + onezerosum);
+
+
+
+		// 固定させるところを変える
+		long ans = (long)Pow(10, 16) + 114514;
+		for (int i = 0; i < n - 1; ++i) {
+			// 0にするコスト
+			long c0 = 0;
+			if (srr[i] == 1) c0 += arr[i];
+			if (srr[i + 1] == 1) c0 += arr[i + 1];
+			// 1にするコスト
+			long c1 = 0;
+			if (srr[i] == 0) c1 += arr[i];
+			if (srr[i + 1] == 0) c1 += arr[i + 1];
+
+			long a1, a2;
+			if (i % 2 == 1) {
+				// 00にするときは1からスタートしないといけない
+				a1 = onezeropref[i] + c0 + zeroonepref[n] - zeroonepref[i + 1];
+				// 11にするときは0から
+				a2 = zeroonepref[i] + c1 + onezeropref[n] - onezeropref[i + 1];
+			} else {
+				// 00にするときは0から
+				a1 = zeroonepref[i] + c0 + onezeropref[n] - onezeropref[i + 1];
+				// 11にするときは1から
+				a2 = onezeropref[i] + c1 + zeroonepref[n] - zeroonepref[i + 1];
+			}
+
+
+			// writeline("zos:" + zos + " ozs:" + ozs + " c0:" + c0 + " c1:" + c1 + " a1:" + a1 + " a2:" + a2);
+			// writeline();
+
+			ans = Min(ans, Min(a1, a2));
+
+
+		}
+		writeline(ans);
+	} // end of class
+}

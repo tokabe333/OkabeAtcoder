@@ -5,6 +5,8 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Runtime.CompilerServices;
+
 // using pii = (int, int);
 // using pll = (long, long);
 // using pdd = (double, double);
@@ -319,8 +321,13 @@ public class Kyopuro {
 
 
 	public void Solve() {
+		int n = readint();
+		var arr = readints();
 
-
+		for (int i = 0; i < n - 1; ++i) {
+			write(arr[i] * arr[i + 1] + " ");
+		}
+		writeline();
 
 	}
 } // end of class

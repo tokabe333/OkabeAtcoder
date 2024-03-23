@@ -5,6 +5,8 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Runtime.CompilerServices;
+
 // using pii = (int, int);
 // using pll = (long, long);
 // using pdd = (double, double);
@@ -320,7 +322,28 @@ public class Kyopuro {
 
 	public void Solve() {
 
+		var (n, k) = readintt2();
+		var dict = new SortedDictionary<long, long>();
+		long num = 0;
+		for (int i = 0; i < n; ++i) {
+			var (a, b) = readlongt2();
+			num += b;
+			dict[a] = dict.ContainsKey(a) ? dict[a] + b : b;
+		}
 
+		if (num <= k) {
+			writeline(1);
+			return;
+		}
+
+		foreach (var kv in dict) {
+			num -= kv.Value;
+			// writeline("key:" + kv.Key + " value:" + kv.Value + " num:" + num); ;
+			if (num <= k) {
+				writeline(kv.Key + 1);
+				return;
+			}
+		}
 
 	}
 } // end of class

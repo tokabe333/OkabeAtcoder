@@ -317,10 +317,50 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	int n;
+	int[] srr;
+	long[] arr;
+
+	// 固定させる箇所 i, i+1,  固定させる数字01 zo
+	long calc(int index, int zo) {
+		long c = 0;
+		if (srr[index] != zo) c += arr[index];
+		if (srr[index + 1] != zo) c += arr[index + 1];
+		// write("index:" + index + " 最初:" + c);
+
+		// 前
+		int now = zo == 0 ? 0 : 1;
+		for (int i = index - 1; i >= 0; --i) {
+			// 現在の数字
+			now = now == 0 ? 1 : 0;
+			// 違ったら足す
+			if (srr[i] != now) c += arr[i];
+		}
+		// write(" 前:" + c);
+		// 後ろ
+		now = zo == 0 ? 0 : 1;
+		for (int i = index + 2; i < n; ++i) {
+			now = now == 0 ? 1 : 0;
+			if (srr[i] != now) c += arr[i];
+		}
+		// writeline(" 後ろ:" + c + "   ");
+		return c;
+	}
 
 	public void Solve() {
+		n = readint();
+		srr = read().ToCharArray().Select(x => int.Parse(x + "")).ToArray();
+		arr = readlongs();
 
+		// 固定させるところを変える
+		long ans = (long)Pow(10, 16) + 114514;
+		for (int i = 0; i < n - 1; ++i) {
+			long c1 = calc(i, 0);
+			long c2 = calc(i, 1);
+			// writeline("i:" + i + " c1:" + c1 + " c2:" + c2);
+			ans = Min(ans, Min(c1, c2));
+		}
 
-
+		writeline(ans);
 	}
 } // end of class

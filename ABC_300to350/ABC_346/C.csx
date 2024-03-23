@@ -320,7 +320,25 @@ public class Kyopuro {
 
 	public void Solve() {
 
+		var (n, k) = readintt2();
+		var arr = readlongs();
 
+		long ksum = (1 + k) * k / 2;
+
+		var brr = new HashSet<long>();
+		for (int i = 0; i < n; ++i) {
+			if (arr[i] > k) continue;
+			brr.Add(arr[i]);
+		}
+
+		long asum = 0;
+		foreach (var kv in brr) {
+			asum += kv;
+		}
+
+		writeline(ksum);
+		writeline(asum);
+		writeline(ksum - asum);
 
 	}
 } // end of class

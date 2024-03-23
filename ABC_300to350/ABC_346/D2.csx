@@ -317,10 +317,96 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	int n;
+	int[] srr;
+	long[] arr;
+
+	long[] zeroone;
+	long[] onezero;
+	long[] zeroonepref;
+	long[] onezeropref;
+	long zeroonesum = 0;
+	long onezerosum = 0;
+
+	// 固定させる箇所 i, i+1,  固定させる数字01 zo
+	long calc(int index, int zo) {
+		long c = 0;
+		if (srr[index] != zo) c += arr[index];
+		if (srr[index + 1] != zo) c += arr[index + 1];
+
+		return zo == 0 ? zeroonesum - c : onezerosum - c;
+	}
 
 	public void Solve() {
+		n = readint();
+		srr = read().ToCharArray().Select(x => int.Parse(x + "")).ToArray();
+		arr = readlongs();
+
+		zeroone = new long[n];
+		onezero = new long[n];
+		zeroonepref = new long[n];
+		onezeropref = new long[n];
+		for (int i = 0; i < n; ++i) {
+			if (i % 2 == 0) {
+				// zerooneは黒、onezeroは白
+				zeroone[i] = srr[i] == 0 ? 0 : arr[i];
+				onezero[i] = srr[i] == 1 ? 0 : arr[i];
+			} else {
+				zeroone[i] = srr[i] == 1 ? 0 : arr[i];
+				onezero[i] = srr[i] == 0 ? 0 : arr[i];
+			}
+		}
+		zeroonesum = zeroone.Sum();
+		onezerosum = onezero.Sum();
+
+		// prefix
+		zeroonepref = new long[n + 1];
+		onezeropref = new long[n + 1];
+
+		for (int i = 0; i < n; ++i) {
+			zeroonepref[i + 1] = zeroonepref[i] + zeroone[i];
+			onezeropref[i + 1] = onezeropref[i] + onezero[i];
+		}
+
+		// printarr(zeroone); printarr(zeroonepref);
+		// printarr(onezero); printarr(onezeropref);
+		// writeline("zeronesum:" + zeroonesum + " onezersum:" + onezerosum);
 
 
 
-	}
-} // end of class
+		// 固定させるところを変える
+		long ans = (long)Pow(10, 16) + 114514;
+		for (int i = 0; i < n - 1; ++i) {
+			// 0にするコスト
+			long c0 = 0;
+			if (srr[i] == 1) c0 += arr[i];
+			if (srr[i + 1] == 1) c0 += arr[i + 1];
+			// 1にするコスト
+			long c1 = 0;
+			if (srr[i] == 0) c1 += arr[i];
+			if (srr[i + 1] == 0) c1 += arr[i + 1];
+
+			long a1, a2;
+			if (i % 2 == 1) {
+				// 00にするときは1からスタートしないといけない
+				a1 = onezeropref[i] + c0 + zeroonepref[n] - zeroonepref[i + 2];
+				// 11にするときは0から
+				a2 = zeroonepref[i] + c1 + onezeropref[n] - onezeropref[i + 2];
+			} else {
+				// 00にするときは0から
+				a1 = zeroonepref[i] + c0 + onezeropref[n] - onezeropref[i + 2];
+				// 11にするときは1から
+				a2 = onezeropref[i] + c1 + zeroonepref[n] - zeroonepref[i + 2];
+			}
+
+
+			// writeline("zos:" + zos + " ozs:" + ozs + " c0:" + c0 + " c1:" + c1 + " a1:" + a1 + " a2:" + a2);
+			// writeline();
+
+			ans = Min(ans, Min(a1, a2));
+
+
+		}
+		writeline(ans);
+	} // end of class
+}

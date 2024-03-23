@@ -319,8 +319,12 @@ public class Kyopuro {
 
 
 	public void Solve() {
+		var (h, w, m) = readintt3();
 
-
+		var arr = makearr2(m, 3, 0);
+		for (int i = 0; i < m; ++i) {
+			arr[i] = readints();
+		}
 
 	}
 } // end of class

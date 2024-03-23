@@ -5,6 +5,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+
 // using pii = (int, int);
 // using pll = (long, long);
 // using pdd = (double, double);
@@ -80,37 +81,31 @@ public class Util {
 	public static string read() => ReadLine();
 	public static string readln() => ReadLine();
 	public static string readline() => ReadLine();
-	public static void write() => Write("");
 	public static void write(string s) => Write(s);
 	public static void write(char c) => Write(c);
 	public static void write(int num) => Write(num);
 	public static void write(long num) => Write(num);
 	public static void write(double num) => Write(num);
-	public static void writeln() => WriteLine("");
 	public static void writeln(string s) => WriteLine(s);
 	public static void writeln(char c) => WriteLine(c);
 	public static void writeln(int num) => WriteLine(num);
 	public static void writeln(long num) => WriteLine(num);
 	public static void writeln(double num) => WriteLine(num);
-	public static void writeline() => WriteLine("");
 	public static void writeline(string s) => WriteLine(s);
 	public static void writeline(char c) => WriteLine(c);
 	public static void writeline(int num) => WriteLine(num);
 	public static void writeline(long num) => WriteLine(num);
 	public static void writeline(double num) => WriteLine(num);
-	public static void print() => Write("");
 	public static void print(string s) => Write(s);
 	public static void print(char c) => Write(c);
 	public static void print(int num) => Write(num);
 	public static void print(long num) => Write(num);
 	public static void print(double num) => Write(num);
-	public static void println() => WriteLine("");
 	public static void println(string s) => WriteLine(s);
 	public static void println(char c) => WriteLine(c);
 	public static void println(int num) => WriteLine(num);
 	public static void println(long num) => WriteLine(num);
 	public static void println(double num) => WriteLine(num);
-	public static void printline() => WriteLine("");
 	public static void printline(string s) => WriteLine(s);
 	public static void printline(char c) => WriteLine(c);
 	public static void printline(int num) => WriteLine(num);
@@ -148,38 +143,6 @@ public class Util {
 			arr.Add(makelist(width, value));
 		}
 		return arr;
-	} // end of func
-
-	/// 1次元配列のディープコピーを行う
-	public static T[] copyarr<T>(T[] arr) {
-		T[] brr = new T[arr.Length];
-		Array.Copy(arr, brr, arr.Length);
-		return brr;
-	} // end of func 
-
-	/// 2次元配列のディープコピーを行う
-	public static T[][] copyarr2<T>(T[][] arr) {
-		T[][] brr = new T[arr.Length][];
-		for (int i = 0; i < arr.Length; ++i) {
-			brr[i] = new T[arr[i].Length];
-			Array.Copy(arr[i], brr[i], arr[i].Length);
-		}
-		return brr;
-	} // end of func
-
-	/// 1次元Listのディープコピーを行う
-	public static List<T> copylist<T>(List<T> list) {
-		return new List<T>(list);
-	} // end of func
-
-	/// 2次元Listのディープコピーを行う
-	public static List<List<T>> copylist2<T>(List<List<T>> list) {
-		List<List<T>> list2 = new List<List<T>>();
-		for (int i = 0; i < list.Count; ++i) {
-			List<T> tmp = new List<T>(list[i]);
-			list2.Add(tmp);
-		}
-		return list2;
 	} // end of func
 
 	/// 1次元Listを出力
@@ -319,8 +282,8 @@ public class Kyopuro {
 
 
 	public void Solve() {
-
-
-
+		var (a, b) = readintt2();
+		if (a % 3 != 0 && a + 1 == b) writeline("Yes");
+		else writeline("No");
 	}
 } // end of class

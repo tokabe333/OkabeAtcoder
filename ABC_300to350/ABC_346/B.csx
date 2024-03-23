@@ -5,6 +5,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+
 // using pii = (int, int);
 // using pll = (long, long);
 // using pdd = (double, double);
@@ -319,8 +320,27 @@ public class Kyopuro {
 
 
 	public void Solve() {
+		var (w, b) = readintt2();
 
+		string s = "wbwbwwbwbwbw";
+		int sn = s.Length;
+		int bc = 0;
+		int wc = 0;
+		int wb = w + b;
 
+		for (int i = 0; i < sn; ++i) {
+			bc = 0;
+			wc = 0;
+			for (int j = 0; j < wb; ++j) {
+				if (s[(i + j) % sn] == 'b') bc += 1;
+				else wc += 1;
+			}
+			if (bc == b && wc == w) {
+				writeline("Yes");
+				return;
+			}
+		}
+		writeline("No");
 
 	}
 } // end of class
