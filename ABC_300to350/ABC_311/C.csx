@@ -280,38 +280,35 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	HashSet<int> set;
-	int[][] graph;
 
-	bool dfs(int d) {
-		if (set.Contains(d)) return true;
-		set.Add(d);
-
-		foreach (var next in graph[d]) {
-			if (set.Contains(next)) continue;
-			bool ret = dfs(next);
-			if (ret == true) {
-				write(d + " ");
-				return true;
-			}
+	bool dfs(int d, int[] arr, HashSet<int> set, List<int> list) {
+		// writeline("d:" + d + " list:" + string.Join(" ", list));
+		if (set.Contains(d)) {
+			if (list[0] == d) return true;
+			set.Clear();
+			list.Clear();
+			return dfs(d, arr, set, list);
 		}
-		return false;
+		set.Add(d);
+		list.Add(d);
+
+		bool ret = dfs(arr[d], arr, set, list);
+		return ret;
 	}
+
 
 	public void Solve() {
 		int n = readint();
 		var arr = readints().Select(x => x - 1).ToArray();
-
-		graph = makearr2(n, n, 0);
-		for (int i = 0; i < arr.Length; ++i) {
-			graph[i][arr[i]] = 1;
-			graph[arr[i]][i] = 1;
+		for (int i = 0; i < n; ++i) {
+			var list = new List<int>();
+			var set = new HashSet<int>();
+			bool ret = dfs(i, arr, set, list);
+			if (ret == false) continue;
+			writeline(list.Count);
+			foreach (int v in list) write((v + 1) + " ");
+			return;
 		}
 
-		for (int i = 0; i < arr.Length; ++i) {
-			set = new HashSet<int>();
-			bool ret = dfs(i);
-			if (ret) break;
-		}
 	}
 } // end of class
