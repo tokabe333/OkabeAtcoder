@@ -1,3 +1,7 @@
+#pragma warning disable IDE1006
+#pragma warning disable IDE0090
+#pragma warning disable IDE0028
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -5,6 +9,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+
 // using pii = (int, int);
 // using pll = (long, long);
 // using pdd = (double, double);
