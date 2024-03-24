@@ -1,10 +1,4 @@
-#pragma warning disable IDE1006
-#pragma warning disable IDE0090
-#pragma warning disable IDE0028
-#pragma warning disable CS8603
-#pragma warning disable CA2211
-#pragma warning disable CA1050
-
+#pragma warning disable
 
 using System;
 using System.Linq;
@@ -328,8 +322,21 @@ public class Kyopuro {
 
 
 	public void Solve() {
+		var (n, m) = readintt2();
+		var crr = readstrings();
+		var drr = readstrings();
+		var nedan = new Dictionary<string, int>();
+		var prr = readints();
+		for (int i = 0; i < m; ++i) {
+			nedan[drr[i]] = prr[i + 1];
+		}
 
+		int ans = 0;
+		for (int i = 0; i < n; ++i) {
+			ans += nedan.ContainsKey(crr[i]) ? nedan[crr[i]] : prr[0];
+		}
 
+		writeline(ans);
 
 	}
 } // end of class

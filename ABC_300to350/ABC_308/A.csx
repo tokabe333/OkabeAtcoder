@@ -331,7 +331,7 @@ public class Kyopuro {
 			return;
 		}
 		for (int i = 1; i < arr.Length; ++i) {
-			if (arr[i] < 100 || 675 < arr[i] || arr[i] % 25 != 0 || arr[i] <= arr[i - 1]) {
+			if (arr[i] < 100 || 675 < arr[i] || arr[i] % 25 != 0 || arr[i] < arr[i - 1]) {
 				writeline("No");
 				return;
 			}

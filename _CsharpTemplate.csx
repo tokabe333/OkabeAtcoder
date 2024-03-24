@@ -253,6 +253,16 @@ public class Util {
 		return ReadLine().Split(' ').Select(_ => long.Parse(_)).ToArray();
 	} // end of func
 
+	/// 数字をスペース区切りでfloat型で入力
+	public static float[] readfloats() {
+		return ReadLine().Split(' ').Select(_ => float.Parse(_)).ToArray();
+	} // end of func
+
+	/// 数字をスペース区切りでdouble型で入力
+	public static double[] readdoubles() {
+		return ReadLine().Split(' ').Select(_ => double.Parse(_)).ToArray();
+	} // end of func
+
 	/// 文字列をスペース区切りで入力
 	public static string[] readstrings() {
 		return ReadLine().Split(' ');
@@ -270,6 +280,12 @@ public class Util {
 		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
+	/// 読み込んだint4つをタプルで返す(分解代入用)
+	public static (int, int, int, int) readintt4() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
 	/// 読み込んだlong2つをタプルで返す(分解代入用)
 	public static (long, long) readlongt2() {
 		var arr = readlongs();
@@ -282,6 +298,48 @@ public class Util {
 		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
+	/// 読み込んだ数long4つをタプルで返す(分解代入用)
+	public static (long, long, long, long) readlongt4() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// 読み込んだfloat2つをタプルで返す(分解代入用)
+	public static (float, float) readfloatt2() {
+		var arr = readfloats();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// 読み込んだfloat3つをタプルで返す(分解代入用)
+	public static (float, float, float) readfloatt3() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// 読み込んだfloat4つをタプルで返す(分解代入用)
+	public static (float, float, float, float) readfloatt4() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// 読み込んだdouble2つをタプルで返す(分解代入用)
+	public static (double, double) readdoublet2() {
+		var arr = readdoubles();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// 読み込んだdouble3つをタプルで返す(分解代入用)
+	public static (double, double, double) readdoublet3() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// 読み込んだdouble4つをタプルで返す(分解代入用)
+	public static (double, double, double, double) readdoublet4() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
 	/// 読み込んだstring2つをタプルで返す(分解代入用)
 	public static (string, string) readstringt2() {
 		var arr = ReadLine().Split(' ');
@@ -292,6 +350,12 @@ public class Util {
 	public static (string, string, string) readstringt3() {
 		var arr = ReadLine().Split(' ');
 		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// 読み込んだstring3つをタプルで返す(分解代入用)
+	public static (string, string, string, string) readstringt4() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
