@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Security.AccessControl;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -376,6 +375,20 @@ public class Util {
 	} // end of func
 } // end of class
 
+public class Node {
+	public int value;
+	public Node prev;
+	public Node next;
+	public Node(int v) { value = v; }
+	public Node(int v, Node p, Node n) {
+		value = v;
+		prev = p;
+		next = n;
+	}
+}
+
+
+
 
 public class Kyopuro {
 	public static void Main() {
@@ -387,75 +400,35 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var (n, a, b) = readlongt3();
-		long n2 = n * 2;
+		int n = readint();
+		var prr = readints().Select(x => x - 1).ToArray();
 		string s = read();
 
-		long leftbnum = 0, rightbnum = 0;
-		var stack = new Stack<char>();
-		for (int i = 0; i < n2; ++i) {
-			if (stack.Count == 0) {
-				stack.Push(s[i]);
-				if (s[i] == '(') leftbnum += 1;
-				else rightbnum += 1;
-				continue;
-			}
-			if (stack.Peek() == '(' && s[i] == ')') {
-				stack.Pop();
-				leftbnum -= 1;
-				continue;
-			}
-			if (s[i] == '(') leftbnum += 1;
-			else rightbnum += 1;
-			stack.Push(s[i]);
+		Node top = new Node(prr[0]);
+		Node tail = top;
+		Node node;
+		top.next = top;
+		top.prev = top;
+		for (int i = 1; i < n; ++i) {
+			node = new Node(prr[i]);
+			tail.next = node;
+			tail = node;
+		}
+		tail.next = top;
+
+		Node pre = top;
+		Node nex = top.next;
+		while (nex != top) {
+			nex.prev = pre;
+			pre = nex;
+			nex = nex.next;
 		}
 
-		// writeline("left:" + leftbnum + " right:" + rightbnum);
-
-		long check(long num) {
-			long c = 0;
-			long irekae = 0;
-			long l = leftbnum;
-			long r = rightbnum;
-			long minlr = Min(num * 2, Min(l, r));
-			// writeline("l:" + l + " r:" + r + " minlr:" + minlr);
-			if (minlr >= 2) {
-				num -= minlr / 2;
-				c += (minlr) / 2 * a;
-				l -= (minlr) / 2 * 2;
-				r -= (minlr) / 2 * 2;
-			}
-			// writeline("duble c:" + c + " l:" + l + " r:" + r);
-
-			minlr = Min(num, Min(l, r));
-			// writeline("minlr:" + minlr);
-			c += minlr * a;
-			l -= minlr;
-			r -= minlr;
-			// writeline("single c:" + c + " l:" + l + " r:" + r);
-
-			c += (l / 2) * b + (r / 2) * b;
-			c += (l % 2) * b + (r % 2) * b;
-			return c;
+		Node hoge = top;
+		while (hoge.next != top) {
+			write(hoge.value + " ");
 		}
+		writeline();
 
-		// var set = new HashSet<long>();
-		// long left = 0;
-		// long right = Min(leftbnum, rightbnum) + 1;
-		// long mid = (left + right) / 2;
-		// long ans = (long)(Pow(10, 16)) + 114514;
-		// while (set.Contains(mid) == false) {
-		// 	set.Add(mid);
-		// 	long c = check(mid);
-
-		// }
-		long ans = (long)Pow(10, 17) + 114514;
-		for (int i = 0; i <= (Min(leftbnum, rightbnum) + 1) / 2; ++i) {
-			long c = check(i);
-			// writeline("i:" + i + " c:" + c);
-			// writeline();
-			ans = Min(ans, c);
-		}
-		writeline(ans);
 	}
 } // end of class

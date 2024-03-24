@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Security.AccessControl;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -387,75 +386,26 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var (n, a, b) = readlongt3();
-		long n2 = n * 2;
-		string s = read();
+		int n = readint();
+		var prr = readints().Select(x => x - 1).ToArray();
+		var s = read();
 
-		long leftbnum = 0, rightbnum = 0;
-		var stack = new Stack<char>();
-		for (int i = 0; i < n2; ++i) {
-			if (stack.Count == 0) {
-				stack.Push(s[i]);
-				if (s[i] == '(') leftbnum += 1;
-				else rightbnum += 1;
-				continue;
+		var kakutei = new bool[n];
+		var spun = new bool[n];
+		for (int i = 0; i < n; ++i) {
+			int p = prr[i];
+			int p2 = (p + 1) % n;
+			if (s[p] == 'L' && spun[p] == false) {
+				spun[p] = true;
+				kakutei[p] = true;
+			} else if (s[p] == 'R' && spun[p2] == false) {
+				spun[p2] = true;
+				kakutei[p] = true;
 			}
-			if (stack.Peek() == '(' && s[i] == ')') {
-				stack.Pop();
-				leftbnum -= 1;
-				continue;
-			}
-			if (s[i] == '(') leftbnum += 1;
-			else rightbnum += 1;
-			stack.Push(s[i]);
 		}
 
-		// writeline("left:" + leftbnum + " right:" + rightbnum);
+		printlist(spun);
+		printlist(kakutei);
 
-		long check(long num) {
-			long c = 0;
-			long irekae = 0;
-			long l = leftbnum;
-			long r = rightbnum;
-			long minlr = Min(num * 2, Min(l, r));
-			// writeline("l:" + l + " r:" + r + " minlr:" + minlr);
-			if (minlr >= 2) {
-				num -= minlr / 2;
-				c += (minlr) / 2 * a;
-				l -= (minlr) / 2 * 2;
-				r -= (minlr) / 2 * 2;
-			}
-			// writeline("duble c:" + c + " l:" + l + " r:" + r);
-
-			minlr = Min(num, Min(l, r));
-			// writeline("minlr:" + minlr);
-			c += minlr * a;
-			l -= minlr;
-			r -= minlr;
-			// writeline("single c:" + c + " l:" + l + " r:" + r);
-
-			c += (l / 2) * b + (r / 2) * b;
-			c += (l % 2) * b + (r % 2) * b;
-			return c;
-		}
-
-		// var set = new HashSet<long>();
-		// long left = 0;
-		// long right = Min(leftbnum, rightbnum) + 1;
-		// long mid = (left + right) / 2;
-		// long ans = (long)(Pow(10, 16)) + 114514;
-		// while (set.Contains(mid) == false) {
-		// 	set.Add(mid);
-		// 	long c = check(mid);
-
-		// }
-		long ans = (long)Pow(10, 17) + 114514;
-		for (int i = 0; i <= (Min(leftbnum, rightbnum) + 1) / 2; ++i) {
-			long c = check(i);
-			// writeline("i:" + i + " c:" + c);
-			// writeline();
-			ans = Min(ans, c);
-		}
-		writeline(ans);
 	}
 } // end of class
