@@ -1,6 +1,8 @@
 #pragma warning disable IDE1006
 #pragma warning disable IDE0090
 #pragma warning disable IDE0028
+#pragma warning disable IDE8602
+#pragma warning disable IDE8603
 using System;
 using System.Linq;
 using System.Collections.Generic;
