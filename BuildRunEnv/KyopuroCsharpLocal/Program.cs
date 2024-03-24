@@ -1,6 +1,10 @@
 #pragma warning disable IDE1006
 #pragma warning disable IDE0090
 #pragma warning disable IDE0028
+#pragma warning disable CS8603
+#pragma warning disable CA2211
+#pragma warning disable CA1050
+
 
 using System;
 using System.Linq;
@@ -325,39 +329,18 @@ public class Kyopuro {
 
 	public void Solve() {
 
-		var (n1, n2, m) = readintt3();
-		var graph = makelist2(n1 + n2, 0, 0);
-		for (int i = 0; i < m; ++i) {
-			var (a, b) = readintt2();
-			a -= 1;
-			b -= 1;
-			graph[a].Add(b);
-			graph[b].Add(a);
+		var arr = readints();
+		if (arr[0] < 100 || 675 < arr[0] || arr[0] % 25 != 0) {
+			writeline("No");
+			return;
 		}
-
-		var kyori = makearr(n1 + n2, -1);
-		var que = new Queue<(int, int)>();
-		que.Enqueue((0, 0));
-		que.Enqueue((n1 + n2 - 1, 0));
-		while (que.Count > 0) {
-			var (node, d) = que.Dequeue();
-			if (kyori[node] != -1) continue;
-			kyori[node] = d;
-			foreach (var next in graph[node]) {
-				que.Enqueue((next, d + 1));
+		for (int i = 1; i < arr.Length; ++i) {
+			if (arr[i] < 100 || 675 < arr[i] || arr[i] % 25 != 0 || arr[i] <= arr[i - 1]) {
+				writeline("No");
+				return;
 			}
 		}
-
-		// printlist(kyori);
-		int m1 = 0, m2 = 0;
-		for (int i = 0; i < n1; ++i) {
-			m1 = Max(m1, kyori[i]);
-		}
-		for (int i = n1; i < n1 + n2; ++i) {
-			m2 = Max(m2, kyori[i]);
-		}
-
-		writeline(m1 + m2 + 1);
+		writeline("Yes");
 
 	}
 } // end of class
