@@ -1,3 +1,6 @@
+#pragma warning disable IDE1006
+#pragma warning disable IDE0090
+#pragma warning disable IDE0028
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -322,42 +325,45 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var (h, w, m) = readintt3();
+		var (h, w, mm) = readlongt3();
+		int m = (int)mm;
 
-		var masu = makearr2(h, w, -1);
 		var arr = makearr2(m, 3, 0);
 		for (int q = 0; q < m; ++q) {
 			arr[q] = readints();
 			arr[q][1] -= 1;
 		}
+
+		var ans = new Dictionary<long, long>();
+		ans[0] = h * w;
+		var tate = new HashSet<long>();
+		var yoko = new HashSet<long>();
 		for (int q = m - 1; q >= 0; --q) {
+			long rc = arr[q][1];
+			long col = arr[q][2];
+			long inc;
 			if (arr[q][0] == 1) {
-				for (int j = 0; j < w; ++j) {
-					if (masu[arr[q][1]][j] != -1) continue;
-					masu[arr[q][1]][j] = arr[q][2];
-				}
+				if (yoko.Contains(rc)) continue;
+				yoko.Add(rc);
+				inc = w - tate.Count;
+				ans[col] = ans.ContainsKey(col) ? ans[col] + inc : inc;
 			} else {
-				for (int i = 0; i < h; ++i) {
-					if (masu[i][arr[q][1]] != -1) continue;
-					masu[i][arr[q][1]] = arr[q][2];
-				}
+				if (tate.Contains(rc)) continue;
+				tate.Add(rc);
+				inc = h - yoko.Count;
+				ans[col] = ans.ContainsKey(col) ? ans[col] + inc : inc;
 			}
+			ans[0] -= inc;
 		}
 
-		var ans = new Dictionary<int, int>();
-		for (int i = 0; i < h; ++i) {
-			for (int j = 0; j < w; ++j) {
-				int col = masu[i][j] == -1 ? 0 : masu[i][j];
-				ans[col] = ans.ContainsKey(col) ? ans[col] + 1 : 1;
-			}
-		}
-
-		var keys = ans.Keys.ToArray();
-		Array.Sort(keys);
+		// var keys = ans.Keys.OrderBy(x => x).ToArray();
+		var keys = ans.Where(kv => kv.Value > 0).Select(kv => kv.Key).OrderBy(k => k).ToArray();
+		var colsum = ans.Values.Sum();
 		writeline(keys.Length);
 		foreach (var key in keys) {
-			writeline(key + " " + ans[key]);
+			long num = ans[key];
+			if (num == 0) continue;
+			writeline(key + " " + num);
 		}
-
 	}
 } // end of class

@@ -1,3 +1,6 @@
+#pragma warning disable IDE1006
+#pragma warning disable IDE0090
+#pragma warning disable IDE0028
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -322,26 +325,45 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var (h, w, m) = readintt3();
-
+		var (h, w, mm) = readlongt3();
+		int m = (int)mm;
 
 		var arr = makearr2(m, 3, 0);
 		for (int q = 0; q < m; ++q) {
 			arr[q] = readints();
 			arr[q][1] -= 1;
 		}
-		var tate = new HashSet<int>();
-		var yoko = new HashSet<int>();
+
+		var ans = new Dictionary<long, long>();
+		ans[0] = h * w;
+		var tate = new HashSet<long>();
+		var yoko = new HashSet<long>();
 		for (int q = m - 1; q >= 0; --q) {
-			int rc = arr[q][1];
-			int col = arr[q][2];
+			long rc = arr[q][1];
+			long col = arr[q][2];
+			long inc;
 			if (arr[q][0] == 1) {
+				if (yoko.Contains(rc)) continue;
+				yoko.Add(rc);
+				inc = w - tate.Count;
+				ans[col] = ans.ContainsKey(col) ? ans[col] + inc : inc;
+			} else {
 				if (tate.Contains(rc)) continue;
 				tate.Add(rc);
+				inc = h - yoko.Count;
+				ans[col] = ans.ContainsKey(col) ? ans[col] + inc : inc;
 			}
+			ans[0] -= inc;
 		}
 
-
-
+		// var keys = ans.Keys.OrderBy(x => x).ToArray();
+		var keys = ans.Where(kv => kv.Value > 0).Select(kv => kv.Key).OrderBy(k => k).ToArray();
+		var colsum = ans.Values.Sum();
+		writeline(keys.Length);
+		foreach (var key in keys) {
+			long num = ans[key];
+			if (num == 0) continue;
+			writeline(key + " " + num);
+		}
 	}
 } // end of class
