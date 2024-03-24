@@ -380,51 +380,39 @@ public class Kyopuro {
 	public static void Main() {
 		preprocess();
 		var kyopuro = new Kyopuro();
-		kyopuro._Solve();
+		kyopuro.Solve();
 		finalprocess();
 	} // end of func
 
-	public void _Solve() {
-		int q = readint();
-		for (int _ = 0; _ < q; ++_) Solve();
-	}
 
 	public void Solve() {
-		int n = readint();
-		string[] masu = new string[2];
-		masu[0] = read();
-		masu[1] = read();
 
-		var graph = new Dictionary<int, List<int>>();
-		for (int i = 0; i < 2 * n; ++i) {
-			int y = i / n;
-			int x = i % n;
-			graph[i] = new List<int>();
-			// up
-			if (0 < y) graph[i].Add(masu[y - 1][x] == '>' ? (y - 1) * n + x + 1 : (y - 1) * n + x - 1);
-			// down
-			if (y < 1) graph[i].Add(masu[y + 1][x] == '>' ? (y + 1) * n + x + 1 : (y + 1) * n + x - 1);
-			// right
-			if (x < n - 1 && masu[y][x + 1] == '>') graph[i].Add(y * n + x + 2);
-			// left
-			if (0 < x && masu[y][x - 1] == '<') graph[i].Add(y * n + x - 2);
+		int q = readint();
+		for (int _ = 0; _ < q; ++_) {
+			Hoge();
 		}
 
-		var que = new Queue<int>();
-		var flag = new HashSet<int>();
-		que.Enqueue(0);
-		while (que.Count > 0) {
-			int i = que.Dequeue();
-			if (i == 2 * n - 1) {
-				writeline("Yes");
+	}
+
+	void Hoge() {
+		var (n, k) = readlongt2();
+		var arr = readlongs();
+		var xrr = readlongs();
+		var dict = new SortedDictionary<long, long>();
+		for (int i = 0; i < n; ++i) {
+			long x = Abs(xrr[i]);
+			dict[x] = dict.ContainsKey(x) ? dict[x] + arr[i] : arr[i];
+		}
+		long sumvit = 0;
+		long bullets = 0;
+		foreach (var kv in dict) {
+			bullets = kv.Key * k;
+			sumvit += kv.Value;
+			if (bullets < sumvit) {
+				writeline("No");
 				return;
 			}
-			if (flag.Contains(i)) continue;
-			flag.Add(i);
-			foreach (var next in graph[i]) {
-				que.Enqueue(next);
-			}
 		}
-		writeline("No");
+		writeline("Yes");
 	}
 } // end of class
