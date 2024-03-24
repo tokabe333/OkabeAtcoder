@@ -1,4 +1,10 @@
-#pragma warning disable
+#pragma warning disable IDE1006
+#pragma warning disable IDE0090
+#pragma warning disable IDE0028
+#pragma warning disable CS8603
+#pragma warning disable CA2211
+#pragma warning disable CA1050
+
 
 using System;
 using System.Linq;
@@ -323,18 +329,7 @@ public class Kyopuro {
 
 	public void Solve() {
 
-		var arr = readints();
-		if (arr[0] < 100 || 675 < arr[0] || arr[0] % 25 != 0) {
-			writeline("No");
-			return;
-		}
-		for (int i = 1; i < arr.Length; ++i) {
-			if (arr[i] < 100 || 675 < arr[i] || arr[i] % 25 != 0 || arr[i] <= arr[i - 1]) {
-				writeline("No");
-				return;
-			}
-		}
-		writeline("Yes");
+
 
 	}
 } // end of class

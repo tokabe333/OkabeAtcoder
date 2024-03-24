@@ -1,10 +1,4 @@
-#pragma warning disable IDE1006
-#pragma warning disable IDE0090
-#pragma warning disable IDE0028
-#pragma warning disable CS8603
-#pragma warning disable CA2211
-#pragma warning disable CA1050
-
+#pragma warning disable
 
 using System;
 using System.Linq;
