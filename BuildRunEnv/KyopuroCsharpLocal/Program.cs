@@ -1,8 +1,7 @@
 #pragma warning disable IDE1006
 #pragma warning disable IDE0090
 #pragma warning disable IDE0028
-#pragma warning disable IDE8602
-#pragma warning disable IDE8603
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -10,8 +9,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-
-
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -327,45 +324,40 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var (h, w, mm) = readlongt3();
-		int m = (int)mm;
 
-		var arr = makearr2(m, 3, 0);
-		for (int q = 0; q < m; ++q) {
-			arr[q] = readints();
-			arr[q][1] -= 1;
+		var (n1, n2, m) = readintt3();
+		var graph = makelist2(n1 + n2, 0, 0);
+		for (int i = 0; i < m; ++i) {
+			var (a, b) = readintt2();
+			a -= 1;
+			b -= 1;
+			graph[a].Add(b);
+			graph[b].Add(a);
 		}
 
-		var ans = new Dictionary<long, long>();
-		ans[0] = h * w;
-		var tate = new HashSet<long>();
-		var yoko = new HashSet<long>();
-		for (int q = m - 1; q >= 0; --q) {
-			long rc = arr[q][1];
-			long col = arr[q][2];
-			long inc;
-			if (arr[q][0] == 1) {
-				if (yoko.Contains(rc)) continue;
-				yoko.Add(rc);
-				inc = w - tate.Count;
-				ans[col] = ans.ContainsKey(col) ? ans[col] + inc : inc;
-			} else {
-				if (tate.Contains(rc)) continue;
-				tate.Add(rc);
-				inc = h - yoko.Count;
-				ans[col] = ans.ContainsKey(col) ? ans[col] + inc : inc;
+		var kyori = makearr(n1 + n2, -1);
+		var que = new Queue<(int, int)>();
+		que.Enqueue((0, 0));
+		que.Enqueue((n1 + n2 - 1, 0));
+		while (que.Count > 0) {
+			var (node, d) = que.Dequeue();
+			if (kyori[node] != -1) continue;
+			kyori[node] = d;
+			foreach (var next in graph[node]) {
+				que.Enqueue((next, d + 1));
 			}
-			ans[0] -= inc;
 		}
 
-		// var keys = ans.Keys.OrderBy(x => x).ToArray();
-		var keys = ans.Where(kv => kv.Value > 0).Select(kv => kv.Key).OrderBy(k => k).ToArray();
-		var colsum = ans.Values.Sum();
-		writeline(keys.Length);
-		foreach (var key in keys) {
-			long num = ans[key];
-			if (num == 0) continue;
-			writeline(key + " " + num);
+		// printlist(kyori);
+		int m1 = 0, m2 = 0;
+		for (int i = 0; i < n1; ++i) {
+			m1 = Max(m1, kyori[i]);
 		}
+		for (int i = n1; i < n1 + n2; ++i) {
+			m2 = Max(m2, kyori[i]);
+		}
+
+		writeline(m1 + m2 + 1);
+
 	}
 } // end of class
