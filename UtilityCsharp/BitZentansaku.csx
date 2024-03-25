@@ -385,84 +385,20 @@ public class Kyopuro {
 	} // end of func
 
 
-	/// ノードをつなぐ距離と行き先
-	public class Edge {
-		public long cost;
-		public int node;
-		public Edge(long c = 0, int n = 0) { this.cost = c; this.node = n; }
-	} // end of class
-
-	/// long型を比較する関数 (昇順)
-	public class ComparerAsc : IComparer<long> {
-		public int Compare(long x, long y) {
-			if (x < y) return -1;
-			if (x > y) return 1;
-			return 0;
-		}
-	} // end of class
-
-	public List<long> Dijkstra(List<List<Edge>> graph, int start) {
-		// 変数用意
-		int n = graph.Count;
-
-		// 最大値
-		long inf = System.Int64.MaxValue;
-
-		// <node, cost> cost降順
-		var pq = new PriorityQueue<int, long>(new ComparerAsc());
-
-		// 確定した距離を保持
-		var distance = new List<long>(makearr<long>(n, inf));
-		distance[start] = 0;
-		pq.Enqueue(start, 0);
-		while (pq.Count > 0) {
-			int node;
-			long cost;
-			pq.TryDequeue(out node, out cost);
-
-			// すでに確定した距離以上なら更新余地は無い
-			if (distance[node] < cost) continue;
-
-			// 各種距離を追加
-			foreach (var next in graph[node]) {
-				// 更新余地がない場合は次
-				if (distance[next.node] < cost + next.cost) continue;
-				distance[next.node] = cost + next.cost;
-				pq.Enqueue(next.node, cost + next.cost);
-			}
-		} // end of while
-
-		return distance;
-	} // end of method
-
-
-
 	public void Solve() {
-		var (n, m, tt) = readintt3();
-		long t = tt;
-		var graph1 = makelist2(n, 0, new Edge());
-		var graph2 = makelist2(n, 0, new Edge());
-		var arr = readlongs();
-		for (int i = 0; i < m; ++i) {
-			var (a, b, c) = readintt3();
-			--a; --b;
-			graph1[a].Add(new Edge(c, b));
-			graph2[b].Add(new Edge(c, a));
+
+		int n = 4;
+
+
+		// {0, 1, ..., n-1}
+		for (int bit = 0; bit < (1 << n); ++bit) {
+			var s = new List<int>();
+			for (int i = 0; i < n; ++i) {
+				if ((bit & (1 << i)) > 0) s.Add(i);
+			}
+
+			printlist(s);
 		}
-
-
-		var dist1 = Dijkstra(graph1, 0);
-		var dist2 = Dijkstra(graph2, 0);
-		long ans = 0;
-		for (int i = 0; i < n; ++i) {
-			long time = t - dist1[i] - dist2[i];
-			long money = time * arr[i];
-			ans = Max(ans, money);
-		}
-
-		// printlist(dist1);
-		// printlist(dist2);
-		writeline(ans);
 
 	}
 } // end of class
