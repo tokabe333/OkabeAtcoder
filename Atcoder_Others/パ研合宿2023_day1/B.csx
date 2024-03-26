@@ -388,11 +388,42 @@ public class Kyopuro {
 	public void Solve() {
 
 		int n = readint();
-		writeline("Yes");
-		for (int i = 0; i < n; ++i) {
-			write((i * 2 + 1) + " ");
+		var (a, b) = readintt2();
+		var (c, d) = readintt2();
+
+		if (a == c || a == d || b == c || b == d) {
+			writeline(3);
+			return;
 		}
-		writeline();
+
+		if (a > b) {
+			var t = a;
+			a = b;
+			b = t;
+		}
+		if (c > d) {
+			var t = c;
+			c = d;
+			d = t;
+		}
+
+		if (a < c) {
+			var hoge = a;
+			a = c;
+			c = hoge;
+			hoge = b;
+			b = d;
+			d = hoge;
+		}
+
+		if (a < d && d < b) {
+			writeline(4);
+			return;
+		}
+
+
+		writeline(3);
+
 
 	}
 } // end of class

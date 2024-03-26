@@ -387,12 +387,13 @@ public class Kyopuro {
 
 	public void Solve() {
 
-		int n = readint();
-		writeline("Yes");
-		for (int i = 0; i < n; ++i) {
-			write((i * 2 + 1) + " ");
-		}
-		writeline();
+		double k = (double)readint();
+		var (x1, y1) = readdoublet2();
+		var (x2, y2) = readdoublet2();
+
+		double dx = Abs(x1 - x2);
+		double dy = Abs(y1 - y2);
+
 
 	}
 } // end of class

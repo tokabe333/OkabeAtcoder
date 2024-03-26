@@ -388,11 +388,11 @@ public class Kyopuro {
 	public void Solve() {
 
 		int n = readint();
-		writeline("Yes");
-		for (int i = 0; i < n; ++i) {
-			write((i * 2 + 1) + " ");
+		var arr = readints();
+		if (arr.Max() > 0) {
+			writeline("Yes");
+		} else {
+			writeline("No");
 		}
-		writeline();
-
 	}
 } // end of class
