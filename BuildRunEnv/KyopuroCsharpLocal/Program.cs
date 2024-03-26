@@ -375,6 +375,90 @@ public class Util {
 	} // end of func
 } // end of class
 
+class MyPriorityQueue<T> {
+	/// 内部で持つヒープ配列
+	public List<T> heap = new List<T>();
+
+	/// 現在の要素数
+	public int Count { get { return heap.Count; } }
+
+	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
+	private Func<T, T, bool> Compare;
+
+	public MyPriorityQueue(Func<T, T, bool> compare) {
+		this.Compare = compare;
+	}  // end of constructor
+
+	/// 新規の値を追加する
+	public void Enqueue(T num) {
+		// 追加する要素のノード番号　
+		int node = this.heap.Count;
+		this.heap.Add(num);
+
+		// 可能な限り親と交換
+		while (node > 0) {
+			// 親ノード
+			int p = (node - 1) / 2;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(num, heap[p]) == false) break;
+
+			// 親ノードの値を子に降ろす
+			heap[node] = heap[p];
+			node = p;
+		} // end of while
+
+		// 新規の値を下ろす場所を見つけたので終わり
+		heap[node] = num;
+	} // end of method
+
+	/// 一番優先度の高い値を返す
+	public T Peek() => this.heap[0];
+
+	/// 一番優先度の高い値を返して削除する
+	public T Dequeue() {
+		// return用の優先度が一番高い値
+		T ret = this.heap[0];
+
+		// 先頭を削除
+		this.Pop();
+
+		return ret;
+	} // end of method
+
+	/// 一番優先度の高い値を削除する
+	public void Pop() {
+		// 根に持ってくる値
+		T last = heap[this.heap.Count - 1];
+
+		// 最後尾を削除 O(1)
+		this.heap.RemoveAt(this.heap.Count - 1);
+
+		// 要素がなくなったら終了
+		if (this.heap.Count == 0) return;
+
+		// 先頭を置き換えて降ろしていく
+		int node = 0;
+		while (node * 2 + 1 < this.heap.Count) {
+			int a = node * 2 + 1;
+			int b = node * 2 + 2;
+
+			// 右の子が存在して、なおかつ優先度が高いならば
+			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(last, this.heap[a])) break;
+
+			// 優先度の高い子を上げる
+			this.heap[node] = this.heap[a];
+			node = a;
+		} // end of while
+
+		// 先頭に持ってきた値の置き場所が決まったので更新
+		this.heap[node] = last;
+	} // end of method
+
+} // end of class
 
 public class Kyopuro {
 	public static void Main() {
@@ -392,14 +476,6 @@ public class Kyopuro {
 		public Edge(long c = 0, int n = 0) { this.cost = c; this.node = n; }
 	} // end of class
 
-	/// long型を比較する関数 (昇順)
-	public class ComparerAsc : IComparer<long> {
-		public int Compare(long x, long y) {
-			if (x < y) return -1;
-			if (x > y) return 1;
-			return 0;
-		}
-	} // end of class
 
 	public List<long> Dijkstra(List<List<Edge>> graph, int start) {
 		// 変数用意
@@ -409,16 +485,19 @@ public class Kyopuro {
 		long inf = System.Int64.MaxValue;
 
 		// <node, cost> cost降順
-		var pq = new PriorityQueue<int, long>(new ComparerAsc());
+		// var pq = new PriorityQueue<int, long>(new ComparerAsc());
+		var pq = new MyPriorityQueue<Edge>((a, b) => a.cost < b.cost);
 
 		// 確定した距離を保持
 		var distance = new List<long>(makearr<long>(n, inf));
 		distance[start] = 0;
-		pq.Enqueue(start, 0);
+		pq.Enqueue(new Edge(0, start));
 		while (pq.Count > 0) {
-			int node;
-			long cost;
-			pq.TryDequeue(out node, out cost);
+			var edge = pq.Dequeue();
+			int node = edge.node;
+			long cost = edge.cost;
+			// pq.TryDequeue(out node, out cost);
+
 
 			// すでに確定した距離以上なら更新余地は無い
 			if (distance[node] < cost) continue;
@@ -428,7 +507,7 @@ public class Kyopuro {
 				// 更新余地がない場合は次
 				if (distance[next.node] < cost + next.cost) continue;
 				distance[next.node] = cost + next.cost;
-				pq.Enqueue(next.node, cost + next.cost);
+				pq.Enqueue(new Edge(cost + next.cost, next.node));
 			}
 		} // end of while
 
@@ -438,31 +517,17 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var (n, m, tt) = readintt3();
-		long t = tt;
-		var graph1 = makelist2(n, 0, new Edge());
-		var graph2 = makelist2(n, 0, new Edge());
-		var arr = readlongs();
+		var (n, m, r) = readintt3();
+		var graph = makelist2(n, 0, new Edge());
+		var pq = new MyPriorityQueue<Edge>((a, b) => a.cost < b.cost);
 		for (int i = 0; i < m; ++i) {
-			var (a, b, c) = readintt3();
-			--a; --b;
-			graph1[a].Add(new Edge(c, b));
-			graph2[b].Add(new Edge(c, a));
+			var (s, t, d) = readintt3();
+			graph[s].Add(new Edge(d, t));
 		}
 
-
-		var dist1 = Dijkstra(graph1, 0);
-		var dist2 = Dijkstra(graph2, 0);
-		long ans = 0;
-		for (int i = 0; i < n; ++i) {
-			long time = t - dist1[i] - dist2[i];
-			long money = time * arr[i];
-			ans = Max(ans, money);
+		var list = Dijkstra(graph, r);
+		foreach (var l in list) {
+			writeline(l == Int64.MaxValue ? "INF" : l.ToString());
 		}
-
-		// printlist(dist1);
-		// printlist(dist2);
-		writeline(ans);
-
 	}
 } // end of class

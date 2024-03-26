@@ -7,6 +7,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Runtime.CompilerServices;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -375,6 +376,7 @@ public class Util {
 	} // end of func
 } // end of class
 
+
 class MyPriorityQueue<T> {
 	/// 内部で持つヒープ配列
 	public List<T> heap = new List<T>();
@@ -462,73 +464,27 @@ class MyPriorityQueue<T> {
 
 public class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
-	/// ノードをつなぐ距離と行き先
-	public class Edge {
-		public long cost;
-		public int node;
-		public Edge(long c = 0, int n = 0) { this.cost = c; this.node = n; }
-	} // end of class
-
-
-	public List<long> Dijkstra(List<List<Edge>> graph, int start) {
-		// 変数用意
-		int n = graph.Count;
-
-		// 最大値
-		long inf = System.Int64.MaxValue;
-
-		// <node, cost> cost降順
-		// var pq = new PriorityQueue<int, long>(new ComparerAsc());
-		var pq = new MyPriorityQueue<Edge>((a, b) => a.cost < b.cost);
-
-		// 確定した距離を保持
-		var distance = new List<long>(makearr<long>(n, inf));
-		distance[start] = 0;
-		pq.Enqueue(new Edge(0, start));
-		while (pq.Count > 0) {
-			var edge = pq.Dequeue();
-			int node = edge.node;
-			long cost = edge.cost;
-			// pq.TryDequeue(out node, out cost);
-
-
-			// すでに確定した距離以上なら更新余地は無い
-			if (distance[node] < cost) continue;
-
-			// 各種距離を追加
-			foreach (var next in graph[node]) {
-				// 更新余地がない場合は次
-				if (distance[next.node] < cost + next.cost) continue;
-				distance[next.node] = cost + next.cost;
-				pq.Enqueue(new Edge(cost + next.cost, next.node));
-			}
-		} // end of while
-
-		return distance;
-	} // end of method
-
-
-
 	public void Solve() {
-		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_A
-		var (n, m, r) = readintt3();
-		var graph = makelist2(n, 0, new Edge());
-		var pq = new MyPriorityQueue<Edge>((a, b) => a.cost < b.cost);
-		for (int i = 0; i < m; ++i) {
-			var (s, t, d) = readintt3();
-			graph[s].Add(new Edge(d, t));
-		}
+		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_9_C
+		var pq = new MyPriorityQueue<long>((a, b) => a >= b);
 
-		var list = Dijkstra(graph, r);
-		foreach (var l in list) {
-			writeline(l == Int64.MaxValue ? "INF" : l.ToString());
+		while (true) {
+			var s = read();
+			if (s == "end") break;
+			var order = s.Split(" ")[0];
+			if (order == "insert") {
+				var num = int.Parse(s.Split(" ")[1]);
+				pq.Enqueue(num);
+			} else {
+				writeline(pq.Dequeue());
+			}
 		}
 	}
 } // end of class
