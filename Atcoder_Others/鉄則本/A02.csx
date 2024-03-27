@@ -158,7 +158,7 @@ public class Util {
 		T[] brr = new T[arr.Length];
 		Array.Copy(arr, brr, arr.Length);
 		return brr;
-	} // end of func
+	} // end of func 
 
 	/// 2次元配列のディープコピーを行う
 	public static T[][] copyarr2<T>(T[][] arr) {
@@ -207,7 +207,7 @@ public class Util {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
-	} // end of func
+	} // end of func	
 
 	/// 1次元Listを出力
 	public static void printarr<T>(List<T> list) {
@@ -387,36 +387,15 @@ public class Kyopuro {
 
 	public void Solve() {
 
-		var (h, w) = readintt2();
-		var masu = makearr2(h, w, 0);
-		for (int i = 0; i < h; ++i) {
-			masu[i] = readints();
-		}
+		var (n, x) = readlongt2();
+		var arr = readlongs();
 
-		var cmasu = makearr2(h + 1, w + 1, 0);
-		for (int i = 0; i < h; ++i) {
-			for (int j = 0; j < w; ++j) {
-				cmasu[i + 1][j + 1] = masu[i][j] + cmasu[i + 1][j];
+		for (int i = 0; i < n; ++i) {
+			if (arr[i] == x) {
+				writeline("Yes");
+				return;
 			}
 		}
-
-		for (int j = 0; j <= w; ++j) {
-			for (int i = 0; i < h; ++i) {
-				cmasu[i + 1][j] += cmasu[i][j];
-			}
-		}
-
-		int q = readint();
-		for (int i = 0; i < q; ++i) {
-			// var a = readints().Select(x => x - 1).ToArray();
-			var (a, b, c, d) = readintt4();
-			--a; --b;
-			var ul = cmasu[a][b];
-			var ur = cmasu[a][d];
-			var ll = cmasu[c][b];
-			var lr = cmasu[c][d];
-			writeline(ul + lr - ur - ll);
-		}
-
+		writeline("No");
 	}
 } // end of class

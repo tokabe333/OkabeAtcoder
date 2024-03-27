@@ -158,7 +158,7 @@ public class Util {
 		T[] brr = new T[arr.Length];
 		Array.Copy(arr, brr, arr.Length);
 		return brr;
-	} // end of func
+	} // end of func 
 
 	/// 2次元配列のディープコピーを行う
 	public static T[][] copyarr2<T>(T[][] arr) {
@@ -207,7 +207,7 @@ public class Util {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
-	} // end of func
+	} // end of func	
 
 	/// 1次元Listを出力
 	public static void printarr<T>(List<T> list) {
@@ -359,7 +359,7 @@ public class Util {
 	} // end of func
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
-	public static void WriteLine16<T>(T num) {
+	public static void writeline16<T>(T num) {
 		WriteLine(string.Format("{0:0.################}", num));
 	} // end of func
 
@@ -384,39 +384,22 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	/// n(10)をr進数に変換
+	public string RadixConversion(int n, int r) {
+		string ret = "";
+		while (n > 0) {
+			ret += n % r;
+			n /= r;
+		}
+		return new string(ret.Reverse().ToArray());
+	}
 
 	public void Solve() {
 
-		var (h, w) = readintt2();
-		var masu = makearr2(h, w, 0);
-		for (int i = 0; i < h; ++i) {
-			masu[i] = readints();
-		}
+		int n = readint();
 
-		var cmasu = makearr2(h + 1, w + 1, 0);
-		for (int i = 0; i < h; ++i) {
-			for (int j = 0; j < w; ++j) {
-				cmasu[i + 1][j + 1] = masu[i][j] + cmasu[i + 1][j];
-			}
-		}
-
-		for (int j = 0; j <= w; ++j) {
-			for (int i = 0; i < h; ++i) {
-				cmasu[i + 1][j] += cmasu[i][j];
-			}
-		}
-
-		int q = readint();
-		for (int i = 0; i < q; ++i) {
-			// var a = readints().Select(x => x - 1).ToArray();
-			var (a, b, c, d) = readintt4();
-			--a; --b;
-			var ul = cmasu[a][b];
-			var ur = cmasu[a][d];
-			var ll = cmasu[c][b];
-			var lr = cmasu[c][d];
-			writeline(ul + lr - ur - ll);
-		}
-
+		string s = RadixConversion(n, 2);
+		// writeline(s);
+		writeline(s.PadLeft(10, '0'));
 	}
 } // end of class
