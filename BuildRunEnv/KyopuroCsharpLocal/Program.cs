@@ -139,6 +139,21 @@ public class Util {
 		return arr;
 	} // end of func
 
+	/// 任意の要素数・初期値の3次元配列を作って初期化する
+	public static T[][][] makearr3<T>(int height, int width, int depth, T value) {
+		var arr = new T[height][][];
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new T[width][];
+			for (int j = 0; j < width; ++j) {
+				arr[i][j] = new T[depth];
+				for (int k = 0; k < depth; ++k) {
+					arr[i][j][k] = value;
+				}
+			}
+		}
+		return arr;
+	} // end of func
+
 	/// 任意の要素数・初期値のListを作って初期化する
 	public static List<T> makelist<T>(int num, T value) {
 		return new List<T>(makearr(num, value));
@@ -149,6 +164,18 @@ public class Util {
 		var arr = new List<List<T>>();
 		for (int i = 0; i < height; ++i) {
 			arr.Add(makelist(width, value));
+		}
+		return arr;
+	} // end of func
+
+	/// 任意の要素数・初期値の3次元Listを作って初期化する
+	public static List<List<List<T>>> makelist3<T>(int height, int width, int depth, T value) {
+		var arr = new List<List<List<T>>>();
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new List<List<T>>();
+			for (int j = 0; j < width; ++j) {
+				arr[i].Add(makelist(depth, value));
+			}
 		}
 		return arr;
 	} // end of func
@@ -384,47 +411,10 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	string s;
-	int nextmoji(int index) {
-		char c = s[index];
-		int next = index + 1;
-		while (next < s.Length) {
-			if (s[next] != c) return next;
-			next += 1;
-		}
-		return next;
-	}
 
 	public void Solve() {
 
-		var (n, k) = readintt2();
-		s = read();
 
-		long ans = 0;
-		long ab = 0;
-		long aa = 0;
 
-		int index = 0;
-		while (index < n - 1) {
-			int next = nextmoji(index);
-			if (next == index + 1) {
-				ab += 1;
-			} else {
-				aa += 1;
-				next -= 1;
-			}
-			index = next;
-			writeline("next:" + next);
-		}
-
-		long k2 = (long)Pow(2, k - 1);
-		for (long i = 0; i < ab; ++i) {
-			ans = (ans + k2) % m998;
-		}
-		ans = (ans + aa) % m998;
-
-		writeline("ab:" + ab + " aa:" + aa);
-		writeline("k2:" + k2);
-		writeline(ans);
 	}
 } // end of class
