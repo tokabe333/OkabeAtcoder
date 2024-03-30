@@ -7,6 +7,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Threading;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -405,76 +406,32 @@ public class Util {
 
 public class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
 	public void Solve() {
-		var (a, b, c) = readlongt3();
+		string s = read();
+		var set = new HashSet<string>();
 
-		long c1num = 0;
-		long cc = c;
-		var ind1 = new List<int>();
-		var ind0 = new List<int>();
-		writeline(Convert.ToString(cc, 2));
-		for (int i = 0; cc > 0; ++i) {
-			long aa = cc & 1;
-			if (aa == 1) {
-				c1num += 1;
-				ind1.Add(i);
-				writeline("i:" + i + " 01:" + Convert.ToString(cc, 2));
-			} else {
-				ind0.Add(i);
+		int n = s.Length;
+		for (int i = 1; i <= n; ++i) {
+			for (int j = 0; j <= n - i; ++j) {
+				string hoge = "";
+				for (int k = 0; k < i; ++k) {
+					hoge += s[k + j];
+				}
+				set.Add(hoge);
 			}
-			cc >>= 1;
 		}
 
-		for (int i = 0; i < 60; ++i) {
-			long hoge = 1 << i;
-			if (hoge <= c) continue;
-			ind0.Add(i);
-		}
+		writeline(set.Count);
+		// foreach (var ss in set) {
+		// 	writeline(ss);
+		// }
 
-		printlist(ind0);
-		printlist(ind1);
-
-
-		if ((a + b) % 2 != c1num % 2) {
-			writeline(-1);
-			return;
-		}
-		if (c1num > a + b) {
-			writeline(-1);
-			return;
-		}
-
-		long ans1 = 0;
-		long ans2 = 0;
-		long loopnum = (a + b - c1num) / 2;
-		for (int i = 0; i < loopnum; ++i) {
-			long hoge = 1 << ind0[i];
-			ans1 += hoge;
-			ans2 += hoge;
-			a -= 1;
-			b -= 1;
-		}
-
-		for (int i = 0; i < a; ++i) {
-			long hoge = 1 << ind1[i];
-			ans1 += hoge;
-		}
-
-		for (int i = 0; i < b; ++i) {
-			long hoge = 1 << ind1[i + (int)a];
-			ans2 += hoge;
-		}
-
-		writeline(ans1 + " " + ans2);
-		writeline(Convert.ToString(ans1, 2));
-		writeline(Convert.ToString(ans2, 2));
-		writeline(ans1 ^ ans2);
 	}
 } // end of class

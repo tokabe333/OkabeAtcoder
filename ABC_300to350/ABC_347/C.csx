@@ -405,76 +405,43 @@ public class Util {
 
 public class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
 	public void Solve() {
-		var (a, b, c) = readlongt3();
+		var (nn, a, b) = readlongt3();
+		long ab = a + b;
+		int n = (int)nn;
+		var drr = readlongs().Select(x => x + ab - 1).ToArray();
 
-		long c1num = 0;
-		long cc = c;
-		var ind1 = new List<int>();
-		var ind0 = new List<int>();
-		writeline(Convert.ToString(cc, 2));
-		for (int i = 0; cc > 0; ++i) {
-			long aa = cc & 1;
-			if (aa == 1) {
-				c1num += 1;
-				ind1.Add(i);
-				writeline("i:" + i + " 01:" + Convert.ToString(cc, 2));
-			} else {
-				ind0.Add(i);
-			}
-			cc >>= 1;
+		var mods = new SortedSet<long>();
+		for (int i = 0; i < n; ++i) {
+			mods.Add(drr[i] % (a + b));
 		}
 
-		for (int i = 0; i < 60; ++i) {
-			long hoge = 1 << i;
-			if (hoge <= c) continue;
-			ind0.Add(i);
+		var modarr = new long[mods.Count];
+		int index = 0;
+		foreach (var m in mods) {
+			modarr[index] = m;
+			index += 1;
 		}
 
-		printlist(ind0);
-		printlist(ind1);
-
-
-		if ((a + b) % 2 != c1num % 2) {
-			writeline(-1);
-			return;
+		long ans = long.MaxValue;
+		for (int i = 0; i < modarr.Length - 1; ++i) {
+			long diff = Abs(modarr[i] - modarr[i + 1]);
+			diff = ab - diff;
+			ans = Min(ans, diff);
 		}
-		if (c1num > a + b) {
-			writeline(-1);
-			return;
-		}
-
-		long ans1 = 0;
-		long ans2 = 0;
-		long loopnum = (a + b - c1num) / 2;
-		for (int i = 0; i < loopnum; ++i) {
-			long hoge = 1 << ind0[i];
-			ans1 += hoge;
-			ans2 += hoge;
-			a -= 1;
-			b -= 1;
-		}
-
-		for (int i = 0; i < a; ++i) {
-			long hoge = 1 << ind1[i];
-			ans1 += hoge;
-		}
-
-		for (int i = 0; i < b; ++i) {
-			long hoge = 1 << ind1[i + (int)a];
-			ans2 += hoge;
-		}
-
-		writeline(ans1 + " " + ans2);
-		writeline(Convert.ToString(ans1, 2));
-		writeline(Convert.ToString(ans2, 2));
-		writeline(ans1 ^ ans2);
+		long saigo = Abs(modarr[0] + ab - modarr.Last());
+		saigo = ab - saigo;
+		ans = Min(ans, saigo);
+		// printlist(modarr);
+		// writeline(ans);
+		if (ans < a) writeline("Yes");
+		else writeline("No");
 	}
 } // end of class
