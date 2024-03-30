@@ -413,35 +413,38 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var (nn, a, b) = readlongt3();
-		long ab = a + b;
-		int n = (int)nn;
-		var drr = readlongs().Select(x => x + ab - 1).ToArray();
+		var (n, q) = readintt2();
+		var xrr = readints().Select(x => x - 1).ToArray();
 
-		var mods = new SortedSet<long>();
+		var set = new HashSet<int>();
+		var timing = makelist2<int>(n, 0, 0);
+		var cumul = new long[q + 1];
+		for (int i = 0; i < q; ++i) {
+			if (set.Contains(xrr[i])) set.Remove(xrr[i]);
+			else set.Add(xrr[i]);
+			timing[xrr[i]].Add(i);
+			cumul[i + 1] = cumul[i] + set.Count;
+		}
+
+
+
 		for (int i = 0; i < n; ++i) {
-			mods.Add(drr[i] % (a + b));
+			timing[i].Add(q);
+			int start = -1;
+			long ans = 0;
+			for (int j = 0; j < timing[i].Count; ++j) {
+				if (start == -1) {
+					start = timing[i][j];
+				} else {
+					int end = timing[i][j];
+					ans += cumul[end] - cumul[start];
+					start = -1;
+				}
+			}
+			write(ans + " ");
 		}
-
-		var modarr = new long[mods.Count];
-		int index = 0;
-		foreach (var m in mods) {
-			modarr[index] = m;
-			index += 1;
-		}
-
-		long ans = long.MaxValue;
-		for (int i = 0; i < modarr.Length - 1; ++i) {
-			long diff = Abs(modarr[i] - modarr[i + 1]);
-			diff = ab - diff;
-			ans = Min(ans, diff);
-		}
-		long saigo = Abs(modarr[0] + ab - modarr.Last());
-		saigo = ab - saigo;
-		ans = Min(ans, saigo);
-		printlist(modarr);
-		writeline(ans);
-		if (ans < a) writeline("Yes");
-		else writeline("No");
+		writeline();
+		// printlist2(timing);
+		// printlist(cumul);
 	}
 } // end of class
