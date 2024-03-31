@@ -7,8 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -387,24 +385,6 @@ public class Util {
 		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
-	/// 先頭に要素数(int)と次にでかい数字1つ
-	public static (int, long) readintlongt2() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1]);
-	} // end of func
-
-	/// 先頭に要素数(int)と次にでかい数字2つ
-	public static (int, long, long) readintlongt3() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// 先頭に要素数(int)と次にでかい数字2つ
-	public static (int, long, long, long) readintlongt4() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
 	public static void WriteLine16<T>(T num) {
 		WriteLine(string.Format("{0:0.################}", num));
@@ -431,46 +411,24 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public static int a10_9 = 1000000000;
-	public static long a10_18 = 1000000000000000000;
+
 	public void Solve() {
+
 		int n = readint();
-		var arr = readlongs();
-		var brr = new List<long>(readlongs());
+		var arr = readints();
+		int d = readint();
 
-		var dp = makearr<long>(n, a10_18);
-		dp[0] = 0;
-		for (int i = 0; i < n - 1; ++i) {
-			dp[i + 1] = Min(dp[i + 1], dp[i] + arr[i]);
-			if (i + 2 >= n) continue;
-			dp[i + 2] = Min(dp[i + 2], dp[i] + brr[i]);
+		var hidari = new int[n];
+		hidari[0] = arr[0];
+		for (int i = 1; i < n; ++i) hidari[i] = Max(hidari[i - 1], arr[i]);
+		var migi = new int[n];
+		migi[n - 1] = arr[n - 1];
+		for (int i = n - 2; i >= 0; --i) migi[i] = Max(migi[i + 1], arr[i]);
+
+		for (int i = 0; i < d; ++i) {
+			var (l, r) = readintt2();
+			writeline(Max(hidari[l - 2], migi[r]));
 		}
 
-		printlist(dp);
-		var ans = new List<long>();
-		ans.Add(n);
-		var bbrr = new List<long>();
-		bbrr.Add(0);
-		int index = n - 1;
-		while (index > 0) {
-			if (index == 1) {
-				ans.Add(1);
-				break;
-			}
-
-			long now = dp[index];
-			long a = arr[index - 1];
-			long b = brr[index - 2];
-			if (now == dp[index - 1] + a) {
-				ans.Add(index);
-				index -= 1;
-			} else {
-				ans.Add(index - 1);
-				index -= 2;
-			}
-		}
-
-		writeline(ans.Count);
-		printlist(ans.Select(x => x).Reverse().ToArray());
 	}
 } // end of class

@@ -78,6 +78,8 @@ public class Util {
 	public static double PI = 3.141592653589793;
 	public static long m107 = 1000000007;
 	public static long m998 = 998244353;
+	public static int a10_9 = 1000000000;
+	public static long a10_18 = 1000000000000000000;
 
 	/// 打ちやすいように
 	public static string read() => ReadLine();
@@ -383,6 +385,24 @@ public class Util {
 	public static (string, string, string, string) readstringt4() {
 		var arr = ReadLine().Split(' ');
 		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// 先頭に要素数(int)と次にでかい数字1つ
+	public static (int, long) readintlongt2() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1]);
+	} // end of func
+
+	/// 先頭に要素数(int)と次にでかい数字2つ
+	public static (int, long, long) readintlongt3() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// 先頭に要素数(int)と次にでかい数字2つ
+	public static (int, long, long, long) readintlongt4() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)

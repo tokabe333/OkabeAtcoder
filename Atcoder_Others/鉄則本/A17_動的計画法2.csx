@@ -7,8 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -446,7 +444,7 @@ public class Kyopuro {
 			dp[i + 2] = Min(dp[i + 2], dp[i] + brr[i]);
 		}
 
-		printlist(dp);
+		// printlist(dp);
 		var ans = new List<long>();
 		ans.Add(n);
 		var bbrr = new List<long>();

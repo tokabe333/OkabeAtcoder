@@ -7,8 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -431,46 +429,30 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public static int a10_9 = 1000000000;
-	public static long a10_18 = 1000000000000000000;
+
 	public void Solve() {
-		int n = readint();
+		var (n, k) = readintlongt2();
 		var arr = readlongs();
-		var brr = new List<long>(readlongs());
+		var brr = readlongs();
+		var crr = readlongs();
+		var drr = readlongs();
 
-		var dp = makearr<long>(n, a10_18);
-		dp[0] = 0;
-		for (int i = 0; i < n - 1; ++i) {
-			dp[i + 1] = Min(dp[i + 1], dp[i] + arr[i]);
-			if (i + 2 >= n) continue;
-			dp[i + 2] = Min(dp[i + 2], dp[i] + brr[i]);
-		}
-
-		printlist(dp);
-		var ans = new List<long>();
-		ans.Add(n);
-		var bbrr = new List<long>();
-		bbrr.Add(0);
-		int index = n - 1;
-		while (index > 0) {
-			if (index == 1) {
-				ans.Add(1);
-				break;
-			}
-
-			long now = dp[index];
-			long a = arr[index - 1];
-			long b = brr[index - 2];
-			if (now == dp[index - 1] + a) {
-				ans.Add(index);
-				index -= 1;
-			} else {
-				ans.Add(index - 1);
-				index -= 2;
+		var cd = new HashSet<long>();
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j < n; ++j) {
+				cd.Add(crr[i] + drr[j]);
 			}
 		}
 
-		writeline(ans.Count);
-		printlist(ans.Select(x => x).Reverse().ToArray());
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j < n; ++j) {
+				long ab = arr[i] + brr[j];
+				if (cd.Contains(k - ab)) {
+					writeline("Yes");
+					return;
+				}
+			}
+		}
+		writeline("No");
 	}
 } // end of class

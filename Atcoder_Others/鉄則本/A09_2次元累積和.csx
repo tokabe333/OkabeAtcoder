@@ -7,8 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -387,24 +385,6 @@ public class Util {
 		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
-	/// 先頭に要素数(int)と次にでかい数字1つ
-	public static (int, long) readintlongt2() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1]);
-	} // end of func
-
-	/// 先頭に要素数(int)と次にでかい数字2つ
-	public static (int, long, long) readintlongt3() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// 先頭に要素数(int)と次にでかい数字2つ
-	public static (int, long, long, long) readintlongt4() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
 	public static void WriteLine16<T>(T num) {
 		WriteLine(string.Format("{0:0.################}", num));
@@ -431,46 +411,41 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public static int a10_9 = 1000000000;
-	public static long a10_18 = 1000000000000000000;
+
 	public void Solve() {
-		int n = readint();
-		var arr = readlongs();
-		var brr = new List<long>(readlongs());
+		var (h, w, n) = readintt3();
+		var masu = makearr2<int>(h + 1, w + 1, 0);
 
-		var dp = makearr<long>(n, a10_18);
-		dp[0] = 0;
-		for (int i = 0; i < n - 1; ++i) {
-			dp[i + 1] = Min(dp[i + 1], dp[i] + arr[i]);
-			if (i + 2 >= n) continue;
-			dp[i + 2] = Min(dp[i + 2], dp[i] + brr[i]);
+		for (int i = 0; i < n; ++i) {
+			var (a, b, c, d) = readintt4();
+			--a; --b;
+			masu[a][b] += 1;
+			masu[c][d] += 1;
+			masu[a][d] -= 1;
+			masu[c][b] -= 1;
 		}
 
-		printlist(dp);
-		var ans = new List<long>();
-		ans.Add(n);
-		var bbrr = new List<long>();
-		bbrr.Add(0);
-		int index = n - 1;
-		while (index > 0) {
-			if (index == 1) {
-				ans.Add(1);
-				break;
-			}
+		var sekisetu = makearr2<int>(h + 1, w + 1, 0);
 
-			long now = dp[index];
-			long a = arr[index - 1];
-			long b = brr[index - 2];
-			if (now == dp[index - 1] + a) {
-				ans.Add(index);
-				index -= 1;
-			} else {
-				ans.Add(index - 1);
-				index -= 2;
+		for (int i = 0; i < h; ++i) {
+			for (int j = 0; j < w; ++j) {
+				sekisetu[i + 1][j + 1] = masu[i][j] + sekisetu[i + 1][j];
+			}
+		}
+		for (int j = 0; j < w; ++j) {
+			for (int i = 0; i < h; ++i) {
+				sekisetu[i + 1][j + 1] += sekisetu[i][j + 1];
 			}
 		}
 
-		writeline(ans.Count);
-		printlist(ans.Select(x => x).Reverse().ToArray());
+		// printlist2(masu);
+		// printlist2(sekisetu);
+
+		for (int i = 1; i <= h; ++i) {
+			for (int j = 1; j <= w; ++j) {
+				write(sekisetu[i][j] + " ");
+			}
+			writeline();
+		}
 	}
 } // end of class

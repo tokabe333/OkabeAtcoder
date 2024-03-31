@@ -7,8 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -431,46 +429,21 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public static int a10_9 = 1000000000;
-	public static long a10_18 = 1000000000000000000;
+
 	public void Solve() {
 		int n = readint();
 		var arr = readlongs();
-		var brr = new List<long>(readlongs());
+		var dict = new SortedDictionary<long, long>();
+		foreach (var a in arr) dict[a] = 0;
 
-		var dp = makearr<long>(n, a10_18);
-		dp[0] = 0;
-		for (int i = 0; i < n - 1; ++i) {
-			dp[i + 1] = Min(dp[i + 1], dp[i] + arr[i]);
-			if (i + 2 >= n) continue;
-			dp[i + 2] = Min(dp[i + 2], dp[i] + brr[i]);
+		long index = 1;
+		var keys = dict.Keys.ToArray();
+		foreach (var key in keys) {
+			dict[key] = index;
+			index += 1;
 		}
 
-		printlist(dp);
-		var ans = new List<long>();
-		ans.Add(n);
-		var bbrr = new List<long>();
-		bbrr.Add(0);
-		int index = n - 1;
-		while (index > 0) {
-			if (index == 1) {
-				ans.Add(1);
-				break;
-			}
-
-			long now = dp[index];
-			long a = arr[index - 1];
-			long b = brr[index - 2];
-			if (now == dp[index - 1] + a) {
-				ans.Add(index);
-				index -= 1;
-			} else {
-				ans.Add(index - 1);
-				index -= 2;
-			}
-		}
-
-		writeline(ans.Count);
-		printlist(ans.Select(x => x).Reverse().ToArray());
+		foreach (var a in arr) write(dict[a] + " ");
+		writeline();
 	}
 } // end of class

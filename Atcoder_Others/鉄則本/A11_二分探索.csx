@@ -7,8 +7,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
-using Microsoft.CodeAnalysis.Diagnostics;
+using System.Security.AccessControl;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -387,24 +386,6 @@ public class Util {
 		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
-	/// 先頭に要素数(int)と次にでかい数字1つ
-	public static (int, long) readintlongt2() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1]);
-	} // end of func
-
-	/// 先頭に要素数(int)と次にでかい数字2つ
-	public static (int, long, long) readintlongt3() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// 先頭に要素数(int)と次にでかい数字2つ
-	public static (int, long, long, long) readintlongt4() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
 	public static void WriteLine16<T>(T num) {
 		WriteLine(string.Format("{0:0.################}", num));
@@ -431,46 +412,22 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public static int a10_9 = 1000000000;
-	public static long a10_18 = 1000000000000000000;
+
 	public void Solve() {
-		int n = readint();
-		var arr = readlongs();
-		var brr = new List<long>(readlongs());
+		var (n, x) = readintt2();
+		var arr = readints();
 
-		var dp = makearr<long>(n, a10_18);
-		dp[0] = 0;
-		for (int i = 0; i < n - 1; ++i) {
-			dp[i + 1] = Min(dp[i + 1], dp[i] + arr[i]);
-			if (i + 2 >= n) continue;
-			dp[i + 2] = Min(dp[i + 2], dp[i] + brr[i]);
-		}
-
-		printlist(dp);
-		var ans = new List<long>();
-		ans.Add(n);
-		var bbrr = new List<long>();
-		bbrr.Add(0);
-		int index = n - 1;
-		while (index > 0) {
-			if (index == 1) {
-				ans.Add(1);
-				break;
-			}
-
-			long now = dp[index];
-			long a = arr[index - 1];
-			long b = brr[index - 2];
-			if (now == dp[index - 1] + a) {
-				ans.Add(index);
-				index -= 1;
+		int l = 0, r = n, mid;
+		while (Abs(l - r) > 1) {
+			mid = (l + r) / 2;
+			if (arr[mid] == x) {
+				writeline(mid + 1);
+				return;
+			} else if (arr[mid] > x) {
+				r = mid;
 			} else {
-				ans.Add(index - 1);
-				index -= 2;
+				l = mid;
 			}
 		}
-
-		writeline(ans.Count);
-		printlist(ans.Select(x => x).Reverse().ToArray());
 	}
 } // end of class
