@@ -433,36 +433,21 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		int n = readint();
+		var (n, s) = readintt2();
+		var arr = readints();
 
-		var arr = new int[n][];
-		for (int i = 0; i < n; ++i) arr[i] = readints();
-
-		var dp = makearr2<long>(n, n, 0);
-		for (int l = 0; l < n - 1; ++l) {
-			for (int r = n - 1; r > l; --r) {
-				// ひだり 
-				dp[l][r - 1] = Max(dp[l][r - 1], dp[l][r]);
-				if (r > 0 &&
-					l < arr[r][0] && // pが左から取り除かれていない
-					r >= arr[r][0]    // pが右から取り除かれていない
-					) {
-					dp[l][r - 1] = Max(dp[l][r - 1], dp[l][r] + arr[r][1]);
-				}
-				// した
-				dp[l + 1][r] = Max(dp[l + 1][r], dp[l][r]);
-				if (l < n - 1 &&
-					r >= arr[l][0] - 1 &&       // pが右から取り除かれていない
-					l < arr[l][0]           // pが左からの取り除かれていない
-				) {
-					dp[l + 1][r] = Max(dp[l + 1][r], dp[l][r] + arr[l][1]);
-				}
+		var dp = makearr2(s + 1, n + 1, false);
+		dp[0][0] = true;
+		for (int j = 0; j < n; ++j) {
+			for (int i = 0; i < s + 1; ++i) {
+				if (dp[i][j] == false) continue;
+				dp[i][j + 1] = true;
+				if (i + arr[j] < s + 1) dp[i + arr[j]][j + 1] = true;
 			}
 		}
 
-		// printlist2(dp);
-		long ans = 0;
-		for (int i = 0; i < n; ++i) ans = Max(ans, dp[i][i]);
-		writeline(ans);
+		if (dp.Last().Last()) writeline("Yes");
+		else writeline("No");
+
 	}
 } // end of class

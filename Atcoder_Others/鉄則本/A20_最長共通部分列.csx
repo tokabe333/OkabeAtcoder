@@ -433,36 +433,29 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		int n = readint();
+		string s = read();
+		string t = read();
+		int n = s.Length;
+		int m = t.Length;
 
-		var arr = new int[n][];
-		for (int i = 0; i < n; ++i) arr[i] = readints();
+		// 縦をs, 横をtにする
+		var dp = makearr2<long>(n + 1, m + 1, 0);
 
-		var dp = makearr2<long>(n, n, 0);
-		for (int l = 0; l < n - 1; ++l) {
-			for (int r = n - 1; r > l; --r) {
-				// ひだり 
-				dp[l][r - 1] = Max(dp[l][r - 1], dp[l][r]);
-				if (r > 0 &&
-					l < arr[r][0] && // pが左から取り除かれていない
-					r >= arr[r][0]    // pが右から取り除かれていない
-					) {
-					dp[l][r - 1] = Max(dp[l][r - 1], dp[l][r] + arr[r][1]);
-				}
+		for (int j = 0; j <= m; ++j) {
+			for (int i = 0; i <= n; ++i) {
+				// 右
+				if (j < m)
+					dp[i][j + 1] = Max(dp[i][j + 1], dp[i][j]);
 				// した
-				dp[l + 1][r] = Max(dp[l + 1][r], dp[l][r]);
-				if (l < n - 1 &&
-					r >= arr[l][0] - 1 &&       // pが右から取り除かれていない
-					l < arr[l][0]           // pが左からの取り除かれていない
-				) {
-					dp[l + 1][r] = Max(dp[l + 1][r], dp[l][r] + arr[l][1]);
-				}
+				if (i < n)
+					dp[i + 1][j] = Max(dp[i + 1][j], dp[i][j]);
+				// ななめした
+				if (i < n && j < m && s[i] == t[j])
+					dp[i + 1][j + 1] = Max(dp[i + 1][j + 1], dp[i][j] + 1);
 			}
 		}
 
 		// printlist2(dp);
-		long ans = 0;
-		for (int i = 0; i < n; ++i) ans = Max(ans, dp[i][i]);
-		writeline(ans);
+		writeline(dp.Last().Last());
 	}
 } // end of class

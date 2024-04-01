@@ -433,36 +433,23 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		int n = readint();
+		var (n, ww) = readintt2();
+		var dp = makearr2<long>(ww + 1, n + 1, 0);
 
-		var arr = new int[n][];
-		for (int i = 0; i < n; ++i) arr[i] = readints();
+		for (int j = 0; j < n; ++j) {
+			var (w, v) = readintt2();
 
-		var dp = makearr2<long>(n, n, 0);
-		for (int l = 0; l < n - 1; ++l) {
-			for (int r = n - 1; r > l; --r) {
-				// ひだり 
-				dp[l][r - 1] = Max(dp[l][r - 1], dp[l][r]);
-				if (r > 0 &&
-					l < arr[r][0] && // pが左から取り除かれていない
-					r >= arr[r][0]    // pが右から取り除かれていない
-					) {
-					dp[l][r - 1] = Max(dp[l][r - 1], dp[l][r] + arr[r][1]);
-				}
-				// した
-				dp[l + 1][r] = Max(dp[l + 1][r], dp[l][r]);
-				if (l < n - 1 &&
-					r >= arr[l][0] - 1 &&       // pが右から取り除かれていない
-					l < arr[l][0]           // pが左からの取り除かれていない
-				) {
-					dp[l + 1][r] = Max(dp[l + 1][r], dp[l][r] + arr[l][1]);
-				}
+			for (int i = 0; i <= ww; ++i) {
+				// 右側
+				dp[i][j + 1] = Max(dp[i][j + 1], dp[i][j]);
+
+				// 斜めした
+				if (i + w > ww) continue;
+				long kati = dp[i][j] + v;
+				dp[i + w][j + 1] = Max(dp[i + w][j + 1], kati);
 			}
 		}
 
-		// printlist2(dp);
-		long ans = 0;
-		for (int i = 0; i < n; ++i) ans = Max(ans, dp[i][i]);
-		writeline(ans);
+		writeline(dp.Last().Last());
 	}
 } // end of class
