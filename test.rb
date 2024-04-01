@@ -1,30 +1,12 @@
-n, k = gets.chomp.split.map(&:to_i)
-arr = gets.chomp.split.map(&:to_i)
+n = gets.chomp.to_i
+arr = [0] + gets.chomp.split.map(&:to_i)
+brr = [0] + gets.chomp.split.map(&:to_i)
 
-
-def check(t, k, arr)
-	s = 0
-	arr.each do |a|
-		s += t / a 
-	end
-	return s >= k
+dp = Array.new(n + 1, 0)
+dp[1] = 0
+1.upto(n - 1) do |i|
+	dp[arr[i]] = dp[i] + 100 if dp[arr[i]] < dp[i] + 100
+	dp[brr[i]] = dp[i] + 150 if dp[brr[i]] < dp[i] + 150
 end
 
-l = 0
-r = 10 ** 9 + 1
-mid = 0
-ans = {}
-while (l - r).abs > 1
-	mid = (l + r) / 2
-	ret = check(mid, k, arr)
-	ans[mid] = ret 
-	r = mid if ret 
-	l = mid if !ret 
-end
-
-min = 1145141919810931364364
-ans.each do |k, v|
-	next if !v 
-	min = k if k < min
-end
-puts min
+puts dp[-1]

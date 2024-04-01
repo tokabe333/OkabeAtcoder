@@ -433,33 +433,18 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var (n, m) = readintt2();
-		var masu = new int[m][];
-		for (int i = 0; i < m; ++i) masu[i] = readints();
 
-		int inf = 810;
-		var dp = makearr2(m + 1, (int)Pow(2, n), inf);
-		dp[0][0] = 0;
-		for (int i = 0; i < m; ++i) {
-			// どの商品を買うか
-			int coupon = 0;
-			for (int k = 0; k < n; ++k) {
-				if (masu[i][k] == 0) continue;
-				coupon += 1 << k;
-			}
-			for (int j = 0; j < dp[i].Length; ++j) {
-				if (dp[i][j] == inf) continue;
-				// 下に
-				dp[i + 1][j] = Min(dp[i + 1][j], dp[i][j]);
+		int n = readint();
+		var arr = readlongs().Select(x => x - 1).ToArray();
+		var brr = readlongs().Select(x => x - 1).ToArray();
 
-				// 全部買う
-				int st = j | coupon;
-				dp[i + 1][st] = Min(dp[i + 1][st], dp[i][j] + 1);
-			}
+		var dp = makearr<long>(n, -100000 * 1000 + 334);
+		dp[0] = 0;
+		for (int i = 0; i < n - 1; ++i) {
+			dp[arr[i]] = Max(dp[arr[i]], dp[i] + 100);
+			dp[brr[i]] = Max(dp[brr[i]], dp[i] + 150);
 		}
-
-		// printlist2(dp);
-		// writeline(dp.Last().Last());
-		writeline(dp.Last().Last() == inf ? -1 : dp.Last().Last());
+		printlist(dp);
+		writeline(dp.Last());
 	}
 } // end of class
