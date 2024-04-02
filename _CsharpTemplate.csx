@@ -7,6 +7,10 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.CodeAnalysis.Differencing;
+using System.Threading.Tasks.Dataflow;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -199,6 +203,19 @@ public class Util {
 		return brr;
 	} // end of func
 
+	/// 3次元配列のディープコピーを行う
+	public static T[][][] copyarr3<T>(T[][][] arr) {
+		T[][][] brr = new T[arr.Length][][];
+		for (int i = 0; i < arr.Length; ++i) {
+			brr[i] = new T[arr[i].Length][];
+			for (int j = 0; j < arr[i].Length; ++j) {
+				brr[i][j] = new T[arr[i][j].Length];
+				Array.Copy(arr[i][j], brr[i][j], arr[i][j].Length);
+			}
+		}
+		return brr;
+	} // end of func
+
 	/// 1次元Listのディープコピーを行う
 	public static List<T> copylist<T>(List<T> list) {
 		return new List<T>(list);
@@ -208,8 +225,20 @@ public class Util {
 	public static List<List<T>> copylist2<T>(List<List<T>> list) {
 		List<List<T>> list2 = new List<List<T>>();
 		for (int i = 0; i < list.Count; ++i) {
-			List<T> tmp = new List<T>(list[i]);
-			list2.Add(tmp);
+			list2.Add(new List<T>(list[i]));
+		}
+		return list2;
+	} // end of func
+
+	/// 3次元Listのディープコピーを行う
+	public static List<List<List<T>>> copylist3<T>(List<List<List<T>>> list) {
+		List<List<List<T>>> list2 = new List<List<List<T>>>();
+		for (int i = 0; i < list.Count; ++i) {
+			List<List<T>> tmplist = new List<List<T>>();
+			for (int j = 0; j < list[i].Count; ++i) {
+				tmplist.Add(new List<T>(list[i][j]));
+			}
+			list2.Add(tmplist);
 		}
 		return list2;
 	} // end of func
