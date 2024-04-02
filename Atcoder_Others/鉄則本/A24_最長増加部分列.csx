@@ -557,8 +557,8 @@ public class Kyopuro {
 		for (int i = 0; i < n; ++i) nodes[i] = new Node(i, arr[i]);
 		var st = new SegmentTree((Node a, Node b) => a.num > b.num ? a : b, nodes, new Node(-1, -1));
 
-		var hoge = st.Query(0, 1, 0);
-		writeline($"{hoge.num} {hoge.index}");
+		// var hoge = st.Query(0, 1, 0);
+		// writeline($"{hoge.num} {hoge.index}");
 
 		var dp = new long[n];
 		dp[0] = 1;
