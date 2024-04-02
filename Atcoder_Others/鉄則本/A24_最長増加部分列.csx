@@ -448,6 +448,47 @@ public class Util {
 } // end of class
 
 
+public class Kyopuro {
+	public static void Main() {
+		preprocess();
+		var kyopuro = new Kyopuro();
+		kyopuro.Solve();
+		finalprocess();
+	} // end of func
+
+	Node Operator(Node a, Node b) {
+		if (a.length >= b.length) return a;
+		else if (a.length == b.length) return a.num <= b.num ? a : b;
+		else return b;
+	}
+
+	public void Solve() {
+		int n = readint();
+		var arr = readlongs();
+
+		var st = new SegmentTree(Operator, arr);
+		st.Update(0, new Node(1, arr[0]));
+		// printlist(st.Node);
+		// writeline(st.Query(0, 1, arr[1]).ToString());
+
+		for (int i = 1; i < n; ++i) {
+			var hoge = st.Query(0, i, arr[i]);
+			if (hoge.length <= 0) st.Update(i, new Node(1, arr[i]));
+			else st.Update(i, new Node(hoge.length + 1, arr[i]));
+		}
+
+		// printlist(st.Node);
+		long ans = 0;
+		for (int i = 0; i < n; ++i) {
+			ans = Max(ans, st.Node[st.LeafNum - 1 + i].length);
+		}
+
+		writeline(ans);
+
+	}
+} // end of class
+
+
 
 /// 通常のセグメント木(範囲検索、1つ更新をlogN)
 /// long版、中身の改造は便利
@@ -464,17 +505,12 @@ public class SegmentTree {
 	/// 作用素 (TとTに対する演算結果Tを返す min, max, sumなど)
 	private Func<Node, Node, Node> Operator;
 
-	/// モノイドの単位元 (オペレーターの演算に影響を及ぼさない)
-	private Node Identity;
 
 	/// 元配列を渡してセグメントツリーの作成
 	/// 初期値はminやmaxなどで変わると思うので与える(デフォルト=0のはず)
-	public SegmentTree(Func<Node, Node, Node> op, Node[] arr, Node identity = default(Node)) {
+	public SegmentTree(Func<Node, Node, Node> op, long[] arr) {
 		// 作用素を保存
 		this.Operator = op;
-
-		// 単位元を保存
-		this.Identity = identity;
 
 		// ノード数を　2^⌈log2(N)⌉　にする
 		this.LeafNum = 1;
@@ -482,15 +518,14 @@ public class SegmentTree {
 
 		// 葉の初期化
 		this.Node = new Node[this.LeafNum * 2 - 1];
-		for (int i = 0; i < this.Count; ++i) this.Node[i] = this.Identity;
-		for (int i = 0; i < arr.Length; ++i) this.Node[this.LeafNum - 1 + i] = arr[i];
+		for (int i = 0; i < this.Count; ++i) this.Node[i] = new Node();
+		for (int i = 0; i < arr.Length; ++i) this.Node[this.LeafNum - 1 + i] = new Node(0, arr[i]);
 
 		// 親ノードの値を決めていく
 		for (int i = this.LeafNum - 2; i >= 0; --i) {
 			// 左右と比較
 			this.Node[i] = this.Operator(this.Node[2 * i + 1], this.Node[2 * i + 2]);
 		}
-
 	} // end of constructor
 
 	/// index番目の値をvalueにする
@@ -518,12 +553,12 @@ public class SegmentTree {
 	private Node Query(int l, int r, int k, int a, int b, long num) {
 		// 現在の対応ノード区間が求めたい区間に含まれないとき
 		// → 単位元を返す
-		if (r <= a || b <= l) return this.Identity;
+		if (r <= a || b <= l) return new Node();
 
 		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
 		// → 現在のノードの値を返す
 		if (l <= a && b <= r && this.Node[k].num < num) return this.Node[k];
-		if (Abs(a - b) <= 1 && this.Node[k].num >= num) return new Node(-1, -1);
+		if (Abs(a - b) <= 1 && this.Node[k].num >= num) return new Node();
 
 		// 左半分と右半分で見る
 		int m = (a + b) / 2;
@@ -534,43 +569,16 @@ public class SegmentTree {
 } // end of class
 
 public class Node {
-	public int index;
-	public long num;
-	public Node(int i, long n) { this.index = i; this.num = n; }
-}
-
-
-public class Kyopuro {
-	public static void Main() {
-		// preprocess();
-		var kyopuro = new Kyopuro();
-		kyopuro.Solve();
-		// finalprocess();
-	} // end of func
-
-
-	public void Solve() {
-		int n = readint();
-		var arr = readlongs();
-
-		var nodes = new Node[n];
-		for (int i = 0; i < n; ++i) nodes[i] = new Node(i, arr[i]);
-		var st = new SegmentTree((Node a, Node b) => a.num > b.num ? a : b, nodes, new Node(-1, -1));
-
-		// var hoge = st.Query(0, 1, 0);
-		// writeline($"{hoge.num} {hoge.index}");
-
-		var dp = new long[n];
-		dp[0] = 1;
-		for (int i = 1; i < n; ++i) {
-			var q = st.Query(0, i, arr[i]);
-			if (q.num == -1) dp[i] = 1;
-			else {
-				dp[i] = dp[q.index] + 1;
-			}
-		}
-
-		// printlist(dp);
-		writeline(dp.Last());
+	public long length = -1;
+	public long num = long.MaxValue;
+	public Node() { }
+	public Node(long l, long n) {
+		this.length = l;
+		this.num = n;
 	}
-} // end of class
+
+	public override string ToString() {
+		// return this.length + " " + this.num;
+		return this.length + " " + this.num + "\n";
+	}
+}
