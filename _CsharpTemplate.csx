@@ -435,6 +435,26 @@ public class Util {
 		WriteLine(string.Format("{0:0.################}", num));
 	} // end of func
 
+	/// 整数を二進数で表示
+	public static void WriteLine2bit(int num) {
+		WriteLine(Convert.ToString(num, 2));
+	} // end of func
+
+	/// 整数を二進数で表示
+	public static void WriteLine2bit(long num) {
+		WriteLine(Convert.ToString(num, 2));
+	} // end of func
+
+	/// 整数を2進数表現した文字列に
+	public static string IntToString2bit(int num) {
+		return Convert.ToString(num, 2);
+	} // end of func
+
+	/// 整数を2進数表現した文字列に
+	public static string LongToString2bit(long num) {
+		return Convert.ToString(num, 2);
+	} // end of func
+
 	/// 出力のflush削除
 	public static void preprocess() {
 		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
