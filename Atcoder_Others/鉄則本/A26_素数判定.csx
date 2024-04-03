@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Data;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -457,57 +456,24 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	/// a^nを繰り返し二乗法
-	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
-		if (n == 0) return 1;
-		if (n == 1) return a % mod;
-
-		// Int128 ret = 1;
-		// Int128 aa = a;
-		// Int128 nn = n;
-		// Int128 mmod = mod;
-		// // 指数が正
-		// if (nn > 0) {
-		// 	while (nn > 0) {
-		// 		// 2進数で表記、2^nを含むなら
-		// 		writeline($"a:{aa} n:{nn} ret:{ret} n2:{Convert.ToString((long)nn, 2)}");
-		// 		if ((n & 1) == 1) {
-		// 			ret *= aa;
-		// 			ret %= mmod;
-		// 		}
-
-		// 		// 底を二乗
-		// 		aa = (aa * aa) % mod;
-
-		// 		// 1bit進める
-		// 		nn >>= 1;
-		// 	}
-		// }
-		// return (long)ret;
-
-		long ret = 1;
-		while (n > 0) {
-			if ((n & 1) == 1)
-				ret = (ret * a) % mod;
-			n >>= 1;
-			a = (a * a) % mod;
-		}
-
-		return ret;
-	} // end of method
-
-
-
 
 	public void Solve() {
-		var (a, b) = readlongt2();
+		int q = readint();
 
-		// long aa = 1;
-		// for (long i = 0; i < b; ++i) {
-		// 	aa = (aa * a) % m107;
-		// }
-		// writeline(aa);
-		writeline(KurikaeshiPow(a, b, m107));
+		for (int i = 0; i < q; ++i) {
+			long x = readlong();
+			long xrt = (long)Sqrt(x);
+			bool flag = false;
+			for (long j = 2; j <= xrt; ++j) {
+				if (x % j == 0) {
+					writeline("No");
+					flag = true;
+					break;
+				}
+			}
+			if (!flag) writeline("Yes");
+		}
+
 
 	}
 } // end of class

@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Data;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -457,57 +456,57 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	/// a^nを繰り返し二乗法
-	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
-		if (n == 0) return 1;
-		if (n == 1) return a % mod;
+	/// 最大公約数を計算 int
+	public int Gcd(int a, int b) {
+		if (a == 1 || b == 1) return 1;
+		if (a <= 0 || b <= 0) return 0;
 
-		// Int128 ret = 1;
-		// Int128 aa = a;
-		// Int128 nn = n;
-		// Int128 mmod = mod;
-		// // 指数が正
-		// if (nn > 0) {
-		// 	while (nn > 0) {
-		// 		// 2進数で表記、2^nを含むなら
-		// 		writeline($"a:{aa} n:{nn} ret:{ret} n2:{Convert.ToString((long)nn, 2)}");
-		// 		if ((n & 1) == 1) {
-		// 			ret *= aa;
-		// 			ret %= mmod;
-		// 		}
-
-		// 		// 底を二乗
-		// 		aa = (aa * aa) % mod;
-
-		// 		// 1bit進める
-		// 		nn >>= 1;
-		// 	}
-		// }
-		// return (long)ret;
-
-		long ret = 1;
-		while (n > 0) {
-			if ((n & 1) == 1)
-				ret = (ret * a) % mod;
-			n >>= 1;
-			a = (a * a) % mod;
+		while (a >= 1 && b >= 1) {
+			if (a < b) {
+				int c = a;
+				a = b;
+				b = c;
+			}
+			a %= b;
 		}
 
-		return ret;
+		return Max(a, b);
 	} // end of method
 
+	/// 最大公約数を計算 long
+	public long Gcd(long a, long b) {
+		if (a == 1 || b == 1) return 1;
+		if (a <= 0 || b <= 0) return 0;
 
+		while (a >= 1 && b >= 1) {
+			if (a < b) {
+				long c = a;
+				a = b;
+				b = c;
+			}
+			a %= b;
+		}
 
+		return Max(a, b);
+	} // end of method
+
+	/// 最小公倍数を計算(longにしてるのでintから漏れることはなさそう)
+	public int Lcm(int a, int b) {
+		long ab = a * b;
+		ab /= Gcd(a, b);
+		return (int)ab;
+	} // end of method
+
+	/// 最小公倍数を計算(128bitにしてるのでlongから漏れることはなさそう)
+	public long Lcm(long a, long b) {
+		Int128 ab = a * b;
+		ab /= Gcd(a, b);
+		return (long)ab;
+	} // end of method
 
 	public void Solve() {
+
 		var (a, b) = readlongt2();
-
-		// long aa = 1;
-		// for (long i = 0; i < b; ++i) {
-		// 	aa = (aa * a) % m107;
-		// }
-		// writeline(aa);
-		writeline(KurikaeshiPow(a, b, m107));
-
+		writeline(Gcd(a, b));
 	}
 } // end of class
