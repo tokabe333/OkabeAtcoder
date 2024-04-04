@@ -488,51 +488,5 @@ public class Kyopuro {
 
 
 	public void Solve() {
-
-		var wh = readints();
-		int w = wh[0];
-		int h = wh[1];
-		var masu = makearr2<bool>(h, w, true);
-		int sx = 0, sy = 0, gy = 0, gx = 0;
-		for (int i = 0; i < h; ++i) {
-			var line = readline().Split(' ');
-			for (int j = 0; j < w; ++j) {
-				if (line[j] == "1") masu[i][j] = false;
-				else if (line[j] == "s") {
-					sy = i;
-					sx = j;
-				} else if (line[j] == "g") {
-					gy = i;
-					gx = j;
-				}
-			}
-		}
-
-		// printlist2(masu);
-		// writeline($"{sy} {sx} {gy} {gx}");
-
-		var dist = makearr2(h, w, long.MaxValue);
-		var queue = new Queue<Data>();
-		queue.Enqueue(new Data(sy, sx, 0));
-		while (queue.Count > 0) {
-			var data = queue.Dequeue();
-			int y = data.y;
-			int x = data.x;
-			long d = data.d;
-			if (dist[y][x] <= d) continue;
-			dist[y][x] = d;
-
-			// up
-			if (0 < y && masu[y - 1][x]) queue.Enqueue(new Data(y - 1, x, d + 1));
-			// down
-			if (y < h - 1 && masu[y + 1][x]) queue.Enqueue(new Data(y + 1, x, d + 1));
-			// left
-			if (0 < x && masu[y][x - 1]) queue.Enqueue(new Data(y, x - 1, d + 1));
-			// right
-			if (x < w - 1 && masu[y][x + 1]) queue.Enqueue(new Data(y, x + 1, d + 1));
-		}
-
-		// printlist2(dist);
-		writeline(dist[gy][gx] != long.MaxValue ? "" + dist[gy][gx] : "Fail");
 	}
 } // end of class
