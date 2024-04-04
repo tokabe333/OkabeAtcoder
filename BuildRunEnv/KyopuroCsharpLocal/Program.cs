@@ -7,7 +7,61 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Data;
+
+
+public static class IListExt {
+	public static void Deconstruct<T>
+	(
+		this IList<T> self,
+		out T first,
+		out IList<T> rest
+	) {
+		first = self.Count > 0 ? self[0] : default;
+		rest = self.Skip(1).ToArray();
+	}
+
+	public static void Deconstruct<T>
+	(
+		this IList<T> self,
+		out T first,
+		out T second,
+		out IList<T> rest
+	) {
+		first = self.Count > 0 ? self[0] : default;
+		second = self.Count > 1 ? self[1] : default;
+		rest = self.Skip(2).ToArray();
+	}
+
+	public static void Deconstruct<T>
+	(
+		this IList<T> self,
+		out T first,
+		out T second,
+		out T third,
+		out IList<T> rest
+	) {
+		first = self.Count > 0 ? self[0] : default;
+		second = self.Count > 1 ? self[1] : default;
+		third = self.Count > 2 ? self[2] : default;
+		rest = self.Skip(3).ToArray();
+	}
+
+	public static void Deconstruct<T>
+	(
+		this IList<T> self,
+		out T first,
+		out T second,
+		out T third,
+		out T four,
+		out IList<T> rest
+	) {
+		first = self.Count > 0 ? self[0] : default;
+		second = self.Count > 1 ? self[1] : default;
+		third = self.Count > 2 ? self[2] : default;
+		four = self.Count > 3 ? self[3] : default;
+		rest = self.Skip(4).ToArray();
+	}
+}
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -323,117 +377,137 @@ public class Util {
 		return ReadLine().Split(' ');
 	} // end of func
 
-	/// 読み込んだint2つをタプルで返す(分解代入用)
-	public static (int, int) readintt2() {
-		var arr = readints();
-		return (arr[0], arr[1]);
-	} // end of func
+	// /// 読み込んだint2つをタプルで返す(分解代入用)
+	// public static (int, int) readintt2() {
+	// 	var arr = readints();
+	// 	return (arr[0], arr[1]);
+	// } // end of func
 
-	/// 読み込んだint3つをタプルで返す(分解代入用)
-	public static (int, int, int) readintt3() {
-		var arr = readints();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
+	// /// 読み込んだint3つをタプルで返す(分解代入用)
+	// public static (int, int, int) readintt3() {
+	// 	var arr = readints();
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
 
-	/// 読み込んだint4つをタプルで返す(分解代入用)
-	public static (int, int, int, int) readintt4() {
-		var arr = readints();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
+	// /// 読み込んだint4つをタプルで返す(分解代入用)
+	// public static (int, int, int, int) readintt4() {
+	// 	var arr = readints();
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
 
-	/// 読み込んだlong2つをタプルで返す(分解代入用)
-	public static (long, long) readlongt2() {
-		var arr = readlongs();
-		return (arr[0], arr[1]);
-	} // end of func
+	// /// 読み込んだlong2つをタプルで返す(分解代入用)
+	// public static (long, long) readlongt2() {
+	// 	var arr = readlongs();
+	// 	return (arr[0], arr[1]);
+	// } // end of func
 
-	/// 読み込んだ数long3つをタプルで返す(分解代入用)
-	public static (long, long, long) readlongt3() {
-		var arr = readlongs();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
+	// /// 読み込んだ数long3つをタプルで返す(分解代入用)
+	// public static (long, long, long) readlongt3() {
+	// 	var arr = readlongs();
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
 
-	/// 読み込んだ数long4つをタプルで返す(分解代入用)
-	public static (long, long, long, long) readlongt4() {
-		var arr = readlongs();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
+	// /// 読み込んだ数long4つをタプルで返す(分解代入用)
+	// public static (long, long, long, long) readlongt4() {
+	// 	var arr = readlongs();
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
 
-	/// 読み込んだfloat2つをタプルで返す(分解代入用)
-	public static (float, float) readfloatt2() {
-		var arr = readfloats();
-		return (arr[0], arr[1]);
-	} // end of func
+	// /// 読み込んだfloat2つをタプルで返す(分解代入用)
+	// public static (float, float) readfloatt2() {
+	// 	var arr = readfloats();
+	// 	return (arr[0], arr[1]);
+	// } // end of func
 
-	/// 読み込んだfloat3つをタプルで返す(分解代入用)
-	public static (float, float, float) readfloatt3() {
-		var arr = readfloats();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
+	// /// 読み込んだfloat3つをタプルで返す(分解代入用)
+	// public static (float, float, float) readfloatt3() {
+	// 	var arr = readfloats();
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
 
-	/// 読み込んだfloat4つをタプルで返す(分解代入用)
-	public static (float, float, float, float) readfloatt4() {
-		var arr = readfloats();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
+	// /// 読み込んだfloat4つをタプルで返す(分解代入用)
+	// public static (float, float, float, float) readfloatt4() {
+	// 	var arr = readfloats();
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
 
-	/// 読み込んだdouble2つをタプルで返す(分解代入用)
-	public static (double, double) readdoublet2() {
-		var arr = readdoubles();
-		return (arr[0], arr[1]);
-	} // end of func
+	// /// 読み込んだdouble2つをタプルで返す(分解代入用)
+	// public static (double, double) readdoublet2() {
+	// 	var arr = readdoubles();
+	// 	return (arr[0], arr[1]);
+	// } // end of func
 
-	/// 読み込んだdouble3つをタプルで返す(分解代入用)
-	public static (double, double, double) readdoublet3() {
-		var arr = readdoubles();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
+	// /// 読み込んだdouble3つをタプルで返す(分解代入用)
+	// public static (double, double, double) readdoublet3() {
+	// 	var arr = readdoubles();
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
 
-	/// 読み込んだdouble4つをタプルで返す(分解代入用)
-	public static (double, double, double, double) readdoublet4() {
-		var arr = readdoubles();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
+	// /// 読み込んだdouble4つをタプルで返す(分解代入用)
+	// public static (double, double, double, double) readdoublet4() {
+	// 	var arr = readdoubles();
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
 
-	/// 読み込んだstring2つをタプルで返す(分解代入用)
-	public static (string, string) readstringt2() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1]);
-	} // end of func
+	// /// 読み込んだstring2つをタプルで返す(分解代入用)
+	// public static (string, string) readstringt2() {
+	// 	var arr = ReadLine().Split(' ');
+	// 	return (arr[0], arr[1]);
+	// } // end of func
 
-	/// 読み込んだstring3つをタプルで返す(分解代入用)
-	public static (string, string, string) readstringt3() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
+	// /// 読み込んだstring3つをタプルで返す(分解代入用)
+	// public static (string, string, string) readstringt3() {
+	// 	var arr = ReadLine().Split(' ');
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
 
-	/// 読み込んだstring3つをタプルで返す(分解代入用)
-	public static (string, string, string, string) readstringt4() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
+	// /// 読み込んだstring3つをタプルで返す(分解代入用)
+	// public static (string, string, string, string) readstringt4() {
+	// 	var arr = ReadLine().Split(' ');
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
 
-	/// 先頭に要素数(int)と次にでかい数字1つ
-	public static (int, long) readintlongt2() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1]);
-	} // end of func
+	// /// 先頭に要素数(int)と次にでかい数字1つ
+	// public static (int, long) readintlongt2() {
+	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+	// 	return ((int)arr[0], arr[1]);
+	// } // end of func
 
-	/// 先頭に要素数(int)と次にでかい数字2つ
-	public static (int, long, long) readintlongt3() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2]);
-	} // end of func
+	// /// 先頭に要素数(int)と次にでかい数字2つ
+	// public static (int, long, long) readintlongt3() {
+	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+	// 	return ((int)arr[0], arr[1], arr[2]);
+	// } // end of func
 
-	/// 先頭に要素数(int)と次にでかい数字2つ
-	public static (int, long, long, long) readintlongt4() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
+	// /// 先頭に要素数(int)と次にでかい数字2つ
+	// public static (int, long, long, long) readintlongt4() {
+	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+	// 	return ((int)arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
 	public static void WriteLine16<T>(T num) {
 		WriteLine(string.Format("{0:0.################}", num));
+	} // end of func
+
+	/// 整数を二進数で表示
+	public static void WriteLine2bit(int num) {
+		WriteLine(Convert.ToString(num, 2));
+	} // end of func
+
+	/// 整数を二進数で表示
+	public static void WriteLine2bit(long num) {
+		WriteLine(Convert.ToString(num, 2));
+	} // end of func
+
+	/// 整数を2進数表現した文字列に
+	public static string IntToString2bit(int num) {
+		return Convert.ToString(num, 2);
+	} // end of func
+
+	/// 整数を2進数表現した文字列に
+	public static string LongToString2bit(long num) {
+		return Convert.ToString(num, 2);
 	} // end of func
 
 	/// 出力のflush削除
@@ -448,6 +522,16 @@ public class Util {
 	} // end of func
 } // end of class
 
+class Data {
+	public int y;
+	public int x;
+	public long d;
+	public Data(int y, int x, long d) {
+		this.y = y;
+		this.x = x;
+		this.d = d;
+	}
+}
 
 public class Kyopuro {
 	public static void Main() {
@@ -457,57 +541,54 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	/// a^nを繰り返し二乗法
-	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
-		if (n == 0) return 1;
-		if (n == 1) return a % mod;
-
-		// Int128 ret = 1;
-		// Int128 aa = a;
-		// Int128 nn = n;
-		// Int128 mmod = mod;
-		// // 指数が正
-		// if (nn > 0) {
-		// 	while (nn > 0) {
-		// 		// 2進数で表記、2^nを含むなら
-		// 		writeline($"a:{aa} n:{nn} ret:{ret} n2:{Convert.ToString((long)nn, 2)}");
-		// 		if ((n & 1) == 1) {
-		// 			ret *= aa;
-		// 			ret %= mmod;
-		// 		}
-
-		// 		// 底を二乗
-		// 		aa = (aa * aa) % mod;
-
-		// 		// 1bit進める
-		// 		nn >>= 1;
-		// 	}
-		// }
-		// return (long)ret;
-
-		long ret = 1;
-		while (n > 0) {
-			if ((n & 1) == 1)
-				ret = (ret * a) % mod;
-			n >>= 1;
-			a = (a * a) % mod;
-		}
-
-		return ret;
-	} // end of method
-
-
-
 
 	public void Solve() {
-		var (a, b) = readlongt2();
 
-		// long aa = 1;
-		// for (long i = 0; i < b; ++i) {
-		// 	aa = (aa * a) % m107;
-		// }
-		// writeline(aa);
-		writeline(KurikaeshiPow(a, b, m107));
+		// var wh = readints();
+		// int w = wh[0];
+		// int h = wh[1];
+		var (w, h) = readints();
+		var masu = makearr2<bool>(h, w, true);
+		int sx = 0, sy = 0, gy = 0, gx = 0;
+		for (int i = 0; i < h; ++i) {
+			var line = readline().Split(' ');
+			for (int j = 0; j < w; ++j) {
+				if (line[j] == "1") masu[i][j] = false;
+				else if (line[j] == "s") {
+					sy = i;
+					sx = j;
+				} else if (line[j] == "g") {
+					gy = i;
+					gx = j;
+				}
+			}
+		}
 
+		// printlist2(masu);
+		// writeline($"{sy} {sx} {gy} {gx}");
+
+		var dist = makearr2(h, w, long.MaxValue);
+		var queue = new Queue<Data>();
+		queue.Enqueue(new Data(sy, sx, 0));
+		while (queue.Count > 0) {
+			var data = queue.Dequeue();
+			int y = data.y;
+			int x = data.x;
+			long d = data.d;
+			if (dist[y][x] <= d) continue;
+			dist[y][x] = d;
+
+			// up
+			if (0 < y && masu[y - 1][x]) queue.Enqueue(new Data(y - 1, x, d + 1));
+			// down
+			if (y < h - 1 && masu[y + 1][x]) queue.Enqueue(new Data(y + 1, x, d + 1));
+			// left
+			if (0 < x && masu[y][x - 1]) queue.Enqueue(new Data(y, x - 1, d + 1));
+			// right
+			if (x < w - 1 && masu[y][x + 1]) queue.Enqueue(new Data(y, x + 1, d + 1));
+		}
+
+		// printlist2(dist);
+		writeline(dist[gy][gx] != long.MaxValue ? "" + dist[gy][gx] : "Fail");
 	}
 } // end of class
