@@ -467,17 +467,6 @@ public class Util {
 	} // end of func
 } // end of class
 
-class Data {
-	public int y;
-	public int x;
-	public long d;
-	public Data(int y, int x, long d) {
-		this.y = y;
-		this.x = x;
-		this.d = d;
-	}
-}
-
 public class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -487,6 +476,119 @@ public class Kyopuro {
 	} // end of func
 
 
+	/// 隣接グラフに対してトポロジカルソートをする
+	/// 出来ない場合は要素0の配列を返す
+	public List<int> TopologicalSort(List<List<int>> graph) {
+		// ノード数
+		int n = graph.Count;
+
+		// 各ノードの入次数を記録
+		int[] inputNodes = new int[n];
+		for (int i = 0; i < n; ++i) {
+			foreach (int to in graph[i]) {
+				inputNodes[to] += 1;
+			}
+		}
+
+		// 入力の次数が0のノードを記録
+		var queue = new Queue<int>();
+		for (int i = 0; i < n; ++i) {
+			if (inputNodes[i] > 0) continue;
+			queue.Enqueue(i);
+		}
+
+		// トポロジカルソート結果
+		List<int> sorted = new List<int>();
+
+		// 手順1 : 入次数が0のノードをキューに追加
+		// 手順2 : キューからノードを取り出しソート結果に追加
+		// 手順3 : 隣接するノードの入次数を-1
+		// 手順4 : 手順1 ~ 手順3 を繰り返し
+		while (queue.Count > 0) {
+			// キューから取り出し
+			int node = queue.Dequeue();
+
+			// 隣接するノードの入次数を-1
+			foreach (int to in graph[node]) {
+				inputNodes[to] -= 1;
+				// 入次数が0ならキューに追加
+				if (inputNodes[to] == 0) queue.Enqueue(to);
+			}
+
+			// ソート結果に追加
+			sorted.Add(node);
+		}
+
+		// ソートしたノード数がgraphのノード数と一致すればトポロジカルソート成功
+		// 一致しなければトポロジカルソートできないグラフ(非DAG)
+		return sorted.Count == n ? sorted : new List<int>();
+	} // end of method
+
+
 	public void Solve() {
+		var hw = readints();
+		int h = hw[0], w = hw[1];
+
+		var masu = makearr2<int>(h, w, ' ');
+		var umap = new Dictionary<int, List<int[]>>();
+		for (int i = 0; i < h; ++i) {
+			string[] s = read().Split(' ');
+			for (int j = 0; j < w; ++j) {
+				int c = s[j][0] - 'a';
+				masu[i][j] = c;
+
+				if (umap.ContainsKey(c) == false) umap[c] = new List<int[]>();
+				umap[c].Add(new int[] { i, j });
+			}
+		}
+
+		var graph = makelist2<int>(26, 0, 0);
+		int q = readint();
+		for (int i = 0; i < q; ++i) {
+			string ab = read();
+			int a = ab[0] - 'a';
+			int b = ab[2] - 'a';
+			graph[a].Add(b);
+		}
+
+		// トポロジカルソート
+		var topo = TopologicalSort(graph);
+
+		// 強い順
+		foreach (var from in topo) {
+			if (graph[from].Count == 0) continue;
+
+			// 各マスを調べる
+			foreach (var place in umap[from]) {
+				int y = place[0];
+				int x = place[1];
+				// 食べられてる
+				if (masu[y][x] == '-' - 'a') continue;
+
+				// 周囲1マス
+				for (int dy = -1; dy <= 1; ++dy) {
+					for (int dx = -1; dx <= 1; ++dx) {
+						int ydy = y + dy;
+						int xdx = x + dx;
+						if (ydy < 0 || h <= ydy) continue;
+						if (xdx < 0 || w <= xdx) continue;
+						// 食べる対象
+						foreach (var to in graph[from]) {
+							if (masu[ydy][xdx] != to) continue;
+							masu[ydy][xdx] = '-' - 'a';
+						}
+					}
+				}
+			}
+		}
+
+		// printlist2(masu);
+		for (int i = 0; i < h; ++i) {
+			for (int j = 0; j < w; ++j) {
+				write((char)(masu[i][j] + 'a'));
+				if (j < w - 1) write(" ");
+			}
+			writeline();
+		}
 	}
 } // end of class

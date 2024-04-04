@@ -1,66 +1,596 @@
-using System.Collections.Generic;
+#pragma warning disable
+
+using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.IO;
+using static System.Console;
+using static System.Math;
+using static Util;
+using System.Threading;
+using System.Security.Cryptography.X509Certificates;
 
-// public static class IListExt {
-// 	public static void Deconstruct<T>
-// 	(
-// 		this IList<T> self,
-// 		out T first,
-// 		out IList<T> rest
-// 	) {
-// 		first = self.Count > 0 ? self[0] : default;
-// 		rest = self.Skip(1).ToArray();
-// 	}
+// using pii = (int, int);
+// using pll = (long, long);
+// using pdd = (double, double);
+// using pss = (string, string);
+// using pis = (int, string);
+// using psi = (string, int);
+// using pls = (long, string);
+// using psl = (string, long);
+// using pds = (double, string);
+// using psd = (string, double);
+// using pid = (int, double);
+// using pdi = (double, int);
+// using pld = (long, double);
+// using pdl = (double, long);
+// using vb = bool[];
+// using vvb = bool[][];
+// using vvvb = bool[][][];
+// using vi = int[];
+// using vvi = int[][];
+// using vvvi = int[][][];
+// using vl = long[];
+// using vvl = long[][];
+// using vvvl = long[][][];
+// using vd = double[];
+// using vvd = double[][];
+// using vvvd = double[][][];
+// using vs = string[];
+// using vvs = string[][];
+// using vvvs = string[][][];
+// using listb = System.Collections.Generic.List<bool>;
+// using llistb = System.Collections.Generic.List<System.Collections.Generic.List<bool>>;
+// using lllistb = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<bool>>>;
+// using listi = System.Collections.Generic.List<int>;
+// using llisti = System.Collections.Generic.List<System.Collections.Generic.List<int>>;
+// using lllisti = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<int>>>;
+// using listl = System.Collections.Generic.List<long>;
+// using llistl = System.Collections.Generic.List<System.Collections.Generic.List<long>>;
+// using lllistl = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<long>>>;
+// using listd = System.Collections.Generic.List<double>;
+// using llistd = System.Collections.Generic.List<System.Collections.Generic.List<double>>;
+// using lllistd = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<double>>>;
+// using lists = System.Collections.Generic.List<string>;
+// using llists = System.Collections.Generic.List<System.Collections.Generic.List<string>>;
+// using lllists = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<string>>>;
+// using mii = System.Collections.Generic.SortedDictionary<int, int>;
+// using mll = System.Collections.Generic.SortedDictionary<long, long>;
+// using mss = System.Collections.Generic.SortedDictionary<string, string>;
+// using mis = System.Collections.Generic.SortedDictionary<int, string>;
+// using msi = System.Collections.Generic.SortedDictionary<string, int>;
+// using mls = System.Collections.Generic.SortedDictionary<long, string>;
+// using msl = System.Collections.Generic.SortedDictionary<string, long>;
+// using umii = System.Collections.Generic.Dictionary<int, int>;
+// using umll = System.Collections.Generic.Dictionary<long, long>;
+// using umss = System.Collections.Generic.Dictionary<string, string>;
+// using umis = System.Collections.Generic.Dictionary<int, string>;
+// using umsi = System.Collections.Generic.Dictionary<string, int>;
+// using umls = System.Collections.Generic.Dictionary<long, string>;
+// using umsl = System.Collections.Generic.Dictionary<string, long>;
+// using seti = System.Collections.Generic.SortedSet<int>;
+// using setl = System.Collections.Generic.SortedSet<long>;
+// using sets = System.Collections.Generic.SortedSet<string>;
+// using useti = System.Collections.Generic.HashSet<int>;
+// using usetl = System.Collections.Generic.HashSet<long>;
+// using usets = System.Collections.Generic.HashSet<string>;
 
-// 	public static void Deconstruct<T>
-// 	(
-// 		this IList<T> self,
-// 		out T first,
-// 		out T second,
-// 		out IList<T> rest
-// 	) {
-// 		first = self.Count > 0 ? self[0] : default;
-// 		second = self.Count > 1 ? self[1] : default;
-// 		rest = self.Skip(2).ToArray();
-// 	}
 
-// 	public static void Deconstruct<T>
-// 	(
-// 		this IList<T> self,
-// 		out T first,
-// 		out T second,
-// 		out T third,
-// 		out IList<T> rest
-// 	) {
-// 		first = self.Count > 0 ? self[0] : default;
-// 		second = self.Count > 1 ? self[1] : default;
-// 		third = self.Count > 2 ? self[2] : default;
-// 		rest = self.Skip(3).ToArray();
-// 	}
+public class Util {
+	public static double PI = 3.141592653589793;
+	public static long m107 = 1000000007;
+	public static long m998 = 998244353;
+	public static int a10_9 = 1000000000;
+	public static long a10_18 = 1000000000000000000;
 
-// 	public static void Deconstruct<T>
-// 	(
-// 		this IList<T> self,
-// 		out T first,
-// 		out T second,
-// 		out T third,
-// 		out T four,
-// 		out IList<T> rest
-// 	) {
-// 		first = self.Count > 0 ? self[0] : default;
-// 		second = self.Count > 1 ? self[1] : default;
-// 		third = self.Count > 2 ? self[2] : default;
-// 		four = self.Count > 3 ? self[3] : default;
-// 		rest = self.Skip(4).ToArray();
-// 	}
-// }
+	/// 打ちやすいように
+	public static string read() => ReadLine();
+	public static string readln() => ReadLine();
+	public static string readline() => ReadLine();
+	public static void write() => Write("");
+	public static void write(string s) => Write(s);
+	public static void write(char c) => Write(c);
+	public static void write(int num) => Write(num);
+	public static void write(long num) => Write(num);
+	public static void write(double num) => Write(num);
+	public static void writeln() => WriteLine("");
+	public static void writeln(string s) => WriteLine(s);
+	public static void writeln(char c) => WriteLine(c);
+	public static void writeln(int num) => WriteLine(num);
+	public static void writeln(long num) => WriteLine(num);
+	public static void writeln(double num) => WriteLine(num);
+	public static void writeline() => WriteLine("");
+	public static void writeline(string s) => WriteLine(s);
+	public static void writeline(char c) => WriteLine(c);
+	public static void writeline(int num) => WriteLine(num);
+	public static void writeline(long num) => WriteLine(num);
+	public static void writeline(double num) => WriteLine(num);
+	public static void print() => Write("");
+	public static void print(string s) => Write(s);
+	public static void print(char c) => Write(c);
+	public static void print(int num) => Write(num);
+	public static void print(long num) => Write(num);
+	public static void print(double num) => Write(num);
+	public static void println() => WriteLine("");
+	public static void println(string s) => WriteLine(s);
+	public static void println(char c) => WriteLine(c);
+	public static void println(int num) => WriteLine(num);
+	public static void println(long num) => WriteLine(num);
+	public static void println(double num) => WriteLine(num);
+	public static void printline() => WriteLine("");
+	public static void printline(string s) => WriteLine(s);
+	public static void printline(char c) => WriteLine(c);
+	public static void printline(int num) => WriteLine(num);
+	public static void printline(long num) => WriteLine(num);
+	public static void printline(double num) => WriteLine(num);
 
-public class Hoge {
+	/// 任意の要素数・初期値の配列を作って初期化する
+	public static T[] makearr<T>(int num, T value) {
+		var arr = new T[num];
+		for (int i = 0; i < num; ++i) arr[i] = value;
+		return arr;
+	} // end of func
+
+	/// 任意の要素数・初期値の２次元配列を作って初期化する
+	public static T[][] makearr2<T>(int height, int width, T value) {
+		var arr = new T[height][];
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new T[width];
+			for (int j = 0; j < width; ++j) {
+				arr[i][j] = value;
+			}
+		}
+		return arr;
+	} // end of func
+
+	/// 任意の要素数・初期値の3次元配列を作って初期化する
+	public static T[][][] makearr3<T>(int height, int width, int depth, T value) {
+		var arr = new T[height][][];
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new T[width][];
+			for (int j = 0; j < width; ++j) {
+				arr[i][j] = new T[depth];
+				for (int k = 0; k < depth; ++k) {
+					arr[i][j][k] = value;
+				}
+			}
+		}
+		return arr;
+	} // end of func
+
+	/// 任意の要素数・初期値のListを作って初期化する
+	public static List<T> makelist<T>(int num, T value) {
+		return new List<T>(makearr(num, value));
+	} // end of func
+
+	/// 任意の要素数・初期値の2次元Listを作って初期化する
+	public static List<List<T>> makelist2<T>(int height, int width, T value) {
+		var arr = new List<List<T>>();
+		for (int i = 0; i < height; ++i) {
+			arr.Add(makelist(width, value));
+		}
+		return arr;
+	} // end of func
+
+	/// 任意の要素数・初期値の3次元Listを作って初期化する
+	public static List<List<List<T>>> makelist3<T>(int height, int width, int depth, T value) {
+		var arr = new List<List<List<T>>>();
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new List<List<T>>();
+			for (int j = 0; j < width; ++j) {
+				arr[i].Add(makelist(depth, value));
+			}
+		}
+		return arr;
+	} // end of func
+
+	/// 1次元配列のディープコピーを行う
+	public static T[] copyarr<T>(T[] arr) {
+		T[] brr = new T[arr.Length];
+		Array.Copy(arr, brr, arr.Length);
+		return brr;
+	} // end of func 
+
+	/// 2次元配列のディープコピーを行う
+	public static T[][] copyarr2<T>(T[][] arr) {
+		T[][] brr = new T[arr.Length][];
+		for (int i = 0; i < arr.Length; ++i) {
+			brr[i] = new T[arr[i].Length];
+			Array.Copy(arr[i], brr[i], arr[i].Length);
+		}
+		return brr;
+	} // end of func
+
+	/// 3次元配列のディープコピーを行う
+	public static T[][][] copyarr3<T>(T[][][] arr) {
+		T[][][] brr = new T[arr.Length][][];
+		for (int i = 0; i < arr.Length; ++i) {
+			brr[i] = new T[arr[i].Length][];
+			for (int j = 0; j < arr[i].Length; ++j) {
+				brr[i][j] = new T[arr[i][j].Length];
+				Array.Copy(arr[i][j], brr[i][j], arr[i][j].Length);
+			}
+		}
+		return brr;
+	} // end of func
+
+	/// 1次元Listのディープコピーを行う
+	public static List<T> copylist<T>(List<T> list) {
+		return new List<T>(list);
+	} // end of func
+
+	/// 2次元Listのディープコピーを行う
+	public static List<List<T>> copylist2<T>(List<List<T>> list) {
+		List<List<T>> list2 = new List<List<T>>();
+		for (int i = 0; i < list.Count; ++i) {
+			list2.Add(new List<T>(list[i]));
+		}
+		return list2;
+	} // end of func
+
+	/// 3次元Listのディープコピーを行う
+	public static List<List<List<T>>> copylist3<T>(List<List<List<T>>> list) {
+		List<List<List<T>>> list2 = new List<List<List<T>>>();
+		for (int i = 0; i < list.Count; ++i) {
+			List<List<T>> tmplist = new List<List<T>>();
+			for (int j = 0; j < list[i].Count; ++i) {
+				tmplist.Add(new List<T>(list[i][j]));
+			}
+			list2.Add(tmplist);
+		}
+		return list2;
+	} // end of func
+
+	/// 1次元Listを出力
+	public static void printlist<T>(List<T> list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// 1次元配列を出力
+	public static void printlist<T>(T[] list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// 2次元リストを出力
+	public static void printlist2<T>(List<List<T>> list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
+
+	/// 2次元配列を出力
+	public static void printlist2<T>(T[][] list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func	
+
+	/// 1次元Listを出力
+	public static void printarr<T>(List<T> list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// 1次元配列を出力
+	public static void printarr<T>(T[] list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// 2次元リストを出力
+	public static void printarr2<T>(List<List<T>> list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
+
+	/// 2次元配列を出力
+	public static void printarr2<T>(T[][] list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
+
+	/// 数字を1つint型で読み込み
+	public static int readint() {
+		return int.Parse(ReadLine());
+	} // end of func
+
+	/// 数字を1つlong型で読み込み
+	public static long readlong() {
+		return long.Parse(ReadLine());
+	} // end of func
+
+	/// 数字をスペース区切りでint型で入力
+	public static int[] readints() {
+		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
+	} // end of func
+
+	/// 数字をスペース区切りでlong型で入力
+	public static long[] readlongs() {
+		return ReadLine().Split(' ').Select(_ => long.Parse(_)).ToArray();
+	} // end of func
+
+	/// 数字をスペース区切りでfloat型で入力
+	public static float[] readfloats() {
+		return ReadLine().Split(' ').Select(_ => float.Parse(_)).ToArray();
+	} // end of func
+
+	/// 数字をスペース区切りでdouble型で入力
+	public static double[] readdoubles() {
+		return ReadLine().Split(' ').Select(_ => double.Parse(_)).ToArray();
+	} // end of func
+
+	/// 文字列をスペース区切りで入力
+	public static string[] readstrings() {
+		return ReadLine().Split(' ');
+	} // end of func
+
+	// /// 読み込んだint2つをタプルで返す(分解代入用)
+	// public static (int, int) readintt2() {
+	// 	var arr = readints();
+	// 	return (arr[0], arr[1]);
+	// } // end of func
+
+	// /// 読み込んだint3つをタプルで返す(分解代入用)
+	// public static (int, int, int) readintt3() {
+	// 	var arr = readints();
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
+
+	// /// 読み込んだint4つをタプルで返す(分解代入用)
+	// public static (int, int, int, int) readintt4() {
+	// 	var arr = readints();
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
+
+	// /// 読み込んだlong2つをタプルで返す(分解代入用)
+	// public static (long, long) readlongt2() {
+	// 	var arr = readlongs();
+	// 	return (arr[0], arr[1]);
+	// } // end of func
+
+	// /// 読み込んだ数long3つをタプルで返す(分解代入用)
+	// public static (long, long, long) readlongt3() {
+	// 	var arr = readlongs();
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
+
+	// /// 読み込んだ数long4つをタプルで返す(分解代入用)
+	// public static (long, long, long, long) readlongt4() {
+	// 	var arr = readlongs();
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
+
+	// /// 読み込んだfloat2つをタプルで返す(分解代入用)
+	// public static (float, float) readfloatt2() {
+	// 	var arr = readfloats();
+	// 	return (arr[0], arr[1]);
+	// } // end of func
+
+	// /// 読み込んだfloat3つをタプルで返す(分解代入用)
+	// public static (float, float, float) readfloatt3() {
+	// 	var arr = readfloats();
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
+
+	// /// 読み込んだfloat4つをタプルで返す(分解代入用)
+	// public static (float, float, float, float) readfloatt4() {
+	// 	var arr = readfloats();
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
+
+	// /// 読み込んだdouble2つをタプルで返す(分解代入用)
+	// public static (double, double) readdoublet2() {
+	// 	var arr = readdoubles();
+	// 	return (arr[0], arr[1]);
+	// } // end of func
+
+	// /// 読み込んだdouble3つをタプルで返す(分解代入用)
+	// public static (double, double, double) readdoublet3() {
+	// 	var arr = readdoubles();
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
+
+	// /// 読み込んだdouble4つをタプルで返す(分解代入用)
+	// public static (double, double, double, double) readdoublet4() {
+	// 	var arr = readdoubles();
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
+
+	// /// 読み込んだstring2つをタプルで返す(分解代入用)
+	// public static (string, string) readstringt2() {
+	// 	var arr = ReadLine().Split(' ');
+	// 	return (arr[0], arr[1]);
+	// } // end of func
+
+	// /// 読み込んだstring3つをタプルで返す(分解代入用)
+	// public static (string, string, string) readstringt3() {
+	// 	var arr = ReadLine().Split(' ');
+	// 	return (arr[0], arr[1], arr[2]);
+	// } // end of func
+
+	// /// 読み込んだstring3つをタプルで返す(分解代入用)
+	// public static (string, string, string, string) readstringt4() {
+	// 	var arr = ReadLine().Split(' ');
+	// 	return (arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
+
+	// /// 先頭に要素数(int)と次にでかい数字1つ
+	// public static (int, long) readintlongt2() {
+	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+	// 	return ((int)arr[0], arr[1]);
+	// } // end of func
+
+	// /// 先頭に要素数(int)と次にでかい数字2つ
+	// public static (int, long, long) readintlongt3() {
+	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+	// 	return ((int)arr[0], arr[1], arr[2]);
+	// } // end of func
+
+	// /// 先頭に要素数(int)と次にでかい数字2つ
+	// public static (int, long, long, long) readintlongt4() {
+	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+	// 	return ((int)arr[0], arr[1], arr[2], arr[3]);
+	// } // end of func
+
+	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
+	public static void WriteLine16<T>(T num) {
+		WriteLine(string.Format("{0:0.################}", num));
+	} // end of func
+
+	/// 整数を二進数で表示
+	public static void WriteLine2bit(int num) {
+		WriteLine(Convert.ToString(num, 2));
+	} // end of func
+
+	/// 整数を二進数で表示
+	public static void WriteLine2bit(long num) {
+		WriteLine(Convert.ToString(num, 2));
+	} // end of func
+
+	/// 整数を2進数表現した文字列に
+	public static string IntToString2bit(int num) {
+		return Convert.ToString(num, 2);
+	} // end of func
+
+	/// 整数を2進数表現した文字列に
+	public static string LongToString2bit(long num) {
+		return Convert.ToString(num, 2);
+	} // end of func
+
+	/// 出力のflush削除
+	public static void preprocess() {
+		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
+		System.Console.SetOut(sw);
+	} // end of func
+
+	/// 出力をflush
+	public static void finalprocess() {
+		System.Console.Out.Flush();
+	} // end of func
+} // end of class
+
+public class Kyopuro {
 	public static void Main() {
-		var (a, b, rest) = new[] { 1, 2, 3, 4, 5 };
+		preprocess();
+		var kyopuro = new Kyopuro();
+		kyopuro.Solve();
+		finalprocess();
+	} // end of func
 
-		Console.WriteLine(a);
-		Console.WriteLine(b);
-		Console.WriteLine(string.Join(", ", rest));
+
+	/// 隣接グラフに対してトポロジカルソートをする
+	/// 出来ない場合は要素0の配列を返す
+	public List<int> TopologicalSort(List<List<int>> graph) {
+		// ノード数
+		int n = graph.Count;
+
+		// 各ノードの入次数を記録
+		int[] inputNodes = new int[n];
+		for (int i = 0; i < n; ++i) {
+			foreach (int to in graph[i]) {
+				inputNodes[to] += 1;
+			}
+		}
+
+		// 入力の次数が0のノードを記録
+		var queue = new Queue<int>();
+		for (int i = 0; i < n; ++i) {
+			if (inputNodes[i] > 0) continue;
+			queue.Enqueue(i);
+		}
+
+		// トポロジカルソート結果
+		List<int> sorted = new List<int>();
+
+		// 手順1 : 入次数が0のノードをキューに追加
+		// 手順2 : キューからノードを取り出しソート結果に追加
+		// 手順3 : 隣接するノードの入次数を-1
+		// 手順4 : 手順1 ~ 手順3 を繰り返し
+		while (queue.Count > 0) {
+			// キューから取り出し
+			int node = queue.Dequeue();
+
+			// 隣接するノードの入次数を-1
+			foreach (int to in graph[node]) {
+				inputNodes[to] -= 1;
+				// 入次数が0ならキューに追加
+				if (inputNodes[to] == 0) queue.Enqueue(to);
+			}
+
+			// ソート結果に追加
+			sorted.Add(node);
+		}
+
+		// ソートしたノード数がgraphのノード数と一致すればトポロジカルソート成功
+		// 一致しなければトポロジカルソートできないグラフ(非DAG)
+		return sorted.Count == n ? sorted : new List<int>();
+	} // end of method
+
+
+	public void Solve() {
+		var hw = readints();
+		int h = hw[0], w = hw[1];
+
+		var masu = makearr2<int>(h, w, ' ');
+		var umap = new Dictionary<int, List<int[]>>();
+		for (int i = 0; i < h; ++i) {
+			string[] s = read().Split(' ');
+			for (int j = 0; j < w; ++j) {
+				int c = s[j][0] - 'a';
+				masu[i][j] = c;
+
+				if (umap.ContainsKey(c) == false) umap[c] = new List<int[]>();
+				umap[c].Add(new int[] { i, j });
+			}
+		}
+
+		var graph = makelist2<int>(26, 0, 0);
+		int q = readint();
+		for (int i = 0; i < q; ++i) {
+			string ab = read();
+			int a = ab[0] - 'a';
+			int b = ab[2] - 'a';
+			graph[a].Add(b);
+		}
+
+		// トポロジカルソート
+		var topo = TopologicalSort(graph);
+
+		// 強い順
+		foreach (var from in topo) {
+			if (graph[from].Count == 0) continue;
+
+			// 各マスを調べる
+			foreach (var place in umap[from]) {
+				int y = place[0];
+				int x = place[1];
+				// 食べられてる
+				if (masu[y][x] == '-' - 'a') continue;
+
+				// 周囲1マス
+				for (int dy = -1; dy <= 1; ++dy) {
+					for (int dx = -1; dx <= 1; ++dx) {
+						int ydy = y + dy;
+						int xdx = x + dx;
+						if (ydy < 0 || h <= ydy) continue;
+						if (xdx < 0 || w <= xdx) continue;
+						// 食べる対象
+						foreach (var to in graph[from]) {
+							if (masu[ydy][xdx] != to) continue;
+							masu[ydy][xdx] = '-' - 'a';
+						}
+					}
+				}
+			}
+		}
+
+		printlist2(masu);
+		for (int i = 0; i < h; ++i) {
+			for (int j = 0; j < w; ++j) {
+				write((char)(masu[i][j] + 'a'));
+				if (j < w - 1) write(" ");
+			}
+			writeline();
+		}
 	}
-}
+} // end of class
