@@ -479,13 +479,16 @@ public class Kyopuro {
 
 	public void Solve() {
 
-		int n = readint();
-		var arr = readlongs();
+		var (n, a, b) = readintt3();
 
-		long xsum = 0;
-		foreach (var a in arr) xsum = xsum ^ a;
+		var dp = makearr<bool>(n + 1, false);
+		for (int i = 0; i <= n; ++i) {
+			// 負けに遷移するなら勝ち
+			if (i >= a && dp[i - a] == false) dp[i] = true;
+			if (i >= b && dp[i - b] == false) dp[i] = true;
+		}
 
-		writeline(xsum != 0 ? "First" : "Second");
+		writeline(dp.Last() ? "First" : "Second");
 
 	}
 } // end of class
