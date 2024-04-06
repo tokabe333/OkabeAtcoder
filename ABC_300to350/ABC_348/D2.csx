@@ -516,7 +516,7 @@ public class Kyopuro {
 		}
 
 		int n = readint();
-		var drags = makearr2(h, 3, 0);
+		var drags = makearr2(n, 3, 0);
 		var dragmasu = makearr2(h, w, 0);
 		for (int i = 0; i < n; ++i) {
 			var (y, x, e) = readintt3();

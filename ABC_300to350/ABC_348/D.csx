@@ -478,15 +478,6 @@ public class YXE {
 	}
 }
 
-public class YX {
-	public int y;
-	public int x;
-	public YX(int yy, int xx) {
-		y = yy;
-		x = xx;
-	}
-}
-
 public class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -498,8 +489,8 @@ public class Kyopuro {
 
 	public void Solve() {
 		var (h, w) = readintt2();
-		var masu = makearr2<bool>(h, w, true);
-		int sy = -1, sx = -1, gy = -1, gx = -1, start = -1, goal = -1;
+		var masu = makearr2(h, w, 0);
+		int sy = 0, sx = 0, gy = 0, gx = 0;
 		for (int i = 0; i < h; ++i) {
 			string s = read();
 			for (int j = 0; j < w; ++j) {
@@ -510,87 +501,91 @@ public class Kyopuro {
 					gy = i;
 					gx = j;
 				} else if (s[j] == '#') {
-					masu[i][j] = false;
+					masu[i][j] = 1;
 				}
 			}
 		}
 
-		int n = readint();
-		var drags = makearr2(h, 3, 0);
 		var dragmasu = makearr2(h, w, 0);
+		var drags = makearr2(h, 3, 0);
+		int n = readint();
+		dragmasu[gy][gx] = n + 1;
 		for (int i = 0; i < n; ++i) {
 			var (y, x, e) = readintt3();
 			--y; --x;
+			dragmasu[y][x] = i + 1;
 			drags[i][0] = y;
 			drags[i][1] = x;
 			drags[i][2] = e;
-			if (y == sy && x == sx) start = i;
-			if (y == gy && x == gx) goal = i;
-			dragmasu[y][x] = i + 1;
 		}
 
-		if (start == -1) {
+		if (dragmasu[sy][sx] == 0) {
 			writeline("No");
 			return;
-		}
-
-		if (goal == -1) {
-			goal = n;
-			dragmasu[gy][gx] = n + 1;
 		}
 
 
 		var graph = new HashSet<int>[n];
 		for (int i = 0; i < n; ++i) {
 			graph[i] = new HashSet<int>();
-
-			var flag = new HashSet<int>();
+			// bfs
+			var flag = makearr2(h, w, drags[i][2] + 1);
 			var que = new Queue<YXE>();
 			que.Enqueue(new YXE(drags[i][0], drags[i][1], drags[i][2]));
 			while (que.Count > 0) {
 				var yxe = que.Dequeue();
 				int y = yxe.y;
 				int x = yxe.x;
-				int e = yxe.e;
+				int ene = yxe.e;
 
-				int yx = y * w + x;
-				if (flag.Contains(yx)) continue;
-				flag.Add(yx);
+				if (ene < 0) continue;
+				if (ene >= flag[y][x]) continue;
+				flag[y][x] = ene;
 
 				if (dragmasu[y][x] > 0 && dragmasu[y][x] - 1 != i) {
 					graph[i].Add(dragmasu[y][x] - 1);
 				}
 
-				if (e == 0) continue;
-				if (0 < y && masu[y - 1][x] && flag.Contains((y - 1) * w + x) == false) que.Enqueue(new YXE(y - 1, x, e - 1));
-				if (y < h - 1 && masu[y + 1][x] && flag.Contains((y + 1) * w + x) == false) que.Enqueue(new YXE(y + 1, x, e - 1));
-				if (0 < x && masu[y][x - 1] && flag.Contains(y * w + x - 1) == false) que.Enqueue(new YXE(y, x - 1, e - 1));
-				if (x < w - 1 && masu[y][x + 1] && flag.Contains(y * w + x + 1) == false) que.Enqueue(new YXE(y, x + 1, e - 1));
+				// up, down, left ,right
+				if (0 < y && masu[y - 1][x] != 1) que.Enqueue(new YXE(y - 1, x, ene - 1));
+				if (y < h - 1 && masu[y + 1][x] != 1) que.Enqueue(new YXE(y + 1, x, ene - 1));
+				if (0 < x && masu[y][x - 1] != 1) que.Enqueue(new YXE(y, x - 1, ene - 1));
+				if (x < w - 1 && masu[y][x + 1] != 1) que.Enqueue(new YXE(y, x + 1, ene - 1));
 			}
+
 		}
 
+
+		// printlist2(dragmasu);
 		// for (int i = 0; i < n; ++i) {
-		// 	foreach (var g in graph[i]) write(g + " ");
+		// 	foreach (var d in graph[i]) {
+		// 		write(d + " ");
+		// 	}
 		// 	writeline();
 		// }
 
-		var queue = new Queue<int>();
-		var flagg = new HashSet<int>();
-		queue.Enqueue(start);
-		while (queue.Count > 0) {
-			int node = queue.Dequeue();
-			if (flagg.Contains(node)) continue;
-			flagg.Add(node);
-
-			if (node == goal) {
-				writeline("Yes");
-				return;
+		int startDrag = 0;
+		for (int i = 0; i < n; ++i) {
+			if (sy == drags[i][0] && sx == drags[i][1]) {
+				startDrag = i;
+				break;
 			}
-
-			foreach (var hoge in graph[node]) queue.Enqueue(hoge);
 		}
+		bool ret = dfs(graph, n, startDrag, new HashSet<int>());
+		writeline(ret ? "Yes" : "No");
+	}
 
-		writeline("No");
+	public bool dfs(HashSet<int>[] graph, int n, int node, HashSet<int> flag) {
+		if (node == n) return true;
+		if (flag.Contains(node)) return false;
+		flag.Add(node);
+
+		bool ret = false;
+		foreach (var g in graph[node]) {
+			bool hoge = dfs(graph, n, g, flag);
+			if (hoge) ret = hoge;
+		}
+		return ret;
 	}
 
 } // end of class
