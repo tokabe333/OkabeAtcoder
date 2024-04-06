@@ -226,8 +226,8 @@ int main() {
 
     UnionFind uf(n + 2);
     rep(i, n) {
-        unordered_set<vi> flag;
-        queue<vi>         que;
+        unordered_map flag;
+        queue<vi>     que;
         que.push({drags[i][0], drags[i][1], drags[i][2]});
         while (que.empty() != true) {
             int y = que.front()[0];
@@ -235,8 +235,8 @@ int main() {
             int e = que.front()[2];
             que.pop();
 
-            if (flag.find({y, x})) != flag.end()) continue;
-            flag.insert({y, x});
+            if (flag.find(pii(y, x)) != flag.end()) continue;
+            flag.insert(pii(y, x));
 
             if (dragmasu[y][x] > 0) {
                 uf.merge(i, dragmasu[y][x] - 1);
