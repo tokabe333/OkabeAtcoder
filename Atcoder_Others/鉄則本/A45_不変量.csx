@@ -485,9 +485,9 @@ public class Kyopuro {
 	public void Solve() {
 		var input = readsplit();
 		var dict = new Dictionary<char, int>();
-		dict['R'] = 0;
+		dict['W'] = 0;
 		dict['B'] = 1;
-		dict['W'] = 2;
+		dict['R'] = 2;
 		int col = dict[input[1][0]];
 
 		int mod = 0;

@@ -297,11 +297,6 @@ public class Util {
 		return long.Parse(ReadLine());
 	} // end of func
 
-	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
-	public static string[] readsplit() {
-		return ReadLine().Split(' ');
-	} // end of func
-
 	/// 数字をスペース区切りでint型で入力
 	public static int[] readints() {
 		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
@@ -483,17 +478,21 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		var input = readsplit();
-		var dict = new Dictionary<char, int>();
-		dict['R'] = 0;
-		dict['B'] = 1;
-		dict['W'] = 2;
-		int col = dict[input[1][0]];
+		int n = readint();
 
-		int mod = 0;
-		string s = read();
-		foreach (var c in s) mod = (mod + dict[c]) % 3;
-		writeline(mod == col ? "Yes" : "No");
+		var movies = new int[n][];
+		for (int i = 0; i < n; ++i) movies[i] = readints();
 
+		movies = movies.OrderBy((x) => x[1]).ToArray();
+
+		int ans = 0;
+		int time = 0;
+		for (int i = 0; i < n; ++i) {
+			if (time <= movies[i][0]) {
+				ans += 1;
+				time = movies[i][1];
+			}
+		}
+		writeline(ans);
 	}
 } // end of class
