@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.ComponentModel.DataAnnotations;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -471,47 +470,32 @@ public class Util {
 
 public class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
 	public void Solve() {
-		var (d, n) = readintt2();
-		var days = makelist2(d + 1, 0, 0);
-		for (int i = 0; i < n; ++i) {
-			var (l, r, h) = readintt3();
-			--l;
-			days[l].Add(h);
-			days[r].Add(-h);
+		var (n, x, y) = readintt3();
+		var arr = readints();
+
+		int aimax = 100000;
+		var grundy = new int[aimax + 1];
+		for (int i = 0; i <= aimax; ++i) {
+			var mex = new bool[3];
+			// 遷移先
+			if (i >= x) mex[grundy[i - x]] = true;
+			if (i >= y) mex[grundy[i - y]] = true;
+			if (mex[0] == false) grundy[i] = 0;
+			else if (mex[1] == false) grundy[i] = 1;
+			else grundy[i] = 2;
 		}
 
-		var constraint = new Dictionary<int, int>();
-		long ans = 0;
-		for (int i = 0; i < d; ++i) {
-			// 制約更新
-			foreach (var c in days[i]) {
-				if (c > 0) {
-					if (constraint.ContainsKey(c) == false) constraint[c] = 0;
-					constraint[c] += 1;
-				} else {
-					int cc = -c;
-					constraint[cc] -= 1;
-					if (constraint[cc] == 0) constraint.Remove(cc);
-				}
-			}
-
-			// foreach (var c in constraint.Keys) write(c + " ");
-			// writeline("\n" + ans);
-			// writeline();
-
-
-			ans += constraint.Count == 0 ? 24 : constraint.Keys.Min();
-		}
-
-		writeline(ans);
+		int xors = 0;
+		foreach (var a in arr) xors = xors ^ grundy[a];
+		writeline(xors == 0 ? "Second" : "First");
 
 	}
 } // end of class

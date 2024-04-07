@@ -7,7 +7,8 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization.Metadata;
+using System.Threading.Channels;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -471,47 +472,34 @@ public class Util {
 
 public class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
 	public void Solve() {
-		var (d, n) = readintt2();
-		var days = makelist2(d + 1, 0, 0);
-		for (int i = 0; i < n; ++i) {
-			var (l, r, h) = readintt3();
-			--l;
-			days[l].Add(h);
-			days[r].Add(-h);
+
+		int n = readint();
+		var dp = makearr2(n, n, -1);
+		dp[n - 1] = readints();
+
+		int dfs(int depth, int node) {
+			if (depth == n - 1) return dp[depth][node];
+			if (dp[depth][node] != -1) return dp[depth][node];
+			int left = dfs(depth + 1, node);
+			int right = dfs(depth + 1, node + 1);
+			int d = 0;
+			if (depth % 2 == 0) d = Max(left, right);
+			else d = Min(left, right);
+			dp[depth][node] = d;
+			return d;
 		}
 
-		var constraint = new Dictionary<int, int>();
-		long ans = 0;
-		for (int i = 0; i < d; ++i) {
-			// 制約更新
-			foreach (var c in days[i]) {
-				if (c > 0) {
-					if (constraint.ContainsKey(c) == false) constraint[c] = 0;
-					constraint[c] += 1;
-				} else {
-					int cc = -c;
-					constraint[cc] -= 1;
-					if (constraint[cc] == 0) constraint.Remove(cc);
-				}
-			}
-
-			// foreach (var c in constraint.Keys) write(c + " ");
-			// writeline("\n" + ans);
-			// writeline();
+		writeline(dfs(0, 0));
 
 
-			ans += constraint.Count == 0 ? 24 : constraint.Keys.Min();
-		}
-
-		writeline(ans);
 
 	}
 } // end of class

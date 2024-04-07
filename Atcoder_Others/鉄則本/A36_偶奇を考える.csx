@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.ComponentModel.DataAnnotations;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -471,47 +470,20 @@ public class Util {
 
 public class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
 	public void Solve() {
-		var (d, n) = readintt2();
-		var days = makelist2(d + 1, 0, 0);
-		for (int i = 0; i < n; ++i) {
-			var (l, r, h) = readintt3();
-			--l;
-			days[l].Add(h);
-			days[r].Add(-h);
-		}
 
-		var constraint = new Dictionary<int, int>();
-		long ans = 0;
-		for (int i = 0; i < d; ++i) {
-			// 制約更新
-			foreach (var c in days[i]) {
-				if (c > 0) {
-					if (constraint.ContainsKey(c) == false) constraint[c] = 0;
-					constraint[c] += 1;
-				} else {
-					int cc = -c;
-					constraint[cc] -= 1;
-					if (constraint[cc] == 0) constraint.Remove(cc);
-				}
-			}
+		var (n, k) = readlongt2();
 
-			// foreach (var c in constraint.Keys) write(c + " ");
-			// writeline("\n" + ans);
-			// writeline();
-
-
-			ans += constraint.Count == 0 ? 24 : constraint.Keys.Min();
-		}
-
-		writeline(ans);
+		long dist = (n - 1) * 2;
+		if (k < dist || k % 2 == 1) writeline("No");
+		else writeline("Yes");
 
 	}
 } // end of class
