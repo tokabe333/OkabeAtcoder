@@ -297,6 +297,11 @@ public class Util {
 		return long.Parse(ReadLine());
 	} // end of func
 
+	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
+	public static string[] readsplit() {
+		return ReadLine().Split(' ');
+	} // end of func
+
 	/// 数字をスペース区切りでint型で入力
 	public static int[] readints() {
 		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
@@ -322,113 +327,113 @@ public class Util {
 		return ReadLine().Split(' ');
 	} // end of func
 
-	// /// 読み込んだint2つをタプルで返す(分解代入用)
-	// public static (int, int) readintt2() {
-	// 	var arr = readints();
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// 読み込んだint2つをタプルで返す(分解代入用)
+	public static (int, int) readintt2() {
+		var arr = readints();
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// 読み込んだint3つをタプルで返す(分解代入用)
-	// public static (int, int, int) readintt3() {
-	// 	var arr = readints();
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// 読み込んだint3つをタプルで返す(分解代入用)
+	public static (int, int, int) readintt3() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// 読み込んだint4つをタプルで返す(分解代入用)
-	// public static (int, int, int, int) readintt4() {
-	// 	var arr = readints();
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// 読み込んだint4つをタプルで返す(分解代入用)
+	public static (int, int, int, int) readintt4() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// 読み込んだlong2つをタプルで返す(分解代入用)
-	// public static (long, long) readlongt2() {
-	// 	var arr = readlongs();
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// 読み込んだlong2つをタプルで返す(分解代入用)
+	public static (long, long) readlongt2() {
+		var arr = readlongs();
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// 読み込んだ数long3つをタプルで返す(分解代入用)
-	// public static (long, long, long) readlongt3() {
-	// 	var arr = readlongs();
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// 読み込んだ数long3つをタプルで返す(分解代入用)
+	public static (long, long, long) readlongt3() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// 読み込んだ数long4つをタプルで返す(分解代入用)
-	// public static (long, long, long, long) readlongt4() {
-	// 	var arr = readlongs();
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// 読み込んだ数long4つをタプルで返す(分解代入用)
+	public static (long, long, long, long) readlongt4() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// 読み込んだfloat2つをタプルで返す(分解代入用)
-	// public static (float, float) readfloatt2() {
-	// 	var arr = readfloats();
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// 読み込んだfloat2つをタプルで返す(分解代入用)
+	public static (float, float) readfloatt2() {
+		var arr = readfloats();
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// 読み込んだfloat3つをタプルで返す(分解代入用)
-	// public static (float, float, float) readfloatt3() {
-	// 	var arr = readfloats();
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// 読み込んだfloat3つをタプルで返す(分解代入用)
+	public static (float, float, float) readfloatt3() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// 読み込んだfloat4つをタプルで返す(分解代入用)
-	// public static (float, float, float, float) readfloatt4() {
-	// 	var arr = readfloats();
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// 読み込んだfloat4つをタプルで返す(分解代入用)
+	public static (float, float, float, float) readfloatt4() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// 読み込んだdouble2つをタプルで返す(分解代入用)
-	// public static (double, double) readdoublet2() {
-	// 	var arr = readdoubles();
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// 読み込んだdouble2つをタプルで返す(分解代入用)
+	public static (double, double) readdoublet2() {
+		var arr = readdoubles();
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// 読み込んだdouble3つをタプルで返す(分解代入用)
-	// public static (double, double, double) readdoublet3() {
-	// 	var arr = readdoubles();
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// 読み込んだdouble3つをタプルで返す(分解代入用)
+	public static (double, double, double) readdoublet3() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// 読み込んだdouble4つをタプルで返す(分解代入用)
-	// public static (double, double, double, double) readdoublet4() {
-	// 	var arr = readdoubles();
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// 読み込んだdouble4つをタプルで返す(分解代入用)
+	public static (double, double, double, double) readdoublet4() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// 読み込んだstring2つをタプルで返す(分解代入用)
-	// public static (string, string) readstringt2() {
-	// 	var arr = ReadLine().Split(' ');
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// 読み込んだstring2つをタプルで返す(分解代入用)
+	public static (string, string) readstringt2() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// 読み込んだstring3つをタプルで返す(分解代入用)
-	// public static (string, string, string) readstringt3() {
-	// 	var arr = ReadLine().Split(' ');
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// 読み込んだstring3つをタプルで返す(分解代入用)
+	public static (string, string, string) readstringt3() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// 読み込んだstring3つをタプルで返す(分解代入用)
-	// public static (string, string, string, string) readstringt4() {
-	// 	var arr = ReadLine().Split(' ');
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// 読み込んだstring3つをタプルで返す(分解代入用)
+	public static (string, string, string, string) readstringt4() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// 先頭に要素数(int)と次にでかい数字1つ
-	// public static (int, long) readintlongt2() {
-	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-	// 	return ((int)arr[0], arr[1]);
-	// } // end of func
+	/// 先頭に要素数(int)と次にでかい数字1つ
+	public static (int, long) readintlongt2() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1]);
+	} // end of func
 
-	// /// 先頭に要素数(int)と次にでかい数字2つ
-	// public static (int, long, long) readintlongt3() {
-	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-	// 	return ((int)arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// 先頭に要素数(int)と次にでかい数字2つ
+	public static (int, long, long) readintlongt3() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// 先頭に要素数(int)と次にでかい数字2つ
-	// public static (int, long, long, long) readintlongt4() {
-	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-	// 	return ((int)arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// 先頭に要素数(int)と次にでかい数字2つ
+	public static (int, long, long, long) readintlongt4() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
 	public static void WriteLine16<T>(T num) {
@@ -467,6 +472,7 @@ public class Util {
 	} // end of func
 } // end of class
 
+
 public class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -476,119 +482,13 @@ public class Kyopuro {
 	} // end of func
 
 
-	/// 隣接グラフに対してトポロジカルソートをする
-	/// 出来ない場合は要素0の配列を返す
-	public List<int> TopologicalSort(List<List<int>> graph) {
-		// ノード数
-		int n = graph.Count;
-
-		// 各ノードの入次数を記録
-		int[] inputNodes = new int[n];
-		for (int i = 0; i < n; ++i) {
-			foreach (int to in graph[i]) {
-				inputNodes[to] += 1;
-			}
-		}
-
-		// 入力の次数が0のノードを記録
-		var queue = new Queue<int>();
-		for (int i = 0; i < n; ++i) {
-			if (inputNodes[i] > 0) continue;
-			queue.Enqueue(i);
-		}
-
-		// トポロジカルソート結果
-		List<int> sorted = new List<int>();
-
-		// 手順1 : 入次数が0のノードをキューに追加
-		// 手順2 : キューからノードを取り出しソート結果に追加
-		// 手順3 : 隣接するノードの入次数を-1
-		// 手順4 : 手順1 ~ 手順3 を繰り返し
-		while (queue.Count > 0) {
-			// キューから取り出し
-			int node = queue.Dequeue();
-
-			// 隣接するノードの入次数を-1
-			foreach (int to in graph[node]) {
-				inputNodes[to] -= 1;
-				// 入次数が0ならキューに追加
-				if (inputNodes[to] == 0) queue.Enqueue(to);
-			}
-
-			// ソート結果に追加
-			sorted.Add(node);
-		}
-
-		// ソートしたノード数がgraphのノード数と一致すればトポロジカルソート成功
-		// 一致しなければトポロジカルソートできないグラフ(非DAG)
-		return sorted.Count == n ? sorted : new List<int>();
-	} // end of method
-
-
 	public void Solve() {
-		var hw = readints();
-		int h = hw[0], w = hw[1];
+		long hoge = 1l << 61;
 
-		var masu = makearr2<int>(h, w, ' ');
-		var umap = new Dictionary<int, List<int[]>>();
-		for (int i = 0; i < h; ++i) {
-			string[] s = read().Split(' ');
-			for (int j = 0; j < w; ++j) {
-				int c = s[j][0] - 'a';
-				masu[i][j] = c;
-
-				if (umap.ContainsKey(c) == false) umap[c] = new List<int[]>();
-				umap[c].Add(new int[] { i, j });
-			}
+		var random = new Random();
+		for (int i = 0; i < 10; ++i) {
+			writeline(random.NextInt64(hoge));
 		}
 
-		var graph = makelist2<int>(26, 0, 0);
-		int q = readint();
-		for (int i = 0; i < q; ++i) {
-			string ab = read();
-			int a = ab[0] - 'a';
-			int b = ab[2] - 'a';
-			graph[a].Add(b);
-		}
-
-		// トポロジカルソート
-		var topo = TopologicalSort(graph);
-
-		// 強い順
-		foreach (var from in topo) {
-			if (graph[from].Count == 0) continue;
-
-			// 各マスを調べる
-			foreach (var place in umap[from]) {
-				int y = place[0];
-				int x = place[1];
-				// 食べられてる
-				if (masu[y][x] == '-' - 'a') continue;
-
-				// 周囲1マス
-				for (int dy = -1; dy <= 1; ++dy) {
-					for (int dx = -1; dx <= 1; ++dx) {
-						int ydy = y + dy;
-						int xdx = x + dx;
-						if (ydy < 0 || h <= ydy) continue;
-						if (xdx < 0 || w <= xdx) continue;
-						// 食べる対象
-						foreach (var to in graph[from]) {
-							if (masu[ydy][xdx] != to) continue;
-							masu[ydy][xdx] = '-' - 'a';
-						}
-					}
-				}
-			}
-		}
-
-		// printlist2(masu);
-		for (int i = 0; i < h; ++i) {
-			for (int j = 0; j < w; ++j) {
-				write((char)(masu[i][j] + 'a'));
-				if (j < w - 1) write(" ");
-			}
-			writeline();
-		}
 	}
 } // end of class

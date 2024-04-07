@@ -526,8 +526,7 @@ class RollingHash {
 			// printlist(this.bases[i]);
 			// printlist(this.hash[i]);
 			// writeline();
-		}
-
+		} // end of for
 	} // end of constructor
 
 	/// [l, r]の部分文字列のハッシュ値を計算(乱数の数だけハッシュ生成)
@@ -576,7 +575,7 @@ public class Kyopuro {
 
 		var (n, q) = readintt2();
 		string s = read();
-		var roliha = new RollingHash(s, 3);
+		var roliha = new RollingHash(s, 1);
 		for (int i = 0; i < q; ++i) {
 			var (a, b, c, d) = readintt4();
 			bool ret = roliha.CompareHash(a, b, c, d);
