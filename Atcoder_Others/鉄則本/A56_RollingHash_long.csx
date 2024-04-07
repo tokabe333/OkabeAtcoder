@@ -521,9 +521,9 @@ class RollingHash {
 				this.hash[i][j] = (b * this.hash[i][j - 1] + this.codes[j - 1]) % this.mod;
 			}
 
-			printlist(this.bases[i]);
-			printlist(this.hash[i]);
-			writeline();
+			// printlist(this.bases[i]);
+			// printlist(this.hash[i]);
+			// writeline();
 		} // end of for
 	} // end of constructor
 
