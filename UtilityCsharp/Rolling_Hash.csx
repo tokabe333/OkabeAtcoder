@@ -7,6 +7,9 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 
+/// ハッシュ値で部分文字列が一致するか検索
+/// 文字列の範囲指定[l, r]は1..Nの範囲(0からではないので注意)
+/// 2^61-1 をmodとして使用する(128bitを使う)
 class RollingHash {
 	/// 計算したハッシュ値
 	public long[][] hash;
@@ -91,7 +94,10 @@ class RollingHash {
 
 
 
-
+/// ハッシュ値で部分文字列が一致するか検索
+/// 文字列の範囲指定[l, r]は1..Nの範囲(0からではないので注意)
+/// m107をmodとして使用する(衝突する可能性もあるので複数乱数でB進法にする)
+/// (全ての乱数で生成したハッシュが一致すれば文字列も一致する)
 class RollingHashLong {
 	/// 計算したハッシュ値
 	public long[][] hash;
