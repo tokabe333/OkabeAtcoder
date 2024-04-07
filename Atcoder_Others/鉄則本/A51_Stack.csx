@@ -483,58 +483,19 @@ public class Kyopuro {
 
 
 	public void Solve() {
+
 		int q = readint();
-		// var set = new SortedSet<int>();
-		var set = new SortedList<int, int>();
+		var stack = new Stack<string>();
 		for (int i = 0; i < q; ++i) {
 			var query = readsplit();
 			if (query[0] == "1") {
-				// set.Add(int.Parse(query[1]));
-				set.Add(int.Parse(query[1]), 1);
+				stack.Push(query[1]);
 			} else if (query[0] == "2") {
-				set.Remove(int.Parse(query[1]));
+				writeline(stack.Peek());
 			} else {
-				// int index = LowerBound(set.
-				int index = LowerBound(set.Keys.ToArray(), int.Parse(query[1]));
-				writeline(index >= set.Count ? -1 : set.GetKeyAtIndex(index));
-				// writeline("hoge" + set.GetKeyAtIndex(0));
-				// foreach (var ss in set) write(ss + " ");
-				// writeline();
+				stack.Pop();
 			}
 		}
 
-	}
-
-
-
-	public int LowerBound<T>(T[] a, T v) {
-		return LowerBound(a, v, Comparer<T>.Default);
-	}
-
-	public int LowerBound<T>(T[] a, T v, Comparer<T> cmp) {
-		var l = 0;
-		var r = a.Length - 1;
-		while (l <= r) {
-			var mid = l + (r - l) / 2;
-			var res = cmp.Compare(a[mid], v);
-			if (res == -1) l = mid + 1;
-			else r = mid - 1;
-		}
-		return l;
-	}
-	public static int UpperBound<T>(T[] a, T v) {
-		return UpperBound(a, v, Comparer<T>.Default);
-	}
-
-	public static int UpperBound<T>(T[] a, T v, Comparer<T> cmp) {
-		var l = 0;
-		var r = a.Length - 1;
-		while (l <= r) {
-			var mid = l + (r - l) / 2;
-			var res = cmp.Compare(a[mid], v);
-			if (res <= 0) l = mid + 1;
-			else r = mid - 1;
-		}
-		return l;
 	}
 } // end of class
