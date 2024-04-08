@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -298,11 +297,6 @@ public class Util {
 		return long.Parse(ReadLine());
 	} // end of func
 
-	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
-	public static string[] readsplit() {
-		return ReadLine().Split(' ');
-	} // end of func
-
 	/// 数字をスペース区切りでint型で入力
 	public static int[] readints() {
 		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
@@ -473,21 +467,25 @@ public class Util {
 	} // end of func
 } // end of class
 
-<<<<<<< HEAD
-class Data {
+public class YXE {
 	public int y;
 	public int x;
-	public int coin;
-	public int dist;
-	public Data(int y, int x, int d, int dist) {
-		this.y = y;
-		this.x = x;
-		this.coin = d;
-		this.dist = dist;
+	public int e;
+	public YXE(int yy, int xx, int ee) {
+		y = yy;
+		x = xx;
+		e = ee;
 	}
 }
-=======
->>>>>>> e4f92531b56509ed6b0007633da6eff429492b3f
+
+public class YX {
+	public int y;
+	public int x;
+	public YX(int yy, int xx) {
+		y = yy;
+		x = xx;
+	}
+}
 
 public class Kyopuro {
 	public static void Main() {
@@ -499,79 +497,100 @@ public class Kyopuro {
 
 
 	public void Solve() {
-<<<<<<< HEAD
-		int[] hw = readints();
-		int h = hw[0];
-		int w = hw[1];
-		int f = readint();
-
-		int ans = 0;
-		for (int _ = 0; _ < f; ++_) {
-
-			int sy = 0, sx = 0, gy = 0, gx = 0;
-			var masu = makearr2<int>(h, w, 0);
-			for (int i = 0; i < h; ++i) {
-				var s = read().Split(' ');
-				for (int j = 0; j < w; ++j) {
-					if (s[j] == "S") {
-						sy = i;
-						sx = j;
-					} else if (s[j] == "G") {
-						gy = i;
-						gx = j;
-					} else {
-						masu[i][j] = int.Parse(s[j]);
-					}
+		var (h, w) = readintt2();
+		var masu = makearr2<bool>(h, w, true);
+		int sy = -1, sx = -1, gy = -1, gx = -1, start = -1, goal = -1;
+		for (int i = 0; i < h; ++i) {
+			string s = read();
+			for (int j = 0; j < w; ++j) {
+				if (s[j] == 'S') {
+					sy = i;
+					sx = j;
+				} else if (s[j] == 'T') {
+					gy = i;
+					gx = j;
+				} else if (s[j] == '#') {
+					masu[i][j] = false;
 				}
 			}
+		}
 
-			// DPと言いつつBFS coin-dist
-			var dp = makearr3<int>(h, w, 2, 0);
-			for (int i = 0; i < h; ++i) {
-				for (int j = 0; j < w; ++j) {
-					// コインは最小
-					dp[i][j][0] = -1;
-					// 距離は最大値
-					dp[i][j][1] = int.MaxValue;
-				}
-			}
+		int n = readint();
+		var drags = makearr2(n, 3, 0);
+		var dragmasu = makearr2(h, w, 0);
+		for (int i = 0; i < n; ++i) {
+			var (y, x, e) = readintt3();
+			--y; --x;
+			drags[i][0] = y;
+			drags[i][1] = x;
+			drags[i][2] = e;
+			if (y == sy && x == sx) start = i;
+			if (y == gy && x == gx) goal = i;
+			dragmasu[y][x] = i + 1;
+		}
 
-			// var flag = new HashSet<int>();
-			var que = new Queue<Data>();
-			que.Enqueue(new Data(sy, sx, 0, 0));
+		if (start == -1) {
+			writeline("No");
+			return;
+		}
+
+		if (goal == -1) {
+			goal = n;
+			dragmasu[gy][gx] = n + 1;
+		}
+
+
+		var graph = new HashSet<int>[n];
+		for (int i = 0; i < n; ++i) {
+			graph[i] = new HashSet<int>();
+
+			var flag = new HashSet<int>();
+			var que = new Queue<YXE>();
+			que.Enqueue(new YXE(drags[i][0], drags[i][1], drags[i][2]));
 			while (que.Count > 0) {
-				var hoge = que.Dequeue();
-				int y = hoge.y;
-				int x = hoge.x;
-				int coin = hoge.coin;
-				int dist = hoge.dist;
+				var yxe = que.Dequeue();
+				int y = yxe.y;
+				int x = yxe.x;
+				int e = yxe.e;
 
-				// 探索済み
-				if (dp[y][x][0] >= coin || dp[y][x][1] < dist) continue;
-				coin += masu[y][x];
-				dp[y][x][0] = coin;
-				dp[y][x][1] = dist;
+				int yx = y * w + x;
+				if (flag.Contains(yx)) continue;
+				flag.Add(yx);
 
-				// up, down, left, right
-				if (0 < y && dp[y - 1][x][0] < coin && dp[y - 1][x][1] > dist) que.Enqueue(new Data(y - 1, x, coin, dist + 1));
-				if (y < h - 1 && dp[y + 1][x][0] < coin && dp[y + 1][x][1] > dist) que.Enqueue(new Data(y + 1, x, coin, dist + 1));
-				if (0 < x && dp[y][x - 1][0] < coin && dp[y][x - 1][1] > dist) que.Enqueue(new Data(y, x - 1, coin, dist));
-				if (x < w - 1 && dp[y][x + 1][0] < coin && dp[y][x + 1][1] > dist) que.Enqueue(new Data(y, x + 1, coin, dist + 1));
+				if (dragmasu[y][x] > 0 && dragmasu[y][x] - 1 != i) {
+					graph[i].Add(dragmasu[y][x] - 1);
+				}
+
+				if (e == 0) continue;
+				if (0 < y && masu[y - 1][x] && flag.Contains((y - 1) * w + x) == false) que.Enqueue(new YXE(y - 1, x, e - 1));
+				if (y < h - 1 && masu[y + 1][x] && flag.Contains((y + 1) * w + x) == false) que.Enqueue(new YXE(y + 1, x, e - 1));
+				if (0 < x && masu[y][x - 1] && flag.Contains(y * w + x - 1) == false) que.Enqueue(new YXE(y, x - 1, e - 1));
+				if (x < w - 1 && masu[y][x + 1] && flag.Contains(y * w + x + 1) == false) que.Enqueue(new YXE(y, x + 1, e - 1));
+			}
+		}
+
+		// for (int i = 0; i < n; ++i) {
+		// 	foreach (var g in graph[i]) write(g + " ");
+		// 	writeline();
+		// }
+
+		var queue = new Queue<int>();
+		var flagg = new HashSet<int>();
+		queue.Enqueue(start);
+		while (queue.Count > 0) {
+			int node = queue.Dequeue();
+			if (flagg.Contains(node)) continue;
+			flagg.Add(node);
+
+			if (node == goal) {
+				writeline("Yes");
+				return;
 			}
 
-			ans += dp[gy][gx][0];
-
+			foreach (var hoge in graph[node]) queue.Enqueue(hoge);
 		}
 
-		writeline(ans);
-=======
-		long hoge = 1l << 61;
-
-		var random = new Random();
-		for (int i = 0; i < 10; ++i) {
-			writeline(random.NextInt64(hoge));
-		}
-
->>>>>>> e4f92531b56509ed6b0007633da6eff429492b3f
+		writeline("No");
 	}
+
 } // end of class

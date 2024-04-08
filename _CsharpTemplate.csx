@@ -297,6 +297,11 @@ public class Util {
 		return long.Parse(ReadLine());
 	} // end of func
 
+	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
+	public static string[] readsplit() {
+		return ReadLine().Split(' ');
+	} // end of func
+
 	/// 数字をスペース区切りでint型で入力
 	public static int[] readints() {
 		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();

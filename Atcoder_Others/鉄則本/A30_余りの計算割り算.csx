@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -298,11 +297,6 @@ public class Util {
 		return long.Parse(ReadLine());
 	} // end of func
 
-	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
-	public static string[] readsplit() {
-		return ReadLine().Split(' ');
-	} // end of func
-
 	/// 数字をスペース区切りでint型で入力
 	public static int[] readints() {
 		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
@@ -473,21 +467,6 @@ public class Util {
 	} // end of func
 } // end of class
 
-<<<<<<< HEAD
-class Data {
-	public int y;
-	public int x;
-	public int coin;
-	public int dist;
-	public Data(int y, int x, int d, int dist) {
-		this.y = y;
-		this.x = x;
-		this.coin = d;
-		this.dist = dist;
-	}
-}
-=======
->>>>>>> e4f92531b56509ed6b0007633da6eff429492b3f
 
 public class Kyopuro {
 	public static void Main() {
@@ -497,81 +476,40 @@ public class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	/// a^nを繰り返し二乗法
+	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
+		if (n == 0) return 1;
+		if (n == 1) return a % mod;
+
+		long ret = 1;
+		while (n > 0) {
+			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
+			if ((n & 1) == 1) ret = (ret * a) % mod;
+			n >>= 1;
+			a = (a * a) % mod;
+		}
+
+		return ret;
+	} // end of method
+
+
+	/// (nume / deno) % mod を計算
+	long ModDiv(long nume, long deno, long mod) {
+		return (nume * KurikaeshiPow(deno, mod - 2, mod)) % m107;
+	}
+
 
 	public void Solve() {
-<<<<<<< HEAD
-		int[] hw = readints();
-		int h = hw[0];
-		int w = hw[1];
-		int f = readint();
+		var (n, r) = readlongt2();
 
-		int ans = 0;
-		for (int _ = 0; _ < f; ++_) {
+		long nume = 1;
+		for (long i = 1; i <= n; ++i) nume = (nume * i) % m107;
 
-			int sy = 0, sx = 0, gy = 0, gx = 0;
-			var masu = makearr2<int>(h, w, 0);
-			for (int i = 0; i < h; ++i) {
-				var s = read().Split(' ');
-				for (int j = 0; j < w; ++j) {
-					if (s[j] == "S") {
-						sy = i;
-						sx = j;
-					} else if (s[j] == "G") {
-						gy = i;
-						gx = j;
-					} else {
-						masu[i][j] = int.Parse(s[j]);
-					}
-				}
-			}
+		long deno = 1;
+		for (long i = 1; i <= r; ++i) deno = (deno * i) % m107;
+		for (long i = 1; i <= (n - r); ++i) deno = (deno * i) % m107;
 
-			// DPと言いつつBFS coin-dist
-			var dp = makearr3<int>(h, w, 2, 0);
-			for (int i = 0; i < h; ++i) {
-				for (int j = 0; j < w; ++j) {
-					// コインは最小
-					dp[i][j][0] = -1;
-					// 距離は最大値
-					dp[i][j][1] = int.MaxValue;
-				}
-			}
+		writeline(ModDiv(nume, deno, m107));
 
-			// var flag = new HashSet<int>();
-			var que = new Queue<Data>();
-			que.Enqueue(new Data(sy, sx, 0, 0));
-			while (que.Count > 0) {
-				var hoge = que.Dequeue();
-				int y = hoge.y;
-				int x = hoge.x;
-				int coin = hoge.coin;
-				int dist = hoge.dist;
-
-				// 探索済み
-				if (dp[y][x][0] >= coin || dp[y][x][1] < dist) continue;
-				coin += masu[y][x];
-				dp[y][x][0] = coin;
-				dp[y][x][1] = dist;
-
-				// up, down, left, right
-				if (0 < y && dp[y - 1][x][0] < coin && dp[y - 1][x][1] > dist) que.Enqueue(new Data(y - 1, x, coin, dist + 1));
-				if (y < h - 1 && dp[y + 1][x][0] < coin && dp[y + 1][x][1] > dist) que.Enqueue(new Data(y + 1, x, coin, dist + 1));
-				if (0 < x && dp[y][x - 1][0] < coin && dp[y][x - 1][1] > dist) que.Enqueue(new Data(y, x - 1, coin, dist));
-				if (x < w - 1 && dp[y][x + 1][0] < coin && dp[y][x + 1][1] > dist) que.Enqueue(new Data(y, x + 1, coin, dist + 1));
-			}
-
-			ans += dp[gy][gx][0];
-
-		}
-
-		writeline(ans);
-=======
-		long hoge = 1l << 61;
-
-		var random = new Random();
-		for (int i = 0; i < 10; ++i) {
-			writeline(random.NextInt64(hoge));
-		}
-
->>>>>>> e4f92531b56509ed6b0007633da6eff429492b3f
 	}
 } // end of class

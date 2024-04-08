@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -298,11 +297,6 @@ public class Util {
 		return long.Parse(ReadLine());
 	} // end of func
 
-	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
-	public static string[] readsplit() {
-		return ReadLine().Split(' ');
-	} // end of func
-
 	/// 数字をスペース区切りでint型で入力
 	public static int[] readints() {
 		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
@@ -473,23 +467,64 @@ public class Util {
 	} // end of func
 } // end of class
 
-<<<<<<< HEAD
-class Data {
-	public int y;
-	public int x;
-	public int coin;
-	public int dist;
-	public Data(int y, int x, int d, int dist) {
-		this.y = y;
-		this.x = x;
-		this.coin = d;
-		this.dist = dist;
-	}
-}
-=======
->>>>>>> e4f92531b56509ed6b0007633da6eff429492b3f
+/// union by rankと経路圧縮をする
+/// O(a(N)) 
+class UnionFind {
+	/// 親のノード番号
+	public int[] parents;
 
-public class Kyopuro {
+	/// 属する集合の要素数　
+	public int[] sizes;
+
+	/// ノード数NのUnionFindを作成
+	public UnionFind(int n) {
+		this.parents = new int[n];
+		this.sizes = new int[n];
+		for (int i = 0; i < n; ++i) {
+			// 初期状態では親を持たない
+			this.parents[i] = -1;
+			// 集合サイズは1
+			this.sizes[i] = 1;
+		}
+	} // end of constructor
+
+	/// ノードiの親を返す
+	public int Root(int node) {
+		// 根を見つけたらノード番号を変えす
+		if (this.parents[node] == -1) return node;
+
+		// 根までの経路を全て根に直接つなぐ
+		else {
+			int parent = this.Root(this.parents[node]);
+			this.parents[node] = parent;
+			return parent;
+		}
+	} // end of method
+
+	/// ノードuとvの属する集合を結合する
+	public void Unite(int u, int v) {
+		int ru = this.Root(u);
+		int rv = this.Root(v);
+		if (ru == rv) return;
+		// 大きい集合の根に結合(union by rank)
+		// 高さが高々log2になる
+		if (ru > rv) {
+			int tmp = ru;
+			ru = rv;
+			rv = tmp;
+		}
+		this.parents[ru] = rv;
+		this.sizes[rv] = this.sizes[ru] + this.sizes[rv];
+		this.sizes[ru] = this.sizes[rv];
+	} // end of method
+
+	/// ノードuとvが同じ集合に属しているか
+	public bool Connected(int u, int v) {
+		return this.Root(u) == this.Root(v);
+	} // end of method
+} // end of class
+
+class Kyopuro {
 	public static void Main() {
 		preprocess();
 		var kyopuro = new Kyopuro();
@@ -499,79 +534,17 @@ public class Kyopuro {
 
 
 	public void Solve() {
-<<<<<<< HEAD
-		int[] hw = readints();
-		int h = hw[0];
-		int w = hw[1];
-		int f = readint();
+		var (n, q) = readintt2();
 
-		int ans = 0;
-		for (int _ = 0; _ < f; ++_) {
-
-			int sy = 0, sx = 0, gy = 0, gx = 0;
-			var masu = makearr2<int>(h, w, 0);
-			for (int i = 0; i < h; ++i) {
-				var s = read().Split(' ');
-				for (int j = 0; j < w; ++j) {
-					if (s[j] == "S") {
-						sy = i;
-						sx = j;
-					} else if (s[j] == "G") {
-						gy = i;
-						gx = j;
-					} else {
-						masu[i][j] = int.Parse(s[j]);
-					}
-				}
+		var uf = new UnionFind(n + 1);
+		for (int i = 0; i < q; ++i) {
+			var (t, u, v) = readintt3();
+			if (t == 1) {
+				uf.Unite(u, v);
+			} else {
+				writeline(uf.Connected(u, v) ? "Yes" : "No");
 			}
-
-			// DPと言いつつBFS coin-dist
-			var dp = makearr3<int>(h, w, 2, 0);
-			for (int i = 0; i < h; ++i) {
-				for (int j = 0; j < w; ++j) {
-					// コインは最小
-					dp[i][j][0] = -1;
-					// 距離は最大値
-					dp[i][j][1] = int.MaxValue;
-				}
-			}
-
-			// var flag = new HashSet<int>();
-			var que = new Queue<Data>();
-			que.Enqueue(new Data(sy, sx, 0, 0));
-			while (que.Count > 0) {
-				var hoge = que.Dequeue();
-				int y = hoge.y;
-				int x = hoge.x;
-				int coin = hoge.coin;
-				int dist = hoge.dist;
-
-				// 探索済み
-				if (dp[y][x][0] >= coin || dp[y][x][1] < dist) continue;
-				coin += masu[y][x];
-				dp[y][x][0] = coin;
-				dp[y][x][1] = dist;
-
-				// up, down, left, right
-				if (0 < y && dp[y - 1][x][0] < coin && dp[y - 1][x][1] > dist) que.Enqueue(new Data(y - 1, x, coin, dist + 1));
-				if (y < h - 1 && dp[y + 1][x][0] < coin && dp[y + 1][x][1] > dist) que.Enqueue(new Data(y + 1, x, coin, dist + 1));
-				if (0 < x && dp[y][x - 1][0] < coin && dp[y][x - 1][1] > dist) que.Enqueue(new Data(y, x - 1, coin, dist));
-				if (x < w - 1 && dp[y][x + 1][0] < coin && dp[y][x + 1][1] > dist) que.Enqueue(new Data(y, x + 1, coin, dist + 1));
-			}
-
-			ans += dp[gy][gx][0];
-
 		}
 
-		writeline(ans);
-=======
-		long hoge = 1l << 61;
-
-		var random = new Random();
-		for (int i = 0; i < 10; ++i) {
-			writeline(random.NextInt64(hoge));
-		}
-
->>>>>>> e4f92531b56509ed6b0007633da6eff429492b3f
 	}
 } // end of class

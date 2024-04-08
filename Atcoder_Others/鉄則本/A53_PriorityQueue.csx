@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -473,21 +472,6 @@ public class Util {
 	} // end of func
 } // end of class
 
-<<<<<<< HEAD
-class Data {
-	public int y;
-	public int x;
-	public int coin;
-	public int dist;
-	public Data(int y, int x, int d, int dist) {
-		this.y = y;
-		this.x = x;
-		this.coin = d;
-		this.dist = dist;
-	}
-}
-=======
->>>>>>> e4f92531b56509ed6b0007633da6eff429492b3f
 
 public class Kyopuro {
 	public static void Main() {
@@ -499,79 +483,107 @@ public class Kyopuro {
 
 
 	public void Solve() {
-<<<<<<< HEAD
-		int[] hw = readints();
-		int h = hw[0];
-		int w = hw[1];
-		int f = readint();
 
-		int ans = 0;
-		for (int _ = 0; _ < f; ++_) {
+		int q = readint();
+		var pq = new MyPriorityQueue<long>((a, b) => a <= b);
 
-			int sy = 0, sx = 0, gy = 0, gx = 0;
-			var masu = makearr2<int>(h, w, 0);
-			for (int i = 0; i < h; ++i) {
-				var s = read().Split(' ');
-				for (int j = 0; j < w; ++j) {
-					if (s[j] == "S") {
-						sy = i;
-						sx = j;
-					} else if (s[j] == "G") {
-						gy = i;
-						gx = j;
-					} else {
-						masu[i][j] = int.Parse(s[j]);
-					}
-				}
+		for (int i = 0; i < q; ++i) {
+			var query = readsplit();
+			if (query[0] == "1") {
+				pq.Enqueue(long.Parse(query[1]));
+			} else if (query[0] == "2") {
+				writeline(pq.Peek());
+			} else {
+				pq.Dequeue();
 			}
-
-			// DPと言いつつBFS coin-dist
-			var dp = makearr3<int>(h, w, 2, 0);
-			for (int i = 0; i < h; ++i) {
-				for (int j = 0; j < w; ++j) {
-					// コインは最小
-					dp[i][j][0] = -1;
-					// 距離は最大値
-					dp[i][j][1] = int.MaxValue;
-				}
-			}
-
-			// var flag = new HashSet<int>();
-			var que = new Queue<Data>();
-			que.Enqueue(new Data(sy, sx, 0, 0));
-			while (que.Count > 0) {
-				var hoge = que.Dequeue();
-				int y = hoge.y;
-				int x = hoge.x;
-				int coin = hoge.coin;
-				int dist = hoge.dist;
-
-				// 探索済み
-				if (dp[y][x][0] >= coin || dp[y][x][1] < dist) continue;
-				coin += masu[y][x];
-				dp[y][x][0] = coin;
-				dp[y][x][1] = dist;
-
-				// up, down, left, right
-				if (0 < y && dp[y - 1][x][0] < coin && dp[y - 1][x][1] > dist) que.Enqueue(new Data(y - 1, x, coin, dist + 1));
-				if (y < h - 1 && dp[y + 1][x][0] < coin && dp[y + 1][x][1] > dist) que.Enqueue(new Data(y + 1, x, coin, dist + 1));
-				if (0 < x && dp[y][x - 1][0] < coin && dp[y][x - 1][1] > dist) que.Enqueue(new Data(y, x - 1, coin, dist));
-				if (x < w - 1 && dp[y][x + 1][0] < coin && dp[y][x + 1][1] > dist) que.Enqueue(new Data(y, x + 1, coin, dist + 1));
-			}
-
-			ans += dp[gy][gx][0];
-
 		}
 
-		writeline(ans);
-=======
-		long hoge = 1l << 61;
-
-		var random = new Random();
-		for (int i = 0; i < 10; ++i) {
-			writeline(random.NextInt64(hoge));
-		}
-
->>>>>>> e4f92531b56509ed6b0007633da6eff429492b3f
 	}
+} // end of class
+
+
+
+class MyPriorityQueue<T> {
+	/// 内部で持つヒープ配列
+	public List<T> heap = new List<T>();
+
+	/// 現在の要素数
+	public int Count { get { return heap.Count; } }
+
+	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
+	private Func<T, T, bool> Compare;
+
+	public MyPriorityQueue(Func<T, T, bool> compare) {
+		this.Compare = compare;
+	}  // end of constructor
+
+	/// 新規の値を追加する
+	public void Enqueue(T num) {
+		// 追加する要素のノード番号　
+		int node = this.heap.Count;
+		this.heap.Add(num);
+
+		// 可能な限り親と交換
+		while (node > 0) {
+			// 親ノード
+			int p = (node - 1) / 2;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(num, heap[p]) == false) break;
+
+			// 親ノードの値を子に降ろす
+			heap[node] = heap[p];
+			node = p;
+		} // end of while
+
+		// 新規の値を下ろす場所を見つけたので終わり
+		heap[node] = num;
+	} // end of method
+
+	/// 一番優先度の高い値を返す
+	public T Peek() => this.heap[0];
+
+	/// 一番優先度の高い値を返して削除する
+	public T Dequeue() {
+		// return用の優先度が一番高い値
+		T ret = this.heap[0];
+
+		// 先頭を削除
+		this.Pop();
+
+		return ret;
+	} // end of method
+
+	/// 一番優先度の高い値を削除する
+	public void Pop() {
+		// 根に持ってくる値
+		T last = heap[this.heap.Count - 1];
+
+		// 最後尾を削除 O(1)
+		this.heap.RemoveAt(this.heap.Count - 1);
+
+		// 要素がなくなったら終了
+		if (this.heap.Count == 0) return;
+
+		// 先頭を置き換えて降ろしていく
+		int node = 0;
+		while (node * 2 + 1 < this.heap.Count) {
+			int a = node * 2 + 1;
+			int b = node * 2 + 2;
+
+			// 右の子が存在して、なおかつ優先度が高いならば
+			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(last, this.heap[a])) break;
+
+			// 優先度の高い子を上げる
+			this.heap[node] = this.heap[a];
+			node = a;
+		} // end of while
+
+		// 先頭に持ってきた値の置き場所が決まったので更新
+		this.heap[node] = last;
+	} // end of method
+
 } // end of class
