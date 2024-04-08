@@ -472,8 +472,18 @@ public class Util {
 	} // end of func
 } // end of class
 
+/// 座標に便利
+class YX {
+	public int y;
+	public int x;
+	public YX(int y, int x) {
+		this.y = y;
+		this.x = x;
+	}
+} // end of class
 
-public class Kyopuro {
+
+class Kyopuro {
 	public static void Main() {
 		preprocess();
 		var kyopuro = new Kyopuro();
@@ -486,5 +496,5 @@ public class Kyopuro {
 
 
 
-	}
+	} // end of func
 } // end of class
