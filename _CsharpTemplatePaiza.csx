@@ -7,7 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -471,13 +470,11 @@ public class Util {
 class Data {
 	public int y;
 	public int x;
-	public int coin;
-	public int dist;
-	public Data(int y, int x, int d, int dist) {
+	public long d;
+	public Data(int y, int x, long d) {
 		this.y = y;
 		this.x = x;
-		this.coin = d;
-		this.dist = dist;
+		this.d = d;
 	}
 }
 
@@ -491,70 +488,7 @@ public class Kyopuro {
 
 
 	public void Solve() {
-		int[] hw = readints();
-		int h = hw[0];
-		int w = hw[1];
-		int f = readint();
 
-		int ans = 0;
-		for (int _ = 0; _ < f; ++_) {
 
-			int sy = 0, sx = 0, gy = 0, gx = 0;
-			var masu = makearr2<int>(h, w, 0);
-			for (int i = 0; i < h; ++i) {
-				var s = read().Split(' ');
-				for (int j = 0; j < w; ++j) {
-					if (s[j] == "S") {
-						sy = i;
-						sx = j;
-					} else if (s[j] == "G") {
-						gy = i;
-						gx = j;
-					} else {
-						masu[i][j] = int.Parse(s[j]);
-					}
-				}
-			}
-
-			// DPと言いつつBFS coin-dist
-			var dp = makearr3<int>(h, w, 2, 0);
-			for (int i = 0; i < h; ++i) {
-				for (int j = 0; j < w; ++j) {
-					// コインは最小
-					dp[i][j][0] = -1;
-					// 距離は最大値
-					dp[i][j][1] = int.MaxValue;
-				}
-			}
-
-			// var flag = new HashSet<int>();
-			var que = new Queue<Data>();
-			que.Enqueue(new Data(sy, sx, 0, 0));
-			while (que.Count > 0) {
-				var hoge = que.Dequeue();
-				int y = hoge.y;
-				int x = hoge.x;
-				int coin = hoge.coin;
-				int dist = hoge.dist;
-
-				// 探索済み
-				if (dp[y][x][0] >= coin || dp[y][x][1] < dist) continue;
-				coin += masu[y][x];
-				dp[y][x][0] = coin;
-				dp[y][x][1] = dist;
-
-				// up, down, left, right
-				if (0 < y && dp[y - 1][x][0] < coin && dp[y - 1][x][1] > dist) que.Enqueue(new Data(y - 1, x, coin, dist + 1));
-				if (y < h - 1 && dp[y + 1][x][0] < coin && dp[y + 1][x][1] > dist) que.Enqueue(new Data(y + 1, x, coin, dist + 1));
-				if (0 < x && dp[y][x - 1][0] < coin && dp[y][x - 1][1] > dist) que.Enqueue(new Data(y, x - 1, coin, dist));
-				if (x < w - 1 && dp[y][x + 1][0] < coin && dp[y][x + 1][1] > dist) que.Enqueue(new Data(y, x + 1, coin, dist + 1));
-			}
-
-			ans += dp[gy][gx][0];
-
-			writeline();
-		}
-
-		writeline(ans);
 	}
 } // end of class
