@@ -494,21 +494,16 @@ class Kyopuro {
 
 	public void Solve() {
 		int n = readint();
-		var srr = new string[n];
-		for (int i = 0; i < n; ++i) srr[i] = read();
+		var arr = readlongs();
 
+		var ans = new long[n];
 		for (int i = 0; i < n; ++i) {
-			for (int j = 0; j < n; ++j) {
-				if (i == j) continue;
-				string s = srr[i] + srr[j];
-				if (s == new string(s.Reverse().ToArray())) {
-					writeline("Yes");
-					return;
-				}
+			for (int j = 0; j < 7; ++j) {
+				ans[i] += arr[i * 7 + j];
 			}
 		}
 
-		writeline("No");
+		printlist(ans);
 
 
 	} // end of func
