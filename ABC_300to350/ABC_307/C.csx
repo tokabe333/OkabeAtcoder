@@ -498,9 +498,66 @@ class Kyopuro {
 		for (int i = 0; i < h1; ++i) {
 			string s = read();
 			for (int j = 0; j < w1; ++j) {
-				sheet1[i][j] = (s[j] == '#');
+				if (s[j] == '#') {
+					sheet1[i][j] = true;
+				}
 			}
 		}
+		int l = 0, r = 0, u = 0, d = 0;
+		bool flag = false;
+		for (int j = 0; j < w1; ++j) {
+			for (int i = 0; i < h1; ++i) {
+				if (sheet1[i][j]) {
+					l = j;
+					flag = true;
+					break;
+				}
+			}
+			if (flag) break;
+		}
+		flag = false;
+		for (int j = w1 - 1; j >= 0; --j) {
+			for (int i = 0; i < h1; ++i) {
+				if (sheet1[i][j]) {
+					r = j;
+					flag = true;
+					break;
+				}
+			}
+			if (flag) break;
+		}
+		flag = false;
+		for (int i = 0; i < h1; ++i) {
+			for (int j = 0; j < w1; ++j) {
+				if (sheet1[i][j]) {
+					u = i;
+					flag = true;
+					break;
+				}
+			}
+			if (flag) break;
+		}
+		flag = false;
+		for (int i = h1 - 1; i >= 0; --i) {
+			for (int j = 0; j < w1; ++j) {
+				if (sheet1[i][j]) {
+					d = i;
+					flag = true;
+					break;
+				}
+			}
+			if (flag) break;
+		}
+		int l1 = l, r1 = r, u1 = u, d1 = d;
+		var cut1 = makearr2(d - u + 1, r - l + 1, false);
+		for (int i = u; i <= d; ++i) {
+			for (int j = l; j <= r; ++j) {
+				cut1[i - u][j - l] = sheet1[i][j];
+			}
+		}
+
+
+
 
 		var (h2, w2) = readintt2();
 		var sheet2 = makearr2(h2, w2, false);
@@ -510,6 +567,62 @@ class Kyopuro {
 				sheet2[i][j] = (s[j] == '#');
 			}
 		}
+		flag = false;
+		for (int j = 0; j < w2; ++j) {
+			for (int i = 0; i < h2; ++i) {
+				if (sheet2[i][j]) {
+					l = j;
+					flag = true;
+					break;
+				}
+			}
+			if (flag) break;
+		}
+		flag = false;
+		for (int j = w2 - 1; j >= 0; --j) {
+			for (int i = 0; i < h2; ++i) {
+				if (sheet2[i][j]) {
+					r = j;
+					flag = true;
+					break;
+				}
+			}
+			if (flag) break;
+		}
+		flag = false;
+		for (int i = 0; i < h2; ++i) {
+			for (int j = 0; j < w2; ++j) {
+				if (sheet2[i][j]) {
+					u = i;
+					flag = true;
+					break;
+				}
+			}
+			if (flag) break;
+		}
+		flag = false;
+		for (int i = h2 - 1; i >= 0; --i) {
+			for (int j = 0; j < w2; ++j) {
+				if (sheet2[i][j]) {
+					d = i;
+					flag = true;
+					break;
+				}
+			}
+			if (flag) break;
+		}
+		int l2 = l, r2 = r, u2 = u, d2 = d;
+		var cut2 = makearr2(d - u + 1, r - l + 1, false);
+		for (int i = u; i <= d; ++i) {
+			for (int j = l; j <= r; ++j) {
+				cut2[i - u][j - l] = sheet2[i][j];
+			}
+		}
+		// printlist2(cut2);
+		// writeline($"l:{l} r:{r} u:{u} d:{d}");
+		// writeline();
+
+
 
 		var (h3, w3) = readintt2();
 		var sheet3 = makearr2(h3, w3, false);
@@ -520,8 +633,53 @@ class Kyopuro {
 			}
 		}
 
+		// cut1の開始位置
+		for (int i1 = 0; i1 <= h3 - cut1.Length; ++i1) {
+			for (int j1 = 0; j1 <= w3 - cut1[0].Length; ++j1) {
+
+				// cut2の開始位置
+				for (int i2 = 0; i2 <= h3 - cut2.Length; ++i2) {
+					for (int j2 = 0; j2 <= w3 - cut2[0].Length; ++j2) {
+
+						// cut1を配置
+						var desk = makearr2(h3, w3, false);
+						for (int y = 0; y < cut1.Length; ++y) {
+							for (int x = 0; x < cut1[y].Length; ++x) {
+								desk[y + i1][x + j1] |= cut1[y][x];
+							}
+						}
+
+						// cut2を配置
+						for (int y = 0; y < cut2.Length; ++y) {
+							for (int x = 0; x < cut2[y].Length; ++x) {
+								desk[y + i2][x + j2] |= cut2[y][x];
+							}
+						}
+
+						// チェック
+						bool check = true;
+						for (int y = 0; y < h3; ++y) {
+							for (int x = 0; x < w3; ++x) {
+								if (desk[y][x] != sheet3[y][x]) {
+									check = false;
+									break;
+								}
+							}
+							if (!check) break;
+						}
+						if (check) {
+							writeline("Yes");
+							return;
+						}
 
 
+					}
+				}
+
+			}
+		}
+
+		writeline("No");
 
 	} // end of func
 } // end of class
