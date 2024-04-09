@@ -493,26 +493,33 @@ class Kyopuro {
 
 
 	public void Solve() {
+		var (n, q) = readintt2();
+		var arr = readints().Select(x => x - 1).ToArray();
 
-		int n = readint();
-		var arr = readints();
-		var stack = new Stack<(int, int)>();
-
-		for (int i = 0; i < n; ++i) {
-			if (stack.Count == 0) {
-				stack.Push((i, arr[i]));
-				write("-1 ");
-				continue;
+		var dp = makearr2((int)Log2(Pow(10, 9)) + 1, n, 0);
+		dp[0] = copyarr(arr);
+		for (int i = 1; i < dp.Length; ++i) {
+			for (int j = 0; j < n; ++j) {
+				dp[i][j] = dp[i - 1][dp[i - 1][j]];
 			}
-			while (stack.Count > 0 && stack.Peek().Item2 <= arr[i]) {
-				stack.Pop();
-			}
-			write(stack.Count == 0 ? "-1 " : (stack.Peek().Item1 + 1) + " ");
-			stack.Push((i, arr[i]));
+		}
+		// printlist2(dp);
 
+
+
+		for (int _ = 0; _ < q; ++_) {
+			var (x, y) = readintt2();
+			--x;
+			// writeline("y:" + IntToString2bit(y));
+			for (int i = dp.Length - 1; i >= 0; --i) {
+				// writeline("i:" + i + " 1<<i&x:" + ((1 << i) & y));
+				if (((1 << i) & y) == 0) continue;
+				x = dp[i][x];
+			}
+			writeline(x + 1);
 		}
 
-		writeline();
+
 
 	} // end of func
 } // end of class
