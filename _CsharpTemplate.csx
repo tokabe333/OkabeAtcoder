@@ -77,7 +77,7 @@ using static Util;
 #endregion
 
 
-public class Util {
+class Util {
 	public static double PI = 3.141592653589793;
 	public static long m107 = 1000000007;
 	public static long m998 = 998244353;
@@ -549,8 +549,8 @@ public class Util {
 	} // end of func
 } // end of class
 
-/// 座標に便利
-class YX {
+/// 座標に便利(値型だけど16byteまではstructが速い)
+struct YX {
 	public int y;
 	public int x;
 	public YX(int y, int x) {
@@ -559,8 +559,8 @@ class YX {
 	}
 } // end of class
 
-/// グラフをするときに
-class Edge {
+/// グラフをするときに(値型だけど16byteまではstructが速い)
+struct Edge {
 	public int from;
 	public int to;
 	public long cost;
