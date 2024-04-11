@@ -484,116 +484,17 @@ class YX {
 	}
 } // end of class
 
-
-/// to → 行先のnode
-/// flow → 辺に流せる流量
-/// reverse → 逆辺の位置
-/// 	u→G[u][i].to の逆辺 G[u][i].to→u が G[G[u][i].to]の何番目にあるか
-/// 	隣接リストで持つので順番が不定、毎回線形探索はしんどい
+/// グラフをするときに
 class Edge {
+	public int from;
 	public int to;
-	public long capacity;
-	public int reverse;
-	public Edge(int to, long capacity, int reverse) {
+	public long cost;
+	public Edge(int from, int to, long cost) {
+		this.from = from;
 		this.to = to;
-		this.capacity = capacity;
-		this.reverse = reverse;
+		this.cost = cost;
 	}
-}
-
-class MaximumFlow {
-	/// グラフの要素数
-	public int Count;
-
-	/// 使用済みの頂点は必要ない
-	public bool[] Used;
-
-	/// 内部で保持する残余グラフ
-	public List<List<Edge>> Graph;
-
-	/// 要素数のみの空の残余グラフを作成
-	/// 後からAddEdgeを呼び出して残余グラフを作る必要あり
-	public MaximumFlow(int n) {
-		// 残余グラフの用意
-		this.Count = n;
-		this.Used = new bool[this.Count];
-		this.Graph = new List<List<Edge>>();
-		for (int i = 0; i < this.Count; ++i) this.Graph.Add(new List<Edge>());
-	} // end of constructor
-
-	/// 残余グラフを作成してくれる(reverseは使わない)
-	public MaximumFlow(List<List<Edge>> graph) {
-		// 残余グラフの用意
-		this.Count = graph.Count;
-		this.Used = new bool[this.Count];
-		this.Graph = new List<List<Edge>>();
-		for (int i = 0; i < this.Count; ++i) this.Graph.Add(new List<Edge>());
-
-		// 1本ずつ辺を追加する
-		for (int i = 0; i < this.Count; ++i) {
-			foreach (var e in graph[i]) {
-				this.AddEdge(i, e.to, e.capacity);
-			}
-		}
-	} // end of constructor
-
-	/// 辺を追加する(1つずつ初期化する)
-	public void AddEdge(int from, int to, long capacity) {
-		// 頂点から出ている現在の要素数
-		int fnum = this.Graph[from].Count;
-		int tnum = this.Graph[to].Count;
-		// 順方向にcapacity, 逆方向に0で残余グラフの辺を作成
-		this.Graph[from].Add(new Edge(to, capacity, tnum));
-		this.Graph[to].Add(new Edge(from, 0, fnum));
-	} // end of method
-
-
-	/// 深さ優先探索で残余グラフ上のstartからgoalまでの経路を１つ探索
-	/// minFlowは経路上の残余グラフの最小capacity
-	/// 流した流量を返す(流せないなら0)
-	private long dfs(int node, int goal, long minFlow) {
-		// goalについたら最小流量を返す
-		if (node == goal) return minFlow;
-		// 探索済み
-		this.Used[node] = true;
-
-		// dfs
-		foreach (var edge in this.Graph[node]) {
-			// 容量0は使えない
-			if (edge.capacity == 0) continue;
-
-			// 訪問済みは使用しない
-			if (this.Used[edge.to]) continue;
-
-			// 発見した流量
-			long flow = this.dfs(edge.to, goal, Math.Min(minFlow, edge.capacity));
-
-			// flowを流せる場合、残余グラフ順方向を減らして逆方向を増やす
-			if (flow <= 0) continue;
-			edge.capacity -= flow;
-			this.Graph[edge.to][edge.reverse].capacity += flow;
-			return flow;
-		} // end of foreach
-
-		// 経路が見つからなかった
-		return 0;
-	} // end of method
-
-	/// startからgoalまでの最大流量を計算
-	public long MaxFlow(int start, int goal) {
-		long totalFlow = 0;
-		while (true) {
-			for (int i = 0; i < this.Count; ++i) this.Used[i] = false;
-			long minFlow = this.dfs(start, goal, long.MaxValue);
-
-			// フローを流せなくなったら終了
-			if (minFlow == 0) break;
-			totalFlow += minFlow;
-		}
-		return totalFlow;
-	} // end of method
 } // end of class
-
 
 class Kyopuro {
 	public static void Main() {
@@ -604,18 +505,65 @@ class Kyopuro {
 	} // end of func
 
 
+	/// 隣接グラフに対してトポロジカルソートをする
+	/// 出来ない場合は要素0の配列を返す
+	public List<int> TopologicalSort(List<List<int>> graph) {
+		// ノード数
+		int n = graph.Count;
+
+		// 各ノードの入次数を記録
+		int[] inputNodes = new int[n];
+		for (int i = 0; i < n; ++i) {
+			foreach (int to in graph[i]) {
+				inputNodes[to] += 1;
+			}
+		}
+
+		// 入力の次数が0のノードを記録
+		var queue = new Queue<int>();
+		for (int i = 0; i < n; ++i) {
+			if (inputNodes[i] > 0) continue;
+			queue.Enqueue(i);
+		}
+
+		// トポロジカルソート結果
+		List<int> sorted = new List<int>();
+
+		// 手順1 : 入次数が0のノードをキューに追加
+		// 手順2 : キューからノードを取り出しソート結果に追加
+		// 手順3 : 隣接するノードの入次数を-1
+		// 手順4 : 手順1 ~ 手順3 を繰り返し
+		while (queue.Count > 0) {
+			// キューから取り出し
+			int node = queue.Dequeue();
+
+			// 隣接するノードの入次数を-1
+			foreach (int to in graph[node]) {
+				inputNodes[to] -= 1;
+				// 入次数が0ならキューに追加
+				if (inputNodes[to] == 0) queue.Enqueue(to);
+			}
+
+			// ソート結果に追加
+			sorted.Add(node);
+		}
+
+		// ソートしたノード数がgraphのノード数と一致すればトポロジカルソート成功
+		// 一致しなければトポロジカルソートできないグラフ(非DAG)
+		return sorted.Count == n ? sorted : new List<int>();
+	} // end of method
+
 	public void Solve() {
 
 		var (n, m) = readintt2();
-		var graph = makelist2(n, 0, new Edge(0, 0, 0));
+		var graph = makelist2(n, 0, 0);
 		for (int i = 0; i < m; ++i) {
-			(int a, int b, long c) = readintt3();
-			graph[a].Add(new Edge(b, c, 0));
+			var (a, b) = readintt2();
+			graph[a].Add(b);
 		}
 
-		var maxflow = new MaximumFlow(graph);
-		var ans = maxflow.MaxFlow(0, n - 1);
-		writeline(ans);
+		var topo = TopologicalSort(graph);
+		foreach (var t in topo) writeline(t);
 
 	} // end of func
 } // end of class
