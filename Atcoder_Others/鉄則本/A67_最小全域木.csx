@@ -640,6 +640,8 @@ class Kyopuro {
 		var mst = makelist2(n, 0, (0, 0l));
 		var uf = new UnionFind(n);
 
+		// 距離が小さい順にPriorityQueueにエッジが入っている
+		// エッジの両辺のノードがつながっていないならつなげる(UnionFindで集合検索)
 		while (pq.Count > 0) {
 			var abc = pq.Dequeue();
 			int a = abc.Item1;
