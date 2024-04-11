@@ -7,8 +7,6 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.CompilerServices;
-using System.Globalization;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -485,115 +483,148 @@ class YX {
 } // end of class
 
 
+class MyPriorityQueue<T> {
+	/// 内部で持つヒープ配列
+	public List<T> heap = new List<T>();
 
-/// to → 行先のnode
-/// flow → 辺に流せる流量
-/// reverse → 逆辺の位置
-/// 	u→G[u][i].to の逆辺 G[u][i].to→u が G[G[u][i].to]の何番目にあるか
-/// 	隣接リストで持つので順番が不定、毎回線形探索はしんどい
-class Edge {
-	public int to;
-	public long capacity;
-	public int reverse;
-	public Edge(int to, long capacity, int reverse) {
-		this.to = to;
-		this.capacity = capacity;
-		this.reverse = reverse;
-	}
-}
+	/// 現在の要素数
+	public int Count { get { return heap.Count; } }
 
-class MaximumFlow {
-	/// グラフの要素数
-	public int Count;
+	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
+	private Func<T, T, bool> Compare;
 
-	/// 使用済みの頂点は必要ない
-	public bool[] Used;
+	public MyPriorityQueue(Func<T, T, bool> compare) {
+		this.Compare = compare;
+	}  // end of constructor
 
-	/// 内部で保持する残余グラフ
-	public List<List<Edge>> Graph;
+	/// 新規の値を追加する
+	public void Enqueue(T num) {
+		// 追加する要素のノード番号　
+		int node = this.heap.Count;
+		this.heap.Add(num);
 
-	/// 要素数のみの空の残余グラフを作成
-	/// 後からAddEdgeを呼び出して残余グラフを作る必要あり
-	public MaximumFlow(int n) {
-		// 残余グラフの用意
-		this.Count = n;
-		this.Used = new bool[this.Count];
-		this.Graph = new List<List<Edge>>();
-		for (int i = 0; i < this.Count; ++i) this.Graph.Add(new List<Edge>());
-	} // end of constructor
+		// 可能な限り親と交換
+		while (node > 0) {
+			// 親ノード
+			int p = (node - 1) / 2;
 
-	/// 残余グラフを作成してくれる(reverseは使わない)
-	public MaximumFlow(List<List<Edge>> graph) {
-		// 残余グラフの用意
-		this.Count = graph.Count;
-		this.Used = new bool[this.Count];
-		this.Graph = new List<List<Edge>>();
-		for (int i = 0; i < this.Count; ++i) this.Graph.Add(new List<Edge>());
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(num, heap[p]) == false) break;
 
-		// 1本ずつ辺を追加する
-		for (int i = 0; i < this.Count; ++i) {
-			foreach (var e in graph[i]) {
-				this.AddEdge(i, e.to, e.capacity);
-			}
+			// 親ノードの値を子に降ろす
+			heap[node] = heap[p];
+			node = p;
+		} // end of while
+
+		// 新規の値を下ろす場所を見つけたので終わり
+		heap[node] = num;
+	} // end of method
+
+	/// 一番優先度の高い値を返す
+	public T Peek() => this.heap[0];
+
+	/// 一番優先度の高い値を返して削除する
+	public T Dequeue() {
+		// return用の優先度が一番高い値
+		T ret = this.heap[0];
+
+		// 先頭を削除
+		this.Pop();
+
+		return ret;
+	} // end of method
+
+	/// 一番優先度の高い値を削除する
+	public void Pop() {
+		// 根に持ってくる値
+		T last = heap[this.heap.Count - 1];
+
+		// 最後尾を削除 O(1)
+		this.heap.RemoveAt(this.heap.Count - 1);
+
+		// 要素がなくなったら終了
+		if (this.heap.Count == 0) return;
+
+		// 先頭を置き換えて降ろしていく
+		int node = 0;
+		while (node * 2 + 1 < this.heap.Count) {
+			int a = node * 2 + 1;
+			int b = node * 2 + 2;
+
+			// 右の子が存在して、なおかつ優先度が高いならば
+			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(last, this.heap[a])) break;
+
+			// 優先度の高い子を上げる
+			this.heap[node] = this.heap[a];
+			node = a;
+		} // end of while
+
+		// 先頭に持ってきた値の置き場所が決まったので更新
+		this.heap[node] = last;
+	} // end of method
+
+} // end of class
+
+/// union by rankと経路圧縮をする
+/// O(a(N)) 
+class UnionFind {
+	/// 親のノード番号
+	public int[] parents;
+
+	/// 属する集合の要素数　
+	public int[] sizes;
+
+	/// ノード数NのUnionFindを作成
+	public UnionFind(int n) {
+		this.parents = new int[n];
+		this.sizes = new int[n];
+		for (int i = 0; i < n; ++i) {
+			// 初期状態では親を持たない
+			this.parents[i] = -1;
+			// 集合サイズは1
+			this.sizes[i] = 1;
 		}
 	} // end of constructor
 
-	/// 辺を追加する(1つずつ初期化する)
-	public void AddEdge(int from, int to, long capacity) {
-		// 頂点から出ている現在の要素数
-		int fnum = this.Graph[from].Count;
-		int tnum = this.Graph[to].Count;
-		// 順方向にcapacity, 逆方向に0で残余グラフの辺を作成
-		this.Graph[from].Add(new Edge(to, capacity, tnum));
-		this.Graph[to].Add(new Edge(from, 0, fnum));
-	} // end of method
+	/// ノードiの親を返す
+	public int Root(int node) {
+		// 根を見つけたらノード番号を変えす
+		if (this.parents[node] == -1) return node;
 
-
-	/// 深さ優先探索で残余グラフ上のstartからgoalまでの経路を１つ探索
-	/// minFlowは経路上の残余グラフの最小capacity
-	/// 流した流量を返す(流せないなら0)
-	private long dfs(int node, int goal, long minFlow) {
-		// goalについたら最小流量を返す
-		if (node == goal) return minFlow;
-		// 探索済み
-		this.Used[node] = true;
-
-		// dfs
-		foreach (var edge in this.Graph[node]) {
-			// 容量0は使えない
-			if (edge.capacity == 0) continue;
-
-			// 訪問済みは使用しない
-			if (this.Used[edge.to]) continue;
-
-			// 発見した流量
-			long flow = this.dfs(edge.to, goal, Math.Min(minFlow, edge.capacity));
-
-			// flowを流せる場合、残余グラフ順方向を減らして逆方向を増やす
-			if (flow <= 0) continue;
-			edge.capacity -= flow;
-			this.Graph[edge.to][edge.reverse].capacity += flow;
-			return flow;
-		} // end of foreach
-
-		// 経路が見つからなかった
-		return 0;
-	} // end of method
-
-	/// startからgoalまでの最大流量を計算
-	public long MaxFlow(int start, int goal) {
-		long totalFlow = 0;
-		while (true) {
-			for (int i = 0; i < this.Count; ++i) this.Used[i] = false;
-			long minFlow = this.dfs(start, goal, long.MaxValue);
-
-			// フローを流せなくなったら終了
-			if (minFlow == 0) break;
-			totalFlow += minFlow;
+		// 根までの経路を全て根に直接つなぐ
+		else {
+			int parent = this.Root(this.parents[node]);
+			this.parents[node] = parent;
+			return parent;
 		}
-		return totalFlow;
+	} // end of method
+
+	/// ノードuとvの属する集合を結合する
+	public void Unite(int u, int v) {
+		int ru = this.Root(u);
+		int rv = this.Root(v);
+		if (ru == rv) return;
+		// 大きい集合の根に結合(union by rank)
+		// 高さが高々log2になる
+		if (ru > rv) {
+			int tmp = ru;
+			ru = rv;
+			rv = tmp;
+		}
+		this.parents[ru] = rv;
+		this.sizes[rv] = this.sizes[ru] + this.sizes[rv];
+		this.sizes[ru] = this.sizes[rv];
+	} // end of method
+
+	/// ノードuとvが同じ集合に属しているか
+	public bool Connected(int u, int v) {
+		return this.Root(u) == this.Root(v);
 	} // end of method
 } // end of class
+
 
 class Kyopuro {
 	public static void Main() {
@@ -603,20 +634,46 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	/// 最小全域木を返す
+	/// (node, cost)の順番のグラフ(ダイクストラと逆にしちゃった…)
+	List<List<(int, long)>> MinimumSpanningTree(int n, MyPriorityQueue<(int, int, long)> pq) {
+		var mst = makelist2(n, 0, (0, 0l));
+		var uf = new UnionFind(n);
 
-	public void Solve() {
-		var (n, m) = readintt2();
-		var graph = makelist2<Edge>(n, 0, new Edge(0, 0, 0));
-
-		for (int i = 0; i < m; ++i) {
-			(int a, int b, long c) = readintt3();
-			--a; --b;
-			graph[a].Add(new Edge(b, c, 0));
+		while (pq.Count > 0) {
+			var abc = pq.Dequeue();
+			int a = abc.Item1;
+			int b = abc.Item2;
+			long c = abc.Item3;
+			if (uf.Connected(a, b) == true) continue;
+			uf.Unite(a, b);
+			mst[a].Add((b, c));
+			mst[b].Add((a, c));
 		}
 
-		var maxflow = new MaximumFlow(graph);
-		long ans = maxflow.MaxFlow(0, n - 1);
-		writeline(ans);
+		return mst;
+	}
+
+
+	public void Solve() {
+
+		var (n, m) = readintt2();
+		var pq = new MyPriorityQueue<(int, int, long)>((a, b) => a.Item3 <= b.Item3);
+		for (int i = 0; i < m; ++i) {
+			var abc = readintt3();
+			abc.Item1 -= 1;
+			abc.Item2 -= 1;
+			pq.Enqueue(abc);
+		}
+
+		var mst = MinimumSpanningTree(n, pq);
+		long ans = 0;
+		for (int i = 0; i < n; ++i) {
+			foreach (var ac in mst[i]) {
+				ans += ac.Item2;
+			}
+		}
+		writeline(ans / 2);
 
 	} // end of func
 } // end of class

@@ -493,8 +493,17 @@ class Kyopuro {
 
 
 	public void Solve() {
+		var r = new Random();
+		var arr = new YX[5];
+		for (int i = 0; i < 5; ++i) arr[i] = new YX(0, 0);
+		foreach (var a in arr) {
+			a.y = r.Next(10);
+			a.x = 3;
+		}
 
-
+		foreach (var a in arr) {
+			writeline($"y:{a.y} x:{a.x}");
+		}
 
 	} // end of func
 } // end of class
