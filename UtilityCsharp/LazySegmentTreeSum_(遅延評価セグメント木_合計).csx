@@ -788,7 +788,7 @@ class Kyopuro {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
-
+		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_G
 		var (n, q) = readintt2();
 		var lazy = new LazySegmentTreeGeneric<(long, int), long, op>(makearr(n, (0l, 1)));
 		for (int i = 0; i < q; ++i) {

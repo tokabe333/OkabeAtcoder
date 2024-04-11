@@ -571,6 +571,204 @@ class Edge {
 	}
 } // end of class
 
+
+
+
+/// <summary>
+/// 遅延評価セグメント木 <br/>
+/// 区間検索、区間更新がO(logN) <br/>
+/// </summary>
+class LazySegmentTreeGeneric<T, F, T_op>
+									 // where T : IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
+									 //  where F : IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
+									 where T_op : struct, ILazySegmentTreeOperator<T, F> {
+	/// <summary>一番下の葉の数 (2のべき乗になってるはず)</summary>
+	public int LeafNum { get; set; }
+
+	/// <summary>ノード全体の要素数</summary>
+	public int Count { get => this.Node.Length; }
+
+	/// <summary実際に木を構築するノード</summary
+	public T[] Node { get; set; }
+
+	/// <summary>
+	/// 遅延評価をまとめた配列 <br/>
+	/// 更新時はここをいじる <br/>
+	/// </summary>
+	public F[] Lazy { get; set; }
+
+	/// <summary>
+	/// 作用素 (TとTに対する演算結果Tを返す min, max, sumなど) <br/>
+	/// 単位元、恒等写像、mapping, compositionがまとまっている <br/>
+	/// </summary>
+	private readonly T_op Operator = default(T_op);
+
+	/// <summary>
+	/// 元配列を渡してセグメントツリーの作成 <br/>
+	/// それ以外はOperatorに定義  <br/>
+	/// </summary>
+	public LazySegmentTreeGeneric(T[] arr) {
+		// ノード数を　2^⌈log2(N)⌉　にする
+		this.LeafNum = 1;
+		while (this.LeafNum < arr.Length) this.LeafNum <<= 1;
+
+		// 葉の初期化
+		this.Node = new T[this.LeafNum * 2 - 1];
+		for (int i = 0; i < this.Count; ++i) this.Node[i] = this.Operator.Identity;
+		for (int i = 0; i < arr.Length; ++i) this.Node[this.LeafNum - 1 + i] = arr[i];
+
+		// 遅延配列の初期化
+		this.Lazy = new F[this.LeafNum * 2 - 1];
+		for (int i = 0; i < this.Count; ++i) this.Lazy[i] = this.Operator.FIdentity;
+
+		// 親ノードの値を決めていく
+		for (int i = this.LeafNum - 2; i >= 0; --i) {
+			// 左右と比較
+			this.Node[i] = this.Operator.Operate(this.Node[2 * i + 1], this.Node[2 * i + 2]);
+		}
+
+	} // end of constructor
+
+	/// <summary>
+	/// k番目のノードを遅延評価する(ACLではApply) <br/>
+	/// 着目ノードkに対して Node[k] = f(Node[k]) <br/>
+	/// 着目ノードを更新したら、1つしたの子に伝播 <br/>
+	/// </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Evaluate(int k, int l, int r) {
+		// 遅延配列が空の時は更新内容がない
+		if (EqualityComparer<F>.Default.Equals(this.Lazy[k], this.Operator.FIdentity)) return;
+		// writeline($"eval k:{k} l:{l} r:{r} nodek:{this.Node[k]} lazyk:{this.Lazy[k]}");
+		// 注目ノードに遅延評価の写像を作用させる
+		this.Node[k] = this.Operator.Mapping(this.Lazy[k], this.Node[k]);
+
+		// 子を持っているなら(最下段の葉で無いなら)
+		if (r - l > 1) {
+			// composittionで遅延評価の写像を子に合成する
+			this.Lazy[2 * k + 1] = this.Operator.Composition(this.Lazy[k], this.Lazy[2 * k + 1]);
+			this.Lazy[2 * k + 2] = this.Operator.Composition(this.Lazy[k], this.Lazy[2 * k + 2]);
+		}
+
+		// 伝播が終わったので自ノードの遅延評価を単位元に戻す
+
+		this.Lazy[k] = this.Operator.FIdentity;
+	} // end of method
+
+
+
+	/// <summary>
+	/// [l, r)の範囲を更新する <br/>
+	/// [l, r) は求めたい半開区間 <br/>
+	/// x は作用させたい値
+	///</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Update(int l, int r, F x) {
+		this.Update(l, r, 0, 0, this.LeafNum, x);
+	} // end of Method
+
+	/// <summary>
+	/// [l, r)の範囲を更新する <br/>
+	/// [l, r) は求めたい半開区間 <br/>
+	/// k は現在のノード番号 <br/>
+	/// [a, b) はkに対応する半開区間 <br/>
+	/// T x は更新したい値 min,maxならxと比較, addならxを足す <br/>
+	///</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Update(int l, int r, int k, int a, int b, F x) {
+		// 着目ノードを評価する
+		this.Evaluate(k, a, b);
+
+		// 現在の対応ノード区間が求めたい区間に含まれないときは更新なし
+		if (r <= a || b <= l) return;
+
+		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
+		// → 遅延配列を評価
+		if (l <= a && b <= r) {
+			this.Lazy[k] = this.Operator.Composition(x, this.Lazy[k]);
+			this.Evaluate(k, a, b);
+		}
+
+		// そうでないなら左右の子のノードを再帰的に計算
+		// → 計算済みの値をもらって自信を更新
+		else {
+			int m = (a + b) / 2;
+			this.Update(l, r, k * 2 + 1, a, m, x);
+			this.Update(l, r, k * 2 + 2, m, b, x);
+			this.Node[k] = this.Operator.Operate(this.Node[2 * k + 1], this.Node[2 * k + 2]);
+		}
+	} // end of method
+
+
+	/// [l, r) の区間◯◯値を求める(求まる値はOperatorで指定されてる)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T Query(int l, int r) {
+		return this.Query(l, r, 0, 0, this.LeafNum);
+	} // end of method
+
+	/// [l, r) は求めたい半開区間 <br/>
+	/// k は現在のノード番号 <br/>
+	/// [a, b) はkに対応する半開区間 <br/>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private T Query(int l, int r, int k, int a, int b) {
+
+		// 現在の対応ノード区間が求めたい区間に含まれないとき
+		// → 単位元を返す
+		if (r <= a || b <= l) return this.Operator.Identity;
+
+		// 着目ノードを評価する
+		this.Evaluate(k, a, b);
+
+		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
+		// → 現在のノードの値を返す
+		if (l <= a && b <= r) {
+			return this.Node[k];
+		}
+
+		// 左半分と右半分で見る
+		int m = (a + b) / 2;
+		T leftValue = Query(l, r, k * 2 + 1, a, m);
+		T rightValue = Query(l, r, k * 2 + 2, m, b);
+
+		return this.Operator.Operate(leftValue, rightValue);
+	} // end of method
+} // end of class
+
+/// <summary>
+/// セグメント木の要素となるモノイド <br/>
+/// 結合律 : Tの任意の元 a,b,c に対して (a・b)・c = a・(b・c) <br/>
+/// 単位元 : Tの元 e が存在し、Tの任意の元 a に対して e・a = a・e = a <br/>
+/// T → データの型 <br/>
+/// F → 写像の型 <br/>
+/// </summary>
+/// <typeparam name="T">データの型</typeparam>
+/// <typeparam name="F">写像の型</typeparam>
+interface ILazySegmentTreeOperator<T, F> {
+	/// <summary>
+	/// 単位元 <br />
+	/// minならばinf, maxならば-inf, sumならば0 <br />
+	/// </summary>
+	T Identity { get; }
+
+	/// <summary>
+	/// Mapping(<paramref name="FIdentity"/>, x) = x を満たす恒等写像。
+	/// </summary>
+	F FIdentity { get; }
+
+	/// Tの元 x,y の演算を定義する
+	/// min, max, sum などはモノイド
+	T Operate(T x, T y);
+
+	/// <summary>
+	/// 写像　<paramref name="f"/> を <paramref name="x"/> に作用させる関数。
+	/// </summary>
+	T Mapping(F f, T x);
+
+	/// <summary>
+	/// 写像　<paramref name="nf"/> を既存の写像 <paramref name="cf"/> に対して合成した写像 <paramref name="nf"/>∘<paramref name="cf"/>。
+	/// </summary>
+	F Composition(F nf, F cf);
+} // end of interface
+
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -579,114 +777,35 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	// モノイドを定義 区間最大値、範囲更新
+	struct op : ILazySegmentTreeOperator<(long, int), long> {
+		public (long, int) Identity { get => (0l, 0); }
+		public long FIdentity { get => 0l; }
+		public (long, int) Operate((long, int) a, (long, int) b) => (a.Item1 + b.Item1, a.Item2 + b.Item2);
+		public (long, int) Mapping(long f, (long, int) x) => (x.Item1 + x.Item2 * f, x.Item2);
+		public long Composition(long f, long g) => f + g;
+	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
-		var (h, w) = readintt2();
-		var masu = makearr2<bool>(h, w, true);
-		int sy = -1, sx = -1, gy = -1, gx = -1, start = -1, goal = -1;
-		for (int i = 0; i < h; ++i) {
-			string s = read();
-			for (int j = 0; j < w; ++j) {
-				if (s[j] == 'S') {
-					sy = i;
-					sx = j;
-				} else if (s[j] == 'T') {
-					gy = i;
-					gx = j;
-				} else if (s[j] == '#') {
-					masu[i][j] = false;
-				}
+
+		var (n, q) = readintt2();
+		var lazy = new LazySegmentTreeGeneric<(long, int), long, op>(makearr(n, (0l, 1)));
+		for (int i = 0; i < q; ++i) {
+			var s = readsplit();
+			if (s[0] == "0") {
+				int l = int.Parse(s[1]) - 1;
+				int r = int.Parse(s[2]);
+				long x = long.Parse(s[3]);
+				lazy.Update(l, r, x);
+
+			} else {
+				int l = int.Parse(s[1]) - 1;
+				int r = int.Parse(s[2]);
+				writeline(lazy.Query(l, r).Item1);
 			}
 		}
 
-		int n = readint();
-		var drags = makearr2(n, 3, 0);
-		var dragmasu = makearr2(h, w, 0);
-		for (int i = 0; i < n; ++i) {
-			var (y, x, e) = readintt3();
-			--y; --x;
-			drags[i][0] = y;
-			drags[i][1] = x;
-			drags[i][2] = e;
-			if (y == sy && x == sx) start = i;
-			if (y == gy && x == gx) goal = i;
-			dragmasu[y][x] = i + 1;
-		}
 
-		if (start == -1) {
-			writeline("No");
-			return;
-		}
-
-		if (goal == -1) {
-			goal = n;
-			dragmasu[gy][gx] = n + 1;
-		}
-
-
-		var graph = new HashSet<int>[n];
-		for (int i = 0; i < n; ++i) {
-			graph[i] = new HashSet<int>();
-
-			var flag = new HashSet<int>();
-			var que = new Queue<YXE>();
-			que.Enqueue(new YXE(drags[i][0], drags[i][1], drags[i][2]));
-			while (que.Count > 0) {
-				var yxe = que.Dequeue();
-				int y = yxe.y;
-				int x = yxe.x;
-				int e = yxe.e;
-
-				int yx = y * w + x;
-				if (flag.Contains(yx)) continue;
-				flag.Add(yx);
-
-				if (dragmasu[y][x] > 0 && dragmasu[y][x] - 1 != i) {
-					graph[i].Add(dragmasu[y][x] - 1);
-				}
-
-				if (e == 0) continue;
-				if (0 < y && masu[y - 1][x] && flag.Contains((y - 1) * w + x) == false) que.Enqueue(new YXE(y - 1, x, e - 1));
-				if (y < h - 1 && masu[y + 1][x] && flag.Contains((y + 1) * w + x) == false) que.Enqueue(new YXE(y + 1, x, e - 1));
-				if (0 < x && masu[y][x - 1] && flag.Contains(y * w + x - 1) == false) que.Enqueue(new YXE(y, x - 1, e - 1));
-				if (x < w - 1 && masu[y][x + 1] && flag.Contains(y * w + x + 1) == false) que.Enqueue(new YXE(y, x + 1, e - 1));
-			}
-		}
-
-		// for (int i = 0; i < n; ++i) {
-		// 	foreach (var g in graph[i]) write(g + " ");
-		// 	writeline();
-		// }
-
-		var queue = new Queue<int>();
-		var flagg = new HashSet<int>();
-		queue.Enqueue(start);
-		while (queue.Count > 0) {
-			int node = queue.Dequeue();
-			if (flagg.Contains(node)) continue;
-			flagg.Add(node);
-
-			if (node == goal) {
-				writeline("Yes");
-				return;
-			}
-
-			foreach (var hoge in graph[node]) queue.Enqueue(hoge);
-		}
-
-		writeline("No");
-	}
-
+	} // end of method
 } // end of class
-
-public class YXE {
-	public int y;
-	public int x;
-	public int e;
-	public YXE(int yy, int xx, int ee) {
-		y = yy;
-		x = xx;
-		e = ee;
-	}
-}
