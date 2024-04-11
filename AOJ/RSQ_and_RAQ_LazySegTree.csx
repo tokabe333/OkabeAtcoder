@@ -582,8 +582,111 @@ class Kyopuro {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
+		var (h, w) = readintt2();
+		var masu = makearr2<bool>(h, w, true);
+		int sy = -1, sx = -1, gy = -1, gx = -1, start = -1, goal = -1;
+		for (int i = 0; i < h; ++i) {
+			string s = read();
+			for (int j = 0; j < w; ++j) {
+				if (s[j] == 'S') {
+					sy = i;
+					sx = j;
+				} else if (s[j] == 'T') {
+					gy = i;
+					gx = j;
+				} else if (s[j] == '#') {
+					masu[i][j] = false;
+				}
+			}
+		}
+
+		int n = readint();
+		var drags = makearr2(n, 3, 0);
+		var dragmasu = makearr2(h, w, 0);
+		for (int i = 0; i < n; ++i) {
+			var (y, x, e) = readintt3();
+			--y; --x;
+			drags[i][0] = y;
+			drags[i][1] = x;
+			drags[i][2] = e;
+			if (y == sy && x == sx) start = i;
+			if (y == gy && x == gx) goal = i;
+			dragmasu[y][x] = i + 1;
+		}
+
+		if (start == -1) {
+			writeline("No");
+			return;
+		}
+
+		if (goal == -1) {
+			goal = n;
+			dragmasu[gy][gx] = n + 1;
+		}
 
 
+		var graph = new HashSet<int>[n];
+		for (int i = 0; i < n; ++i) {
+			graph[i] = new HashSet<int>();
 
-	} // end of method
+			var flag = new HashSet<int>();
+			var que = new Queue<YXE>();
+			que.Enqueue(new YXE(drags[i][0], drags[i][1], drags[i][2]));
+			while (que.Count > 0) {
+				var yxe = que.Dequeue();
+				int y = yxe.y;
+				int x = yxe.x;
+				int e = yxe.e;
+
+				int yx = y * w + x;
+				if (flag.Contains(yx)) continue;
+				flag.Add(yx);
+
+				if (dragmasu[y][x] > 0 && dragmasu[y][x] - 1 != i) {
+					graph[i].Add(dragmasu[y][x] - 1);
+				}
+
+				if (e == 0) continue;
+				if (0 < y && masu[y - 1][x] && flag.Contains((y - 1) * w + x) == false) que.Enqueue(new YXE(y - 1, x, e - 1));
+				if (y < h - 1 && masu[y + 1][x] && flag.Contains((y + 1) * w + x) == false) que.Enqueue(new YXE(y + 1, x, e - 1));
+				if (0 < x && masu[y][x - 1] && flag.Contains(y * w + x - 1) == false) que.Enqueue(new YXE(y, x - 1, e - 1));
+				if (x < w - 1 && masu[y][x + 1] && flag.Contains(y * w + x + 1) == false) que.Enqueue(new YXE(y, x + 1, e - 1));
+			}
+		}
+
+		// for (int i = 0; i < n; ++i) {
+		// 	foreach (var g in graph[i]) write(g + " ");
+		// 	writeline();
+		// }
+
+		var queue = new Queue<int>();
+		var flagg = new HashSet<int>();
+		queue.Enqueue(start);
+		while (queue.Count > 0) {
+			int node = queue.Dequeue();
+			if (flagg.Contains(node)) continue;
+			flagg.Add(node);
+
+			if (node == goal) {
+				writeline("Yes");
+				return;
+			}
+
+			foreach (var hoge in graph[node]) queue.Enqueue(hoge);
+		}
+
+		writeline("No");
+	}
+
 } // end of class
+
+public class YXE {
+	public int y;
+	public int x;
+	public int e;
+	public YXE(int yy, int xx, int ee) {
+		y = yy;
+		x = xx;
+		e = ee;
+	}
+}
