@@ -81,7 +81,7 @@ public class Util {
 	public static int a10_9 = 1000000000;
 	public static long a10_18 = 1000000000000000000;
 	public static int iinf = 1 << 31;
-	public static long ling = (1l << 61) - (1l << 31);
+	public static long linf = (1l << 61) - (1l << 31);
 
 	/// 打ちやすいように
 	public static string read() => ReadLine();

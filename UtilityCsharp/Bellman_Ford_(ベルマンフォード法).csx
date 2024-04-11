@@ -8,6 +8,7 @@ using static System.Console;
 using static System.Math;
 using static Util;
 using System.Security.Cryptography;
+using System.Xml;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -82,7 +83,7 @@ public class Util {
 	public static int a10_9 = 1000000000;
 	public static long a10_18 = 1000000000000000000;
 	public static int iinf = 1 << 31;
-	public static long ling = (1l << 61) - (1l << 31);
+	public static long linf = (1l << 61) - (1l << 31);
 
 	/// 打ちやすいように
 	public static string read() => ReadLine();
@@ -507,16 +508,59 @@ class Kyopuro {
 
 
 	/// 開始ノードとノード数とエッジ情報を渡してベルマンフォード
-	long[] BellmanFord(int start, int n, List<Edge> edges) {
-		var dists = new long[n];
+	/// 負の閉路が存在する場合はminucCircuitをtrueに
+	long[] BellmanFord(int start, int n, List<Edge> edges, out bool minusCicuit) {
+		var dists = makearr(n, linf);
+		dists[start] = 0;
+
+		// n-1 回で全ての更新が終わるはず
+		for (int i = 0; i < n - 1; ++i) {
+			foreach (var edge in edges) {
+				// 更新元がinfの場合は処理しない
+				if (dists[edge.from] == linf) continue;
+
+				// 小さくできるなら更新
+				// writeline($"from:{edge.from} to:{edge.to} cost:{edge.cost} fromDist:{dists[edge.from]} toDist:{dists[edge.to]}");
+				dists[edge.to] = Min(dists[edge.from] + edge.cost, dists[edge.to]);
+			}
+		}
+
+		// n回目以降も更新があるなら負の閉路が存在する
+		minusCicuit = false;
+		foreach (var edge in edges) {
+			// 更新元がinfの場合は処理しない
+			if (dists[edge.from] == linf) continue;
+			if (dists[edge.to] > dists[edge.from] + edge.cost) {
+				minusCicuit = true;
+				break;
+			}
+		}
 
 		return dists;
-	}
+	} // end of method
 
 
 	public void Solve() {
+		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_B&lang=ja
 
+		var (n, m, r) = readintt3();
+		var edges = new List<Edge>();
+		for (int i = 0; i < m; ++i) {
+			(int a, int b, long c) = readintt3();
+			// --a; --b;
+			edges.Add(new Edge(a, b, c));
+		}
 
+		bool minusCicuit;
+		var dists = BellmanFord(r, n, edges, out minusCicuit);
+
+		if (minusCicuit) writeline("NEGATIVE CYCLE");
+		else {
+			for (int i = 0; i < n; ++i) {
+				if (dists[i] == linf) writeline("INF");
+				else writeline(dists[i]);
+			}
+		}
 
 	} // end of func
 } // end of class

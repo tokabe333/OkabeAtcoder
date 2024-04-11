@@ -7,7 +7,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.Intrinsics.X86;
+using System.Security.Cryptography;
 using System.Xml;
 
 // using pii = (int, int);
@@ -82,6 +82,8 @@ public class Util {
 	public static long m998 = 998244353;
 	public static int a10_9 = 1000000000;
 	public static long a10_18 = 1000000000000000000;
+	public static int iinf = 1 << 31;
+	public static long linf = (1l << 61) - (1l << 31);
 
 	/// 打ちやすいように
 	public static string read() => ReadLine();
@@ -484,6 +486,17 @@ class YX {
 	}
 } // end of class
 
+/// グラフをするときに
+class Edge {
+	public int from;
+	public int to;
+	public long cost;
+	public Edge(int from, int to, long cost) {
+		this.from = from;
+		this.to = to;
+		this.cost = cost;
+	}
+} // end of class
 
 class Kyopuro {
 	public static void Main() {
@@ -494,81 +507,60 @@ class Kyopuro {
 	} // end of func
 
 
+	/// 開始ノードとノード数とエッジ情報を渡してベルマンフォード
+	/// 負の閉路が存在する場合はminucCircuitをtrueに
+	long[] BellmanFord(int start, int n, List<Edge> edges, out bool minusCicuit) {
+		var dists = makearr(n, linf);
+		dists[start] = 0;
+
+		// n-1 回で全ての更新が終わるはず
+		for (int i = 0; i < n - 1; ++i) {
+			foreach (var edge in edges) {
+				// 更新元がinfの場合は処理しない
+				if (dists[edge.from] == linf) continue;
+
+				// 小さくできるなら更新
+				writeline($"from:{edge.from} to:{edge.to} cost:{edge.cost} fromDist:{dists[edge.from]} toDist:{dists[edge.to]}");
+				dists[edge.to] = Min(dists[edge.from] + edge.cost, dists[edge.to]);
+			}
+		}
+
+		// n回目以降も更新があるなら負の閉路が存在する
+		minusCicuit = false;
+		foreach (var edge in edges) {
+			// 更新元がinfの場合は処理しない
+			if (dists[edge.from] == linf) continue;
+			if (dists[edge.to] > dists[edge.from] + edge.cost) {
+				minusCicuit = true;
+				break;
+			}
+		}
+
+		return dists;
+	} // end of method
+
+
 	public void Solve() {
-		var (n, m) = readintt2();
-		var arr = readints();
-		int start = 0;
-		for (int i = 0; i < n; ++i) start += arr[i] * (1 << i);
+		// https://atcoder.jp/contests/abc061/tasks/abc061_d
 
-		// 2進数でグラフのノードを表示
-		// i番目のグラフは iを2進数表記したときに
-		// 1→光ってる 0→消えてる
-		int nodeNum = (int)(1 << n);
-		var graph = makelist2(nodeNum, 0, 0);
-		var edges = new List<(int, int, int)>();
-
+		var (n, m, r) = readintt3();
+		var edges = new List<Edge>();
 		for (int i = 0; i < m; ++i) {
-			var xyz = readintt3();
-			--xyz.Item1;
-			--xyz.Item2;
-			--xyz.Item3;
-			edges.Add(xyz);
+			(int a, int b, long c) = readintt3();
+			// --a; --b;
+			edges.Add(new Edge(a, b, c));
 		}
 
-		// 辺を張る
-		for (int i = 0; i < nodeNum; ++i) {
-			// ノードiからエッジjによる移動
-			for (int j = 0; j < m; ++j) {
-				var (x, y, z) = edges[j];
-				int xx = 1 << x;
-				int yy = 1 << y;
-				int zz = 1 << z;
+		bool minusCicuit;
+		var dists = BellmanFord(r, n, edges, out minusCicuit);
 
-				int node = i;
-				// writeline($"&x:{node & xx} &y:{node & yy} &z:{node & zz}");
-				if ((node & xx) == 0) node += xx;
-				else node -= xx;
-
-				if ((node & yy) == 0) node += yy;
-				else node -= yy;
-
-				if ((node & zz) == 0) node += zz;
-				else node -= zz;
-
-				// writeline($"i:{IntToString2bit(i)} node2:{IntToString2bit(node)} node:{node} xx:{xx} yy:{yy} zz:{zz} x:{x} y:{y} z:{z}");
-				// writeline();
-
-				graph[i].Add(node);
+		if (minusCicuit) writeline("NEGATIVE CYCLE");
+		else {
+			for (int i = 0; i < n; ++i) {
+				if (dists[i] == linf) writeline("INF");
+				else writeline(dists[i]);
 			}
 		}
-
-		// writeline();
-		// printlist2(graph);
-		// return;
-
-		int ans = 0;
-		var flag = makelist(nodeNum, int.MaxValue);
-		var que = new Queue<(int, int)>();
-
-		que.Enqueue((start, 0));
-
-		while (que.Count > 0) {
-			var (node, dist) = que.Dequeue();
-
-			if (flag[node] <= dist) continue;
-			flag[node] = dist;
-
-			if (node == nodeNum - 1) {
-				writeline(dist);
-				return;
-			}
-
-			foreach (var next in graph[node]) {
-				if (flag[next] > dist + 1) que.Enqueue((next, dist + 1));
-			}
-		}
-		writeline(-1);
-
 
 	} // end of func
 } // end of class
