@@ -510,7 +510,7 @@ class Kyopuro {
 				num += dfs(g);
 			}
 			ans[node] = num;
-			writeline($"node:{node} num:{num}");
+			// writeline($"node:{node} num:{num}");
 			return num + 1;
 		}
 
