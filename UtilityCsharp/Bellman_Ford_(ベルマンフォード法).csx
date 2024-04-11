@@ -7,6 +7,7 @@ using System.IO;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Security.Cryptography;
 
 // using pii = (int, int);
 // using pll = (long, long);
@@ -503,6 +504,14 @@ class Kyopuro {
 		kyopuro.Solve();
 		finalprocess();
 	} // end of func
+
+
+	/// 開始ノードとノード数とエッジ情報を渡してベルマンフォード
+	long[] BellmanFord(int start, int n, List<Edge> edges) {
+		var dists = new long[n];
+
+		return dists;
+	}
 
 
 	public void Solve() {
