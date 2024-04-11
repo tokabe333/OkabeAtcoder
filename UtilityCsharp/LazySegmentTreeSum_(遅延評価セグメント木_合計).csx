@@ -574,21 +574,22 @@ class Edge {
 
 
 
+
 /// <summary>
 /// 遅延評価セグメント木 <br/>
 /// 区間検索、区間更新がO(logN) <br/>
 /// </summary>
-class LazySegmentTreeGeneric<T, F, T_op>
-									 // where T : IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
-									 //  where F : IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
-									 where T_op : struct, ILazySegmentTreeOperator<T, F> {
+class LazySegmentTree<T, F, T_op>
+								// where T : IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
+								// where F : IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
+								where T_op : struct, ILazySegmentTreeOperator<T, F> {
 	/// <summary>一番下の葉の数 (2のべき乗になってるはず)</summary>
 	public int LeafNum { get; set; }
 
 	/// <summary>ノード全体の要素数</summary>
 	public int Count { get => this.Node.Length; }
 
-	/// <summary実際に木を構築するノード</summary
+	/// <summary実際に木を構築するノード</summary>
 	public T[] Node { get; set; }
 
 	/// <summary>
@@ -607,7 +608,7 @@ class LazySegmentTreeGeneric<T, F, T_op>
 	/// 元配列を渡してセグメントツリーの作成 <br/>
 	/// それ以外はOperatorに定義  <br/>
 	/// </summary>
-	public LazySegmentTreeGeneric(T[] arr) {
+	public LazySegmentTree(T[] arr) {
 		// ノード数を　2^⌈log2(N)⌉　にする
 		this.LeafNum = 1;
 		while (this.LeafNum < arr.Length) this.LeafNum <<= 1;
@@ -636,9 +637,9 @@ class LazySegmentTreeGeneric<T, F, T_op>
 	/// </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Evaluate(int k, int l, int r) {
-		// 遅延配列が空の時は更新内容がない
+		// 遅延配列が恒等写像の時は更新内容がない
 		if (EqualityComparer<F>.Default.Equals(this.Lazy[k], this.Operator.FIdentity)) return;
-		// writeline($"eval k:{k} l:{l} r:{r} nodek:{this.Node[k]} lazyk:{this.Lazy[k]}");
+
 		// 注目ノードに遅延評価の写像を作用させる
 		this.Node[k] = this.Operator.Mapping(this.Lazy[k], this.Node[k]);
 
@@ -649,8 +650,7 @@ class LazySegmentTreeGeneric<T, F, T_op>
 			this.Lazy[2 * k + 2] = this.Operator.Composition(this.Lazy[k], this.Lazy[2 * k + 2]);
 		}
 
-		// 伝播が終わったので自ノードの遅延評価を単位元に戻す
-
+		// 伝播が終わったので自ノードの遅延評価を恒等写像に戻す
 		this.Lazy[k] = this.Operator.FIdentity;
 	} // end of method
 
@@ -658,8 +658,7 @@ class LazySegmentTreeGeneric<T, F, T_op>
 
 	/// <summary>
 	/// [l, r)の範囲を更新する <br/>
-	/// [l, r) は求めたい半開区間 <br/>
-	/// x は作用させたい値
+	/// x は更新に使用する写像 min,maxならxと比較、addならxを足す <br/>
 	///</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Update(int l, int r, F x) {
@@ -667,11 +666,10 @@ class LazySegmentTreeGeneric<T, F, T_op>
 	} // end of Method
 
 	/// <summary>
-	/// [l, r)の範囲を更新する <br/>
-	/// [l, r) は求めたい半開区間 <br/>
+	/// [l, r)の範囲を更新する
 	/// k は現在のノード番号 <br/>
-	/// [a, b) はkに対応する半開区間 <br/>
-	/// T x は更新したい値 min,maxならxと比較, addならxを足す <br/>
+	/// [a, b) はkが対応する半開区間 <br/>	
+	/// x は更新に使用する写像 min,maxならxと比較、addならxを足す <br/>
 	///</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Update(int l, int r, int k, int a, int b, F x) {
@@ -689,7 +687,7 @@ class LazySegmentTreeGeneric<T, F, T_op>
 		}
 
 		// そうでないなら左右の子のノードを再帰的に計算
-		// → 計算済みの値をもらって自信を更新
+		// → 計算済みの値をもらって自身を更新
 		else {
 			int m = (a + b) / 2;
 			this.Update(l, r, k * 2 + 1, a, m, x);
@@ -710,7 +708,6 @@ class LazySegmentTreeGeneric<T, F, T_op>
 	/// [a, b) はkに対応する半開区間 <br/>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private T Query(int l, int r, int k, int a, int b) {
-
 		// 現在の対応ノード区間が求めたい区間に含まれないとき
 		// → 単位元を返す
 		if (r <= a || b <= l) return this.Operator.Identity;
@@ -720,15 +717,12 @@ class LazySegmentTreeGeneric<T, F, T_op>
 
 		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
 		// → 現在のノードの値を返す
-		if (l <= a && b <= r) {
-			return this.Node[k];
-		}
+		if (l <= a && b <= r) return this.Node[k];
 
 		// 左半分と右半分で見る
 		int m = (a + b) / 2;
 		T leftValue = Query(l, r, k * 2 + 1, a, m);
 		T rightValue = Query(l, r, k * 2 + 2, m, b);
-
 		return this.Operator.Operate(leftValue, rightValue);
 	} // end of method
 } // end of class
@@ -769,6 +763,7 @@ interface ILazySegmentTreeOperator<T, F> {
 	F Composition(F nf, F cf);
 } // end of interface
 
+
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -790,7 +785,7 @@ class Kyopuro {
 	public void Solve() {
 		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_G
 		var (n, q) = readintt2();
-		var lazy = new LazySegmentTreeGeneric<(long, int), long, op>(makearr(n, (0l, 1)));
+		var lazy = new LazySegmentTree<(long, int), long, op>(makearr(n, (0l, 1)));
 		for (int i = 0; i < q; ++i) {
 			var s = readsplit();
 			if (s[0] == "0") {
