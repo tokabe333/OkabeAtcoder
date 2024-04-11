@@ -609,9 +609,8 @@ class Kyopuro {
 		public long Operate(long a, long b) => Max(a, b);
 	}
 
-
 	public void Solve() {
-
+		// https://atcoder.jp/contests/tessoku-book/tasks/tessoku_book_bf
 		var (n, q) = readintt2();
 		var segtree = new SegmentTreeGeneric<long, op>(new long[n]);
 		for (int i = 0; i < q; ++i) {
