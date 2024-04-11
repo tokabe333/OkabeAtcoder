@@ -528,6 +528,7 @@ class Kyopuro {
 	}
 
 	public void Solve() {
+		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_C
 
 		var (v, e) = readintt2();
 
