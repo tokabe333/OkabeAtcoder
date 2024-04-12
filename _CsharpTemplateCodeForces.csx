@@ -186,211 +186,211 @@ public class Util {
 	} // end of func
 
 	/// 1次元Listを出力
-	public static void printlist<T>(List<T> list) {
-		WriteLine(string.Join(" ", list));
+	public static void printlist<T>(List<T> list)
+	{ 	WriteLine(string.Join(" ", list));
 	} // end of func
 
 	/// 1次元配列を出力
-	public static void printlist<T>(T[] list) {
-		WriteLine(string.Join(" ", list));
+	public static void printlist<T>(T[] list)
+	{ 	WriteLine(string.Join(" ", list));
 	} // end of func
 
 	/// 2次元リストを出力
-	public static void printlist2<T>(List<List<T>> list) {
-		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+	public static void printlist2<T>(List<List<T>> list)
+	{ 	foreach (var l in list)
+		{ 	WriteLine(string.Join(" ", l));
 		}
 	} // end of func
 
 	/// 2次元配列を出力
-	public static void printlist2<T>(T[][] list) {
-		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+	public static void printlist2<T>(T[][] list)
+	{ 	foreach (var l in list)
+		{ 	WriteLine(string.Join(" ", l));
 		}
 	} // end of func	
 
 	/// 1次元Listを出力
-	public static void printarr<T>(List<T> list) {
-		WriteLine(string.Join(" ", list));
+	public static void printarr<T>(List<T> list)
+	{ 	WriteLine(string.Join(" ", list));
 	} // end of func
 
 	/// 1次元配列を出力
-	public static void printarr<T>(T[] list) {
-		WriteLine(string.Join(" ", list));
+	public static void printarr<T>(T[] list)
+	{ 	WriteLine(string.Join(" ", list));
 	} // end of func
 
 	/// 2次元リストを出力
-	public static void printarr2<T>(List<List<T>> list) {
-		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+	public static void printarr2<T>(List<List<T>> list)
+	{ 	foreach (var l in list)
+		{ 	WriteLine(string.Join(" ", l));
 		}
 	} // end of func
 
 	/// 2次元配列を出力
-	public static void printarr2<T>(T[][] list) {
-		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+	public static void printarr2<T>(T[][] list)
+	{ 	foreach (var l in list)
+		{ 	WriteLine(string.Join(" ", l));
 		}
 	} // end of func
 
 	/// 数字を1つint型で読み込み
-	public static int readint() {
-		return int.Parse(ReadLine());
+	public static int readint()
+	{ 	return int.Parse(ReadLine());
 	} // end of func
 
 	/// 数字を1つlong型で読み込み
-	public static long readlong() {
-		return long.Parse(ReadLine());
+	public static long readlong()
+	{ 	return long.Parse(ReadLine());
 	} // end of func
 
 	/// 数字をスペース区切りでint型で入力
-	public static int[] readints() {
-		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
+	public static int[] readints()
+	{ 	return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
 	} // end of func
 
 	/// 数字をスペース区切りでlong型で入力
-	public static long[] readlongs() {
-		return ReadLine().Split(' ').Select(_ => long.Parse(_)).ToArray();
+	public static long[] readlongs()
+	{ 	return ReadLine().Split(' ').Select(_ => long.Parse(_)).ToArray();
 	} // end of func
 
 	/// 数字をスペース区切りでfloat型で入力
-	public static float[] readfloats() {
-		return ReadLine().Split(' ').Select(_ => float.Parse(_)).ToArray();
+	public static float[] readfloats()
+	{ 	return ReadLine().Split(' ').Select(_ => float.Parse(_)).ToArray();
 	} // end of func
 
 	/// 数字をスペース区切りでdouble型で入力
-	public static double[] readdoubles() {
-		return ReadLine().Split(' ').Select(_ => double.Parse(_)).ToArray();
+	public static double[] readdoubles()
+	{ 	return ReadLine().Split(' ').Select(_ => double.Parse(_)).ToArray();
 	} // end of func
 
 	/// 文字列をスペース区切りで入力
-	public static string[] readstrings() {
-		return ReadLine().Split(' ');
+	public static string[] readstrings()
+	{ 	return ReadLine().Split(' ');
 	} // end of func
 
 	/// 読み込んだint2つをタプルで返す(分解代入用)
-	public static (int, int) readintt2() {
-		var arr = readints();
+	public static (int, int) readintt2()
+	{ 	var arr = readints();
 		return (arr[0], arr[1]);
 	} // end of func
 
 	/// 読み込んだint3つをタプルで返す(分解代入用)
-	public static (int, int, int) readintt3() {
-		var arr = readints();
+	public static (int, int, int) readintt3()
+	{ 	var arr = readints();
 		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
 	/// 読み込んだint4つをタプルで返す(分解代入用)
-	public static (int, int, int, int) readintt4() {
-		var arr = readints();
+	public static (int, int, int, int) readintt4()
+	{ 	var arr = readints();
 		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// 読み込んだlong2つをタプルで返す(分解代入用)
-	public static (long, long) readlongt2() {
-		var arr = readlongs();
+	public static (long, long) readlongt2()
+	{ 	var arr = readlongs();
 		return (arr[0], arr[1]);
 	} // end of func
 
 	/// 読み込んだ数long3つをタプルで返す(分解代入用)
-	public static (long, long, long) readlongt3() {
-		var arr = readlongs();
+	public static (long, long, long) readlongt3()
+	{ 	var arr = readlongs();
 		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
 	/// 読み込んだ数long4つをタプルで返す(分解代入用)
-	public static (long, long, long, long) readlongt4() {
-		var arr = readlongs();
+	public static (long, long, long, long) readlongt4()
+	{ 	var arr = readlongs();
 		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// 読み込んだfloat2つをタプルで返す(分解代入用)
-	public static (float, float) readfloatt2() {
-		var arr = readfloats();
+	public static (float, float) readfloatt2()
+	{ 	var arr = readfloats();
 		return (arr[0], arr[1]);
 	} // end of func
 
 	/// 読み込んだfloat3つをタプルで返す(分解代入用)
-	public static (float, float, float) readfloatt3() {
-		var arr = readfloats();
+	public static (float, float, float) readfloatt3()
+	{ 	var arr = readfloats();
 		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
 	/// 読み込んだfloat4つをタプルで返す(分解代入用)
-	public static (float, float, float, float) readfloatt4() {
-		var arr = readfloats();
+	public static (float, float, float, float) readfloatt4()
+	{ 	var arr = readfloats();
 		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// 読み込んだdouble2つをタプルで返す(分解代入用)
-	public static (double, double) readdoublet2() {
-		var arr = readdoubles();
+	public static (double, double) readdoublet2()
+	{ 	var arr = readdoubles();
 		return (arr[0], arr[1]);
 	} // end of func
 
 	/// 読み込んだdouble3つをタプルで返す(分解代入用)
-	public static (double, double, double) readdoublet3() {
-		var arr = readdoubles();
+	public static (double, double, double) readdoublet3()
+	{ 	var arr = readdoubles();
 		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
 	/// 読み込んだdouble4つをタプルで返す(分解代入用)
-	public static (double, double, double, double) readdoublet4() {
-		var arr = readdoubles();
+	public static (double, double, double, double) readdoublet4()
+	{ 	var arr = readdoubles();
 		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// 読み込んだstring2つをタプルで返す(分解代入用)
-	public static (string, string) readstringt2() {
-		var arr = ReadLine().Split(' ');
+	public static (string, string) readstringt2()
+	{ 	var arr = ReadLine().Split(' ');
 		return (arr[0], arr[1]);
 	} // end of func
 
 	/// 読み込んだstring3つをタプルで返す(分解代入用)
-	public static (string, string, string) readstringt3() {
-		var arr = ReadLine().Split(' ');
+	public static (string, string, string) readstringt3()
+	{ 	var arr = ReadLine().Split(' ');
 		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
 	/// 読み込んだstring3つをタプルで返す(分解代入用)
-	public static (string, string, string, string) readstringt4() {
-		var arr = ReadLine().Split(' ');
+	public static (string, string, string, string) readstringt4()
+	{ 	var arr = ReadLine().Split(' ');
 		return (arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
-	public static void WriteLine16<T>(T num) {
-		WriteLine(string.Format("{0:0.################}", num));
+	public static void WriteLine16<T>(T num)
+	{ 	WriteLine(string.Format("{0:0.################}", num));
 	} // end of func
 
 	/// 出力のflush削除
-	public static void preprocess() {
-		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
+	public static void preprocess()
+	{ 	var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
 		System.Console.SetOut(sw);
 	} // end of func
 
 	/// 出力をflush
-	public static void finalprocess() {
-		System.Console.Out.Flush();
+	public static void finalprocess()
+	{ 	System.Console.Out.Flush();
 	} // end of func
 } // end of class
 
 
-public class Kyopuro {
-	public static void Main() {
-		preprocess();
+public class Kyopuro
+{ 	public static void Main()
+	{ 	preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro._Solve();
 		finalprocess();
 	} // end of func
 
-	public void _Solve() {
-		int q = readint();
+	public void _Solve()
+	{ 	int q = readint();
 		for (int _ = 0; _ < q; ++_) Solve();
 	}
 
-	public void Solve() {
-
+	public void Solve()
+	{ 
 
 
 	}
