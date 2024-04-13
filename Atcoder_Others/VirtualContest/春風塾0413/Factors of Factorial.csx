@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Numerics;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -571,6 +572,8 @@ struct Edge {
 	}
 } // end of class
 
+
+
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -579,69 +582,41 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	/// a^nを繰り返し二乗法
+	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
+		if (n == 0) return 1;
+		if (n == 1) return a % mod;
 
-	class Query {
-		public int t;
-		public int x;
-		public string c;
-
-		public Query(int tt, int xx, string cc) {
-			t = tt;
-			x = xx;
-			c = cc;
+		long ret = 1;
+		while (n > 0) {
+			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
+			if ((n & 1) == 1) ret = (ret * a) % mod;
+			n >>= 1;
+			a = (a * a) % mod;
 		}
-	}
+
+		return ret;
+	} // end of method
+
+
+	/// (nume / deno) % mod を計算
+	long ModDiv(long nume, long deno, long mod) {
+		return (nume * KurikaeshiPow(deno, mod - 2, mod)) % mod;
+	} // end of method
+
+
+
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
 
-		int n = readint();
-		string s = read();
+		long n = readlong();
+		long ans = n;
 
-		int q = readint();
+		long nume = 1;
+		for (long i = 1; i <= n; ++i) nume = (nume * i) % m107;
 
-		var qrr = makearr(q, default(Query));
-		for (int i = 0; i < q; ++i) {
-			var split = readsplit();
-			int t = int.Parse(split[0]);
-			int x = int.Parse(split[1]) - 1;
-
-			qrr[i] = new Query(t, x, split[2]);
-		}
-
-		int index = 0;
-		int ft = 1;
-		for (int i = q - 1; i >= 0; --i) {
-			if (qrr[i].t == 1) continue;
-			index = i;
-			ft = qrr[i].t;
-			break;
-		}
-		string ss = s;
-		if (ft == 2) ss = s.ToLower();
-		else if (ft == 3) ss = s.ToUpper();
-
-		var sc = ss.ToCharArray();
-
-		for (int i = 0; i < q; ++i) {
-
-			if (qrr[i].t != 1) continue;
-			if (i > index) {
-				sc[qrr[i].x] = qrr[i].c[0];
-				continue;
-			}
-
-			if (ft == 1) {
-				sc[qrr[i].x] = qrr[i].c[0];
-			} else if (ft == 2) {
-				sc[qrr[i].x] = qrr[i].c.ToLower()[0];
-			} else if (ft == 3) {
-				sc[qrr[i].x] = qrr[i].c.ToUpper()[0];
-			}
-		}
-		writeline(new string(sc));
-
-
-
+		long deno = 1;
+		for (long i = 1; i <= n; ++i) deno = (deno * i) % m107;
 
 	} // end of method
 } // end of class

@@ -1,3 +1,4 @@
+
 #pragma warning disable
 
 using System;
@@ -580,68 +581,22 @@ class Kyopuro {
 	} // end of func
 
 
-	class Query {
-		public int t;
-		public int x;
-		public string c;
-
-		public Query(int tt, int xx, string cc) {
-			t = tt;
-			x = xx;
-			c = cc;
-		}
-	}
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
 
-		int n = readint();
-		string s = read();
-
-		int q = readint();
-
-		var qrr = makearr(q, default(Query));
-		for (int i = 0; i < q; ++i) {
-			var split = readsplit();
-			int t = int.Parse(split[0]);
-			int x = int.Parse(split[1]) - 1;
-
-			qrr[i] = new Query(t, x, split[2]);
-		}
-
-		int index = 0;
-		int ft = 1;
-		for (int i = q - 1; i >= 0; --i) {
-			if (qrr[i].t == 1) continue;
-			index = i;
-			ft = qrr[i].t;
-			break;
-		}
-		string ss = s;
-		if (ft == 2) ss = s.ToLower();
-		else if (ft == 3) ss = s.ToUpper();
-
-		var sc = ss.ToCharArray();
-
-		for (int i = 0; i < q; ++i) {
-
-			if (qrr[i].t != 1) continue;
-			if (i > index) {
-				sc[qrr[i].x] = qrr[i].c[0];
-				continue;
-			}
-
-			if (ft == 1) {
-				sc[qrr[i].x] = qrr[i].c[0];
-			} else if (ft == 2) {
-				sc[qrr[i].x] = qrr[i].c.ToLower()[0];
-			} else if (ft == 3) {
-				sc[qrr[i].x] = qrr[i].c.ToUpper()[0];
+		var (k, s) = readlongt2();
+		var set = new HashSet<long>();
+		long ans = 0;
+		for (long i = 0; i <= k; ++i) {
+			for (long j = 0; j <= k; ++j) {
+				long c = s - i - j;
+				if (0 <= c && c <= k) {
+					ans += 1;
+				}
 			}
 		}
-		writeline(new string(sc));
 
-
-
+		writeline(ans);
 
 	} // end of method
 } // end of class

@@ -616,7 +616,7 @@ class Kyopuro {
 			ft = qrr[i].t;
 			break;
 		}
-		string ss = s;
+		string ss = "";
 		if (ft == 2) ss = s.ToLower();
 		else if (ft == 3) ss = s.ToUpper();
 
@@ -630,11 +630,9 @@ class Kyopuro {
 				continue;
 			}
 
-			if (ft == 1) {
-				sc[qrr[i].x] = qrr[i].c[0];
-			} else if (ft == 2) {
+			if (ft == 2) {
 				sc[qrr[i].x] = qrr[i].c.ToLower()[0];
-			} else if (ft == 3) {
+			} else {
 				sc[qrr[i].x] = qrr[i].c.ToUpper()[0];
 			}
 		}
