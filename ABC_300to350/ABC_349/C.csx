@@ -583,14 +583,34 @@ class Kyopuro {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
 
-		// long a = 1l << 10;
-		// long b = a * 3;
-		// writeline(LongToString2bit(b));
-		writeline(IntToString2bit(14));
-		writeline(IntToString2bit(16));
-		writeline(IntToString2bit(18));
+		string s = read().ToUpper();
+		string t = read();
 
-		writeline(LongToString2bit(11549270146547711));
+		if (t[2] == 'X') {
+			int index = 0;
+			for (int i = 0; i < s.Length; ++i) {
+				if (s[i] == t[index]) {
+					index += 1;
+				}
+				if (index == 2) {
+					writeline("Yes");
+					return;
+				}
+			}
+		} else {
+			int index = 0;
+			for (int i = 0; i < s.Length; ++i) {
+				if (s[i] == t[index]) {
+					index += 1;
+				}
+				if (index == 3) {
+					writeline("Yes");
+					return;
+				}
+			}
+		}
+
+		writeline("No");
 
 	} // end of method
 } // end of class

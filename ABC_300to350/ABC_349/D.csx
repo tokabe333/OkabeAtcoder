@@ -583,14 +583,38 @@ class Kyopuro {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
 
-		// long a = 1l << 10;
-		// long b = a * 3;
-		// writeline(LongToString2bit(b));
-		writeline(IntToString2bit(14));
-		writeline(IntToString2bit(16));
-		writeline(IntToString2bit(18));
+		var (l, r) = readlongt2();
 
-		writeline(LongToString2bit(11549270146547711));
+		long rr = r;
+		var ans = new List<(long, long)>();
+		long beki = 1;
+		while (rr > 1) {
+			string hoge = LongToString2bit(rr);
+			var pos = new List<int>();
+			for (int i = 0; i < hoge.Length; ++i) {
+				if (hoge[i] == '1') pos.Add(hoge.Length - i);
+			}
+
+			if (pos.Count == 1) {
+				ans.Add((beki, beki << 1));
+				writeline($"rr:{rr} beki:{beki}");
+			} else {
+				for (int i = pos.Count - 1; i > 0; --i) {
+					long fuga = (pos[i] + pos[i - 1]) * (1l << pos[i] - 1);
+					writeline($"fuga:{fuga} rr:{rr} beki:{beki}");
+					ans.Add((fuga, fuga + 1));
+				}
+			}
+
+			rr >>= 1;
+			beki <<= 1;
+			printlist(pos);
+			writeline();
+		}
+
+
+		printlist(ans);
+
 
 	} // end of method
 } // end of class
