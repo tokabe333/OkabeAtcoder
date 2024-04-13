@@ -584,25 +584,24 @@ class Kyopuro {
 	public void Solve() {
 
 		long n = readlong();
+		long ans = 0;
 
-		long sqrt = (long)Sqrt(n);
-		long count = 0;
-		double log2n = Log2(n);
-		var set = new HashSet<long>();
-		for (long i = 2; i <= sqrt; ++i) {
-			long ii = i * i;
-			if (set.Contains(i)) continue;
-
-			double hoge = log2n / Log2(i) - 1;
-			count += (long)hoge;
-			while (ii <= sqrt) {
-				// count += 1;
-				set.Add(ii);
-				ii *= i;
+		for (long i = 1; i <= 1000000; ++i) {
+			string s = i.ToString() + i.ToString();
+			long ii = long.Parse(s);
+			if (ii > n) break;
+			long a = 1;
+			int half = s.Length / 2;
+			for (int j = 0; j < half; ++j) {
+				if (s[j] != s[j + half]) {
+					a = 0;
+					break;
+				}
 			}
+			ans += a;
 		}
 
-		writeline(n - count);
+		writeline(ans);
 
 	} // end of method
 } // end of class

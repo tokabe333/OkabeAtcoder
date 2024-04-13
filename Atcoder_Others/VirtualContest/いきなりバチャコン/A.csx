@@ -583,26 +583,11 @@ class Kyopuro {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
 
-		long n = readlong();
-
-		long sqrt = (long)Sqrt(n);
-		long count = 0;
-		double log2n = Log2(n);
-		var set = new HashSet<long>();
-		for (long i = 2; i <= sqrt; ++i) {
-			long ii = i * i;
-			if (set.Contains(i)) continue;
-
-			double hoge = log2n / Log2(i) - 1;
-			count += (long)hoge;
-			while (ii <= sqrt) {
-				// count += 1;
-				set.Add(ii);
-				ii *= i;
-			}
-		}
-
-		writeline(n - count);
+		int n = readint();
+		int a = readint();
+		n %= 500;
+		if (n <= a) writeline("Yes");
+		else writeline("No");
 
 	} // end of method
 } // end of class
