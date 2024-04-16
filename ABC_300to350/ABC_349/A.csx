@@ -1,3 +1,4 @@
+
 #pragma warning disable
 
 using System;
@@ -583,14 +584,9 @@ class Kyopuro {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
 
-		// long a = 1l << 10;
-		// long b = a * 3;
-		// writeline(LongToString2bit(b));
-		writeline(IntToString2bit(14));
-		writeline(IntToString2bit(16));
-		writeline(IntToString2bit(18));
-
-		writeline(LongToString2bit(11549270146547711));
+		int n = readint();
+		var arr = readints();
+		writeline(0 - arr.Sum());
 
 	} // end of method
 } // end of class
