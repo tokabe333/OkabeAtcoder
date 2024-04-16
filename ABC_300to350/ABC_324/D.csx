@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Reflection;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -581,64 +580,53 @@ class Kyopuro {
 	} // end of func
 
 
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
+
 		int n = readint();
-		var xyz = new List<(long, long, int)>();
-		long xgiseki = 0;
-		long zgiseki = 0;
-		for (int i = 0; i < n; ++i) {
-			var (x, y, z) = readintt3();
-			if (x > y) {
-				xgiseki += z;
-			} else {
-				xyz.Add((x, y, z));
+		string s = read();
+		long limit = (long)Pow(10, 14);
+
+		var sqs = new List<long>();
+		for (long i = 0; i * i < limit; ++i) {
+			sqs.Add(i * i);
+		}
+
+		// printlist(sqs);
+		// writeline(sqs.Count);
+		int[] snums = new int[10];
+		for (int i = 0; i < s.Length; ++i) {
+			snums[s[i] - '0'] += 1;
+		}
+
+		long ans = 0;
+		foreach (var sq in sqs) {
+			string ss = sq.ToString();
+			if (ss.Length > s.Length) break;
+
+			int[] sqnums = new int[10];
+			for (int i = 0; i < ss.Length; ++i) {
+				sqnums[ss[i] - '0'] += 1;
 			}
-			zgiseki += z;
-		}
 
-		if (xgiseki > zgiseki / 2) {
-			writeline(0);
-			return;
-		}
-
-		int zmax = 100000 + 1;
-		n = xyz.Count;
-		var dp = makearr2<long>(zmax, n + 1, linf);
-		dp[0][0] = 0;
-		for (int j = 0; j < n; ++j) {
-			for (int i = 0; i < zmax; ++i) {
-				if (dp[i][j] == linf) continue;
-				dp[i][j + 1] = Min(dp[i][j + 1], dp[i][j]);
-
-				int nextz = i + xyz[j].Item3;
-				if (nextz >= zmax) continue;
-				long num = dp[i][j] + (xyz[j].Item2 - xyz[j].Item1) / 2 + 1;
-				// if (j == n - 1) writeline($"i:{i} j:{j} dpij:{dp[i][j]} nextz:{nextz} num:{num} min:{Min(dp[nextz][j + 1], num)}");
-				dp[nextz][j + 1] = Min(dp[nextz][j + 1], num);
+			if (ss.Length < s.Length) {
+				if (snums[0] < s.Length - ss.Length) continue;
+				sqnums[0] += s.Length - ss.Length;
 			}
+
+			long flag = 1;
+			for (int i = 0; i < 10; ++i) {
+				if (sqnums[i] != snums[i]) {
+					flag = 0;
+					break;
+				}
+			}
+			// if (flag == 1) {
+			// 	writeline($"sq:{sq}");
+			// }
+			ans += flag;
 		}
 
-		long hituyougiseki = ((zgiseki - xgiseki) - xgiseki) / 2 + 1;
-		// for (int i = 0; i < 100; ++i) {
-		// 	write(i + " ");
-		// 	for (int j = 0; j <= n; ++j) {
-		// 		if (dp[i][j] == linf) write("inf ");
-		// 		else write(dp[i][j] + " ");
-		// 	}
-		// 	writeline();
-		// }
-		// printlist(xyz);
-		// writeline($"zgiseki:{zgiseki} xgiseki:{xgiseki} hituyou:{hituyougiseki}");
-
-		// for (int j = 0; j < n; ++j) {
-		// 	writeline($"xyz:{xyz[j]} y-x/2:{(xyz[j].Item2 - xyz[j].Item1) / 2 + 1}");
-		// }
-
-		long ans = linf;
-		for (int i = (int)hituyougiseki; i < zmax; ++i) {
-			ans = Min(ans, dp[i].Last());
-		}
 		writeline(ans);
 
 	} // end of method
