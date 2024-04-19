@@ -580,7 +580,6 @@ class Kyopuro {
 	} // end of func
 
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
 
 
