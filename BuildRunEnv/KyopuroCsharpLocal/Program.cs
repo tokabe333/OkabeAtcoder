@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Reflection;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -76,6 +77,9 @@ using static Util;
 // using usets = System.Collections.Generic.HashSet<string>;
 #endregion
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f02d382fc3ebfdb513617e8289679ab7adcd3cf0
 
 
 class Util {
@@ -572,6 +576,7 @@ struct Edge {
 	}
 } // end of class
 
+<<<<<<< HEAD
 
 
 /// 通常のセグメント木(範囲検索、1つ更新をlogN)
@@ -1158,6 +1163,8 @@ struct Edge {
 	}
 } // end of class
 
+=======
+>>>>>>> f02d382fc3ebfdb513617e8289679ab7adcd3cf0
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -1167,50 +1174,70 @@ class Kyopuro {
 	} // end of func
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/// 通常のセグメント木(範囲検索、1つ更新をlogN)
 	/// long版、中身の改造は便利
 	public class SegmentTree {
 		/// 一番下の葉の数 (2のべき乗になってるはず)
 		public long LeafNum { get; set; }
+=======
 
-		/// ノード全体の要素数
-		public long Count { get => this.Node.Length; }
+	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Solve() {
+		int n = readint();
+		var xyz = new List<(long, long, int)>();
+		long xgiseki = 0;
+		long zgiseki = 0;
+		for (int i = 0; i < n; ++i) {
+			var (x, y, z) = readintt3();
+			if (x > y) {
+				xgiseki += z;
+			} else {
+				xyz.Add((x, y, z));
+			}
+			zgiseki += z;
+		}
 
-		/// 実際に木を構築するノード
-		public long[] Node { get; set; }
+		if (xgiseki > zgiseki / 2) {
+			writeline(0);
+			return;
+		}
+>>>>>>> f02d382fc3ebfdb513617e8289679ab7adcd3cf0
 
-		/// 作用素 (TとTに対する演算結果Tを返す min, max, sumなど)
-		private Func<long, long, long> Operator;
+		int zmax = 100000 + 1;
+		n = xyz.Count;
+		var dp = makearr2<long>(zmax, n + 1, linf);
+		dp[0][0] = 0;
+		for (int j = 0; j < n; ++j) {
+			for (int i = 0; i < zmax; ++i) {
+				if (dp[i][j] == linf) continue;
+				dp[i][j + 1] = Min(dp[i][j + 1], dp[i][j]);
 
-		/// モノイドの単位元 (オペレーターの演算に影響を及ぼさない)
-		private long Identity;
+				int nextz = i + xyz[j].Item3;
+				if (nextz >= zmax) continue;
+				long num = dp[i][j] + (xyz[j].Item2 - xyz[j].Item1) / 2 + 1;
+				// if (j == n - 1) writeline($"i:{i} j:{j} dpij:{dp[i][j]} nextz:{nextz} num:{num} min:{Min(dp[nextz][j + 1], num)}");
+				dp[nextz][j + 1] = Min(dp[nextz][j + 1], num);
+			}
+		}
 
-		/// 元配列を渡してセグメントツリーの作成
-		/// 初期値はminやmaxなどで変わると思うので与える(デフォルト=0のはず)
-		// public SegmentTree(Func<long, long, long> op, long[] arr, long identity = default(long)) {
-		// 	// 作用素を保存
-		// 	this.Operator = op;
-
-		// 	// 単位元を保存
-		// 	this.Identity = identity;
-
-		// 	// ノード数を　2^⌈log2(N)⌉　にする
-		// 	this.LeafNum = 1;
-		// 	while (this.LeafNum < arr.Length) this.LeafNum <<= 1;
-
-		// 	// 葉の初期化
-		// 	this.Node = new long[this.LeafNum * 2 - 1];
-		// 	for (long i = 0; i < this.Count; ++i) this.Node[i] = this.Identity;
-		// 	for (long i = 0; i < arr.Length; ++i) this.Node[this.LeafNum - 1 + i] = arr[i];
-
-		// 	// 親ノードの値を決めていく
-		// 	for (long i = this.LeafNum - 2; i >= 0; --i) {
-		// 		// 左右と比較
-		// 		this.Node[i] = this.Operator(this.Node[2 * i + 1], this.Node[2 * i + 2]);
+		long hituyougiseki = ((zgiseki - xgiseki) - xgiseki) / 2 + 1;
+		// for (int i = 0; i < 100; ++i) {
+		// 	write(i + " ");
+		// 	for (int j = 0; j <= n; ++j) {
+		// 		if (dp[i][j] == linf) write("inf ");
+		// 		else write(dp[i][j] + " ");
 		// 	}
-		// } // end of constructor
+		// 	writeline();
+		// }
+		// printlist(xyz);
+		// writeline($"zgiseki:{zgiseki} xgiseki:{xgiseki} hituyou:{hituyougiseki}");
 
+		// for (int j = 0; j < n; ++j) {
+		// 	writeline($"xyz:{xyz[j]} y-x/2:{(xyz[j].Item2 - xyz[j].Item1) / 2 + 1}");
+		// }
 
+<<<<<<< HEAD
 		/// [l, r) の区間◯◯値を求める(求まる値はOperatorで指定されてる)
 		public long Query(long l, long r) {
 			return this.Query(l, r, 0, 0, this.LeafNum);
@@ -1328,4 +1355,13 @@ class Kyopuro {
 
 	} // end of method
 >>>>>>> c785d32cdb3f2869ab881fc7299aca569f8b3130
+=======
+		long ans = linf;
+		for (int i = (int)hituyougiseki; i < zmax; ++i) {
+			ans = Min(ans, dp[i].Last());
+		}
+		writeline(ans);
+
+	} // end of method
+>>>>>>> f02d382fc3ebfdb513617e8289679ab7adcd3cf0
 } // end of class
