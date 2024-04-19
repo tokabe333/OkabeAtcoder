@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.InteropServices.Marshalling;
+using System.Net.Http.Headers;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -573,217 +573,33 @@ struct Edge {
 } // end of class
 
 class Kyopuro {
-	static long ans = 0;
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		writeline(ans - 2);
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
-	HashSet<long> col0 = new HashSet<long>();
-	HashSet<long> col1 = new HashSet<long>();
-	long h;
-	long w;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	bool check(long c) {
-		bool f0 = false;
-		bool f1 = false;
-
-		long y = c / w;
-		long x = c % w;
-
-
-
-		long up = 0 < y ? (y - 1) * w + x : -1;
-		long down = y < h - 1 ? (y + 1) * w + x : -1;
-		long left = 0 < x ? y * w + x - 1 : -1;
-		long right = x < w - 1 ? y * w + x + 1 : -1;
-
-		if (col0.Contains(up) || col0.Contains(down) || col0.Contains(left) || col0.Contains(right)) f0 = true;
-		if (col1.Contains(up) || col1.Contains(down) || col1.Contains(left) || col1.Contains(right)) f1 = true;
-
-
-		return f0 && f1;
-	}
-
 	public void Solve() {
 
-		(h, w) = readintt2();
-		var masu = new long[h][];
-		for (int i = 0; i < h; ++i) masu[i] = readlongs();
-
-		var pq0 = new MyPriorityQueue<(long, long)>((a, b) => a.Item1 <= b.Item1);
-		var pq1 = new MyPriorityQueue<(long, long)>((a, b) => a.Item1 <= b.Item1);
-
-
-
-		pq0.Enqueue((masu[0][0], 0));
-		pq1.Enqueue((masu[h - 1][w - 1], (h - 1) * w + w - 1));
-
-		long y, x, c;
-		long up, down, left, right;
-		while (true) {
-			// 0のターン
-			y = -1; x = -1; c = -1;
-			while (pq0.Count > 0) {
-				var (num, yx) = pq0.Dequeue();
-
-				// すでに塗られているとだめ
-				if (col0.Contains(yx) || col1.Contains(yx)) continue;
-
-				y = yx / w;
-				x = yx % w;
-				c = yx;
-				break;
-			}
-			if (c == -1) return;
-
-			// 塗る
-			col0.Add(c);
-			ans += 1l;
-
-			// writeline($"0のターン y:{y} x:{x} masu:{masu[y][x]}");
-			if (check(c)) return;
-
-			up = (y - 1) * w + x;
-			down = (y + 1) * w + x;
-			left = y * w + x - 1;
-			right = y * w + x + 1;
-			if (0 < y) pq0.Enqueue((masu[y - 1][x], up));
-			if (y < h - 1) pq0.Enqueue((masu[y + 1][x], down));
-			if (0 < x) pq0.Enqueue((masu[y][x - 1], left));
-			if (x < w - 1) pq0.Enqueue((masu[y][x + 1], right));
-
-
-
-			// 1のターン
-			y = -1; x = -1; c = -1;
-			while (pq1.Count > 0) {
-				var (num, yx) = pq1.Dequeue();
-
-				// すでに塗られているとだめ
-				if (col0.Contains(yx) || col1.Contains(yx)) continue;
-
-				y = yx / w;
-				x = yx % w;
-				c = yx;
-				break;
-			}
-			if (c == -1) return;
-
-			// 塗る
-			col1.Add(c);
-			ans += 1l;
-
-			// writeline($"1のターン y:{y} x:{x} masu:{masu[y][x]}");
-			if (check(c)) return;
-
-			up = (y - 1) * w + x;
-			down = (y + 1) * w + x;
-			left = y * w + x - 1;
-			right = y * w + x + 1;
-			if (0 < y) pq1.Enqueue((masu[y - 1][x], up));
-			if (y < h - 1) pq1.Enqueue((masu[y + 1][x], down));
-			if (0 < x) pq1.Enqueue((masu[y][x - 1], left));
-			if (x < w - 1) pq1.Enqueue((masu[y][x + 1], right));
-
-
+		var (n, k) = readintt2();
+		var masu = new string[n];
+		for (int i = 0; i < n; ++i) {
+			masu[i] = read();
 		}
+
+		for (int i = 0; i < n; ++i) {
+			for (int ii = 0; ii < k; ++ii) {
+				for (int j = 0; j < n; ++j) {
+					for (int jj = 0; jj < k; ++jj) {
+						write(masu[i][j]);
+					}
+				}
+				writeline();
+			}
+		}
+
 	} // end of method
-} // end of class
-
-
-class MyPriorityQueue<T> {
-	/// 内部で持つヒープ配列
-	public List<T> heap = new List<T>();
-
-	/// 現在の要素数
-	public int Count { get { return heap.Count; } }
-
-	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
-	private Func<T, T, bool> Compare;
-
-	public MyPriorityQueue(Func<T, T, bool> compare) {
-		this.Compare = compare;
-	}  // end of constructor
-
-	/// 新規の値を追加する
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Enqueue(T num) {
-		// 追加する要素のノード番号　
-		int node = this.heap.Count;
-		this.heap.Add(num);
-
-		// 可能な限り親と交換
-		while (node > 0) {
-			// 親ノード
-			int p = (node - 1) / 2;
-
-			// 交換条件を満たさなくなったら終わり
-			if (this.Compare(num, heap[p]) == false) break;
-
-			// 親ノードの値を子に降ろす
-			heap[node] = heap[p];
-			node = p;
-		} // end of while
-
-		// 新規の値を下ろす場所を見つけたので終わり
-		heap[node] = num;
-	} // end of method
-
-	/// 一番優先度の高い値を返す
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public T Peek() => this.heap[0];
-
-	/// 一番優先度の高い値を返して削除する
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public T Dequeue() {
-		// return用の優先度が一番高い値
-		T ret = this.heap[0];
-
-		// 先頭を削除
-		this.Pop();
-
-		return ret;
-	} // end of method
-
-	/// 一番優先度の高い値を削除する
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Pop() {
-		// 根に持ってくる値
-		T last = heap[this.heap.Count - 1];
-
-		// 最後尾を削除 O(1)
-		this.heap.RemoveAt(this.heap.Count - 1);
-
-		// 要素がなくなったら終了
-		if (this.heap.Count == 0) return;
-
-		// 先頭を置き換えて降ろしていく
-		int node = 0;
-		while (node * 2 + 1 < this.heap.Count) {
-			int a = node * 2 + 1;
-			int b = node * 2 + 2;
-
-			// 右の子が存在して、なおかつ優先度が高いならば
-			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
-
-			// 交換条件を満たさなくなったら終わり
-			if (this.Compare(last, this.heap[a])) break;
-
-			// 優先度の高い子を上げる
-			this.heap[node] = this.heap[a];
-			node = a;
-		} // end of while
-
-		// 先頭に持ってきた値の置き場所が決まったので更新
-		this.heap[node] = last;
-	} // end of method
-
 } // end of class

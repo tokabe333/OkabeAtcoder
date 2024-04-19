@@ -573,7 +573,7 @@ struct Edge {
 } // end of class
 
 class Kyopuro {
-	static long ans = 0;
+	static int ans = 0;
 	public static void Main() {
 		// preprocess();
 		var kyopuro = new Kyopuro();
@@ -581,117 +581,114 @@ class Kyopuro {
 		writeline(ans - 2);
 		// finalprocess();
 	} // end of func
-
-	HashSet<long> col0 = new HashSet<long>();
-	HashSet<long> col1 = new HashSet<long>();
-	long h;
-	long w;
+	HashSet<int> colored0 = new HashSet<int>();
+	HashSet<int> colored1 = new HashSet<int>();
+	int h;
+	int w;
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	bool check(long c) {
+	bool check(int c) {
 		bool f0 = false;
 		bool f1 = false;
 
-		long y = c / w;
-		long x = c % w;
+		int y = c / w;
+		int x = c % w;
 
+		int up = (y - 1) * w + x;
+		int down = (y + 1) * w + x;
+		int left = y * w + x - 1;
+		int right = y * w + x + 1;
 
-
-		long up = 0 < y ? (y - 1) * w + x : -1;
-		long down = y < h - 1 ? (y + 1) * w + x : -1;
-		long left = 0 < x ? y * w + x - 1 : -1;
-		long right = x < w - 1 ? y * w + x + 1 : -1;
-
-		if (col0.Contains(up) || col0.Contains(down) || col0.Contains(left) || col0.Contains(right)) f0 = true;
-		if (col1.Contains(up) || col1.Contains(down) || col1.Contains(left) || col1.Contains(right)) f1 = true;
-
-
-		return f0 && f1;
+		if (colored0.Contains(up) || colored0.Contains(down) || colored0.Contains(left) || colored0.Contains(right)) f0 = true;
+		if (colored1.Contains(up) || colored1.Contains(down) || colored1.Contains(left) || colored1.Contains(right)) f1 = true;
+		return f0 & f1;
 	}
 
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
 
 		(h, w) = readintt2();
-		var masu = new long[h][];
-		for (int i = 0; i < h; ++i) masu[i] = readlongs();
+		var masu = new int[h][];
+		for (int i = 0; i < h; ++i) {
+			masu[i] = readints();
+		}
 
-		var pq0 = new MyPriorityQueue<(long, long)>((a, b) => a.Item1 <= b.Item1);
-		var pq1 = new MyPriorityQueue<(long, long)>((a, b) => a.Item1 <= b.Item1);
-
-
+		// 01の隣接, 隣接マスの数値、座標
+		var pq0 = new MyPriorityQueue<(int, int)>((a, b) => a.Item1 <= b.Item1);
+		var pq1 = new MyPriorityQueue<(int, int)>((a, b) => a.Item1 <= b.Item1);
 
 		pq0.Enqueue((masu[0][0], 0));
 		pq1.Enqueue((masu[h - 1][w - 1], (h - 1) * w + w - 1));
 
-		long y, x, c;
-		long up, down, left, right;
+
 		while (true) {
 			// 0のターン
-			y = -1; x = -1; c = -1;
+			int y = -1, x = -1, coord = -1;
 			while (pq0.Count > 0) {
 				var (num, yx) = pq0.Dequeue();
-
-				// すでに塗られているとだめ
-				if (col0.Contains(yx) || col1.Contains(yx)) continue;
+				// すでに塗っているとだめ
+				if (colored0.Contains(yx) || colored1.Contains(yx)) continue;
 
 				y = yx / w;
 				x = yx % w;
-				c = yx;
+				coord = yx;
 				break;
 			}
-			if (c == -1) return;
+			if (coord == -1) return;
 
 			// 塗る
-			col0.Add(c);
-			ans += 1l;
+			colored0.Add(coord);
+			ans += 1;
 
-			// writeline($"0のターン y:{y} x:{x} masu:{masu[y][x]}");
-			if (check(c)) return;
-
-			up = (y - 1) * w + x;
-			down = (y + 1) * w + x;
-			left = y * w + x - 1;
-			right = y * w + x + 1;
+			// 隣接確保, u,d,l,r
+			int up = (y - 1) * w + x;
+			int down = (y + 1) * w + x;
+			int left = y * w + x - 1;
+			int right = y * w + x + 1;
+			if (colored1.Contains(up) || colored1.Contains(down) || colored1.Contains(left) || colored1.Contains(right)) return;
 			if (0 < y) pq0.Enqueue((masu[y - 1][x], up));
 			if (y < h - 1) pq0.Enqueue((masu[y + 1][x], down));
 			if (0 < x) pq0.Enqueue((masu[y][x - 1], left));
 			if (x < w - 1) pq0.Enqueue((masu[y][x + 1], right));
 
 
+			// writeline($"0のターン y:{y} x:{x} masu:{masu[y][x]}");
 
-			// 1のターン
-			y = -1; x = -1; c = -1;
+
+			y = -1; x = -1; coord = -1;
 			while (pq1.Count > 0) {
 				var (num, yx) = pq1.Dequeue();
-
-				// すでに塗られているとだめ
-				if (col0.Contains(yx) || col1.Contains(yx)) continue;
+				// すでに塗っているとだめ
+				if (colored0.Contains(yx) || colored1.Contains(yx)) continue;
 
 				y = yx / w;
 				x = yx % w;
-				c = yx;
+				coord = yx;
 				break;
 			}
-			if (c == -1) return;
+			if (coord == -1) return;
 
 			// 塗る
-			col1.Add(c);
-			ans += 1l;
+			colored1.Add(coord);
+			ans += 1;
 
-			// writeline($"1のターン y:{y} x:{x} masu:{masu[y][x]}");
-			if (check(c)) return;
-
+			// 隣接確保, u,d,l,r
 			up = (y - 1) * w + x;
 			down = (y + 1) * w + x;
 			left = y * w + x - 1;
 			right = y * w + x + 1;
+			if (colored0.Contains(up) || colored0.Contains(down) || colored0.Contains(left) || colored0.Contains(right)) return;
 			if (0 < y) pq1.Enqueue((masu[y - 1][x], up));
 			if (y < h - 1) pq1.Enqueue((masu[y + 1][x], down));
 			if (0 < x) pq1.Enqueue((masu[y][x - 1], left));
 			if (x < w - 1) pq1.Enqueue((masu[y][x + 1], right));
 
 
+			// writeline($"1のターン y:{y} x:{x} masu:{masu[y][x]}");
 		}
+
+
+
 	} // end of method
 } // end of class
 
