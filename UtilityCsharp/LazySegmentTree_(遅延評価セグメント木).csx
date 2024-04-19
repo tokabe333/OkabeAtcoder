@@ -698,8 +698,8 @@ class Kyopuro {
 
 	static readonly long linf = (1l << 31) - 1;
 
-	// モノイドを定義 区間最大値、範囲更新
-	struct op : ILazySegmentTreeOperator<long, long> {
+	// モノイドを定義 区間最小、範囲更新
+	struct op_min : ILazySegmentTreeOperator<long, long> {
 		public long Identity { get => linf; }
 		public long FIdentity { get => linf; }
 		public long Operate(long a, long b) => Min(a, b);
@@ -707,10 +707,19 @@ class Kyopuro {
 		public long Composition(long f, long g) => f;
 	}
 
+	// モノイドを定義 区間合計、範囲加算
+	struct op_sum : ILazySegmentTreeOperator<(long, int), long> {
+		public (long, int) Identity { get => (0l, 0); }
+		public long FIdentity { get => 0l; }
+		public (long, int) Operate((long, int) a, (long, int) b) => (a.Item1 + b.Item1, a.Item2 + b.Item2);
+		public (long, int) Mapping(long f, (long, int) x) => (x.Item1 + x.Item2 * f, x.Item2);
+		public long Composition(long f, long g) => f + g;
+	}
+
 	public void Solve() {
 		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DSL_2_F&lang=ja
 		var (n, q) = readintt2();
-		var segtree = new LazySegmentTree<long, long, op>(makearr(n, linf));
+		var segtree = new LazySegmentTree<long, long, op_min>(makearr(n, linf));
 
 		for (int i = 0; i < q; ++i) {
 			var s = readsplit();

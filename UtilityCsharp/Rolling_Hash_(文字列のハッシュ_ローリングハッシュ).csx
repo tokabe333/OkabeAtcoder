@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 
@@ -150,6 +151,7 @@ class RollingHashLong {
 	} // end of constructor
 
 	/// [l, r]の部分文字列のハッシュ値を計算(乱数の数だけハッシュ生成)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public List<long> CalcHashes(int l, int r) {
 		var list = new List<long>();
 
@@ -163,6 +165,7 @@ class RollingHashLong {
 
 
 	/// [l1, r1]と[l2, r2]の部分文字列のハッシュを複数乱数で比較して、文字列が一致するか確認
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public bool CompareHash(int l1, int r1, int l2, int r2) {
 		var arr = this.CalcHashes(l1, r1);
 		var brr = this.CalcHashes(l2, r2);

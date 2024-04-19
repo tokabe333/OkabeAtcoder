@@ -1,4 +1,6 @@
 
+using System.Runtime.CompilerServices;
+
 /// to → 行先のnode
 /// flow → 辺に流せる流量
 /// reverse → 逆辺の位置
@@ -52,6 +54,7 @@ class MaximumFlow {
 	} // end of constructor
 
 	/// 辺を追加する(1つずつ初期化する)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void AddEdge(int from, int to, long capacity) {
 		// 頂点から出ている現在の要素数
 		int fnum = this.Graph[from].Count;
@@ -65,6 +68,7 @@ class MaximumFlow {
 	/// 深さ優先探索で残余グラフ上のstartからgoalまでの経路を１つ探索
 	/// minFlowは経路上の残余グラフの最小capacity
 	/// 流した流量を返す(流せないなら0)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private long dfs(int node, int goal, long minFlow) {
 		// goalについたら最小流量を返す
 		if (node == goal) return minFlow;

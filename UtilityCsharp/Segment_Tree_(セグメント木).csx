@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 
@@ -52,6 +53,7 @@ public class SegmentTreeGeneric<T> where T : struct, IComparable, IFormattable, 
 	} // end of constructor
 
 	/// index番目の値をvalueにする
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Update(int index, T value) {
 		// 葉の更新
 		index += this.LeafNum - 1;
@@ -66,6 +68,7 @@ public class SegmentTreeGeneric<T> where T : struct, IComparable, IFormattable, 
 	} // end of update
 
 	/// [l, r) の区間◯◯値を求める(求まる値はOperatorで指定されてる)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public T Query(int l, int r) {
 		return this.Query(l, r, 0, 0, this.LeafNum);
 	} // end of method
@@ -73,6 +76,7 @@ public class SegmentTreeGeneric<T> where T : struct, IComparable, IFormattable, 
 	/// [l, r) は求めたい半開区間
 	/// k は現在のノード番号
 	/// [a, b) はkに対応する半開区間
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private T Query(int l, int r, int k, int a, int b) {
 		// 現在の対応ノード区間が求めたい区間に含まれないとき
 		// → 単位元を返す
@@ -140,6 +144,7 @@ public class SegmentTree {
 	} // end of constructor
 
 	/// index番目の値をvalueにする
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Update(int index, long value) {
 		// 葉の更新
 		index += this.LeafNum - 1;
@@ -154,6 +159,7 @@ public class SegmentTree {
 	} // end of update
 
 	/// [l, r) の区間◯◯値を求める(求まる値はOperatorで指定されてる)
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public long Query(int l, int r) {
 		return this.Query(l, r, 0, 0, this.LeafNum);
 	} // end of method
@@ -161,6 +167,7 @@ public class SegmentTree {
 	/// [l, r) は求めたい半開区間
 	/// k は現在のノード番号
 	/// [a, b) はkに対応する半開区間
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private long Query(int l, int r, int k, int a, int b) {
 		// 現在の対応ノード区間が求めたい区間に含まれないとき
 		// → 単位元を返す

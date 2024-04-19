@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.IO;
 using static System.Console;
 using static System.Math;
@@ -29,6 +30,7 @@ class UnionFind {
 	} // end of constructor
 
 	/// ノードiの親を返す
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public int Root(int node) {
 		// 根を見つけたらノード番号を変えす
 		if (this.parents[node] == -1) return node;
@@ -42,6 +44,7 @@ class UnionFind {
 	} // end of method
 
 	/// ノードuとvの属する集合を結合する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Unite(int u, int v) {
 		int ru = this.Root(u);
 		int rv = this.Root(v);

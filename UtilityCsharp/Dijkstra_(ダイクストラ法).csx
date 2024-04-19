@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
@@ -374,7 +375,6 @@ public class Util {
 		System.Console.Out.Flush();
 	} // end of func
 } // end of class
-
 class MyPriorityQueue<T> {
 	/// 内部で持つヒープ配列
 	public List<T> heap = new List<T>();
@@ -390,6 +390,7 @@ class MyPriorityQueue<T> {
 	}  // end of constructor
 
 	/// 新規の値を追加する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Enqueue(T num) {
 		// 追加する要素のノード番号　
 		int node = this.heap.Count;
@@ -413,9 +414,11 @@ class MyPriorityQueue<T> {
 	} // end of method
 
 	/// 一番優先度の高い値を返す
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public T Peek() => this.heap[0];
 
 	/// 一番優先度の高い値を返して削除する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public T Dequeue() {
 		// return用の優先度が一番高い値
 		T ret = this.heap[0];
@@ -427,6 +430,7 @@ class MyPriorityQueue<T> {
 	} // end of method
 
 	/// 一番優先度の高い値を削除する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Pop() {
 		// 根に持ってくる値
 		T last = heap[this.heap.Count - 1];
