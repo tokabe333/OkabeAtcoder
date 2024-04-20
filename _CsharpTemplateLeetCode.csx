@@ -8,8 +8,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Threading;
-using System.Globalization;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -572,51 +570,3 @@ struct Edge {
 		this.cost = cost;
 	}
 } // end of class
-
-
-public class Solution {
-	public int LongestMonotonicSubarray(int[] nums) {
-		int n = nums.Length;
-
-		bool incs(int len) {
-			for (int i = 0; i <= n - len; ++i) {
-				bool f = true;
-				for (int j = i; j < i + len - 1; ++j) {
-					if (nums[j] <= nums[j + 1]) {
-						f = false;
-						break;
-					}
-				}
-				if (f) return true;
-			}
-			return false;
-		}
-
-
-		bool decs(int len) {
-			for (int i = 0; i <= n - len; ++i) {
-				bool f = true;
-				for (int j = i; j < i + len - 1; ++j) {
-					if (nums[j] >= nums[j + 1]) {
-						f = false;
-						break;
-					}
-				}
-				if (f) return true;
-			}
-			return false;
-		}
-
-		int ans = 0;
-		for (int i = 1; i < n; ++i) {
-			if (incs(i) || decs(i)) ans = i;
-		}
-
-		writeline(ans);
-
-		writeline(incs(3));
-		writeline(decs(3));
-
-		return ans;
-	}
-}
