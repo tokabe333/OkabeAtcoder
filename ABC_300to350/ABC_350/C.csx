@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Collections.Immutable;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -571,63 +572,93 @@ struct Edge {
 	}
 } // end of class
 
-/// union by rankと経路圧縮をする
-/// O(a(N)) 
-class UnionFind {
-	/// 親のノード番号
-	public int[] parents;
+class MyPriorityQueue<T> {
+	/// 内部で持つヒープ配列
+	public List<T> heap = new List<T>();
 
-	/// 属する集合の要素数　
-	public int[] sizes;
+	/// 現在の要素数
+	public int Count { get { return heap.Count; } }
 
-	/// ノード数NのUnionFindを作成
-	public UnionFind(int n) {
-		this.parents = new int[n];
-		this.sizes = new int[n];
-		for (int i = 0; i < n; ++i) {
-			// 初期状態では親を持たない
-			this.parents[i] = -1;
-			// 集合サイズは1
-			this.sizes[i] = 1;
-		}
-	} // end of constructor
+	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
+	private Func<T, T, bool> Compare;
 
-	/// ノードiの親を返す
+	public MyPriorityQueue(Func<T, T, bool> compare) {
+		this.Compare = compare;
+	}  // end of constructor
+
+	/// 新規の値を追加する
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int Root(int node) {
-		// 根を見つけたらノード番号を変えす
-		if (this.parents[node] == -1) return node;
+	public void Enqueue(T num) {
+		// 追加する要素のノード番号　
+		int node = this.heap.Count;
+		this.heap.Add(num);
 
-		// 根までの経路を全て根に直接つなぐ
-		else {
-			int parent = this.Root(this.parents[node]);
-			this.parents[node] = parent;
-			return parent;
-		}
+		// 可能な限り親と交換
+		while (node > 0) {
+			// 親ノード
+			int p = (node - 1) / 2;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(num, heap[p]) == false) break;
+
+			// 親ノードの値を子に降ろす
+			heap[node] = heap[p];
+			node = p;
+		} // end of while
+
+		// 新規の値を下ろす場所を見つけたので終わり
+		heap[node] = num;
 	} // end of method
 
-	/// ノードuとvの属する集合を結合する
+	/// 一番優先度の高い値を返す
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Unite(int u, int v) {
-		int ru = this.Root(u);
-		int rv = this.Root(v);
-		if (ru == rv) return;
-		// 大きい集合の根に結合(union by rank)
-		// 高さが高々log2になる
-		if (ru > rv) {
-			int tmp = ru;
-			ru = rv;
-			rv = tmp;
-		}
-		this.parents[ru] = rv;
-		this.sizes[rv] = this.sizes[ru] + this.sizes[rv];
-		this.sizes[ru] = this.sizes[rv];
+	public T Peek() => this.heap[0];
+
+	/// 一番優先度の高い値を返して削除する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T Dequeue() {
+		// return用の優先度が一番高い値
+		T ret = this.heap[0];
+
+		// 先頭を削除
+		this.Pop();
+
+		return ret;
 	} // end of method
 
-	/// ノードuとvが同じ集合に属しているか
-	public bool Connected(int u, int v) {
-		return this.Root(u) == this.Root(v);
+	/// 一番優先度の高い値を削除する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Pop() {
+		// 根に持ってくる値
+		T last = heap[this.heap.Count - 1];
+
+		// 最後尾を削除 O(1)
+		this.heap.RemoveAt(this.heap.Count - 1);
+
+		// 要素がなくなったら終了
+		if (this.heap.Count == 0) return;
+
+		// 先頭を置き換えて降ろしていく
+		int node = 0;
+		while (node * 2 + 1 < this.heap.Count) {
+			int a = node * 2 + 1;
+			int b = node * 2 + 2;
+
+			// 右の子が存在して、なおかつ優先度が高いならば
+			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(last, this.heap[a])) break;
+
+			// 優先度の高い子を上げる
+			this.heap[node] = this.heap[a];
+			node = a;
+		} // end of while
+
+		// 先頭に持ってきた値の置き場所が決まったので更新
+		this.heap[node] = last;
 	} // end of method
+
 } // end of class
 
 class Kyopuro {
@@ -640,47 +671,51 @@ class Kyopuro {
 
 
 	public void Solve() {
-		var (n, m) = readintt2();
 
-		var graph = makelist2(n, 0, 0);
-		for (int i = 0; i < m; ++i) {
-			var (a, b) = readintt2();
-			--a; --b;
-			graph[a].Add(b);
-			graph[b].Add(a);
-		}
+		int n = readint();
+		var arr = readints().Select(x => x - 1).ToArray();
 
-		var flag = makearr(n, false);
-		// node数,edge数
-		var list = new List<(long, long)>();
+		// var dict = new Dictionary<int, int>();
+		// for (int i = 0; i < n; ++i) {
+		// 	dict[arr[i]] = i;
+		// }
+		var dict = new int[n];
 		for (int i = 0; i < n; ++i) {
-			if (flag[i]) continue;
+			dict[arr[i]] = i;
+		}
 
-			var que = new Queue<int>();
-			que.Enqueue(i);
-			long nodes = 0;
-			long edges = 0;
-			while (que.Count > 0) {
-				int node = que.Dequeue();
-				if (flag[node]) continue;
-				flag[node] = true;
-				nodes += 1;
-				edges += graph[node].Count;
-				foreach (var g in graph[node]) {
-					que.Enqueue(g);
-				}
+
+		// printlist(numtoind);
+		var list = new List<(int, int)>();
+		for (int i = 0; i < n - 1; ++i) {
+			int ai = dict[i];
+			// printlist(dict);
+			// writeline($"ai:{ai} i:{i}");
+			// writeline();
+			if (ai == i) continue;
+
+			list.Add((ai + 1, i + 1));
+			int tmp = dict[i];
+			dict[i] = dict[arr[i]];
+			dict[arr[i]] = tmp;
+
+			tmp = arr[i];
+			arr[i] = arr[ai];
+			arr[ai] = tmp;
+
+			// printlist(dict);
+
+		}
+
+
+		writeline(list.Count);
+		foreach (var l in list) {
+			if (l.Item1 <= l.Item2) {
+				writeline($"{l.Item1} {l.Item2}");
+			} else {
+				writeline($"{l.Item2} {l.Item1}");
 			}
-			list.Add((nodes, edges / 2));
 		}
-
-
-		long ans = 0;
-		foreach (var (ns, es) in list) {
-			long all = ns * (ns - 1l) / 2l;
-			ans += all - es;
-		}
-
-		writeline(ans);
 
 	} // end of method
 } // end of class

@@ -571,65 +571,6 @@ struct Edge {
 	}
 } // end of class
 
-/// union by rankと経路圧縮をする
-/// O(a(N)) 
-class UnionFind {
-	/// 親のノード番号
-	public int[] parents;
-
-	/// 属する集合の要素数　
-	public int[] sizes;
-
-	/// ノード数NのUnionFindを作成
-	public UnionFind(int n) {
-		this.parents = new int[n];
-		this.sizes = new int[n];
-		for (int i = 0; i < n; ++i) {
-			// 初期状態では親を持たない
-			this.parents[i] = -1;
-			// 集合サイズは1
-			this.sizes[i] = 1;
-		}
-	} // end of constructor
-
-	/// ノードiの親を返す
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int Root(int node) {
-		// 根を見つけたらノード番号を変えす
-		if (this.parents[node] == -1) return node;
-
-		// 根までの経路を全て根に直接つなぐ
-		else {
-			int parent = this.Root(this.parents[node]);
-			this.parents[node] = parent;
-			return parent;
-		}
-	} // end of method
-
-	/// ノードuとvの属する集合を結合する
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Unite(int u, int v) {
-		int ru = this.Root(u);
-		int rv = this.Root(v);
-		if (ru == rv) return;
-		// 大きい集合の根に結合(union by rank)
-		// 高さが高々log2になる
-		if (ru > rv) {
-			int tmp = ru;
-			ru = rv;
-			rv = tmp;
-		}
-		this.parents[ru] = rv;
-		this.sizes[rv] = this.sizes[ru] + this.sizes[rv];
-		this.sizes[ru] = this.sizes[rv];
-	} // end of method
-
-	/// ノードuとvが同じ集合に属しているか
-	public bool Connected(int u, int v) {
-		return this.Root(u) == this.Root(v);
-	} // end of method
-} // end of class
-
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -640,47 +581,17 @@ class Kyopuro {
 
 
 	public void Solve() {
-		var (n, m) = readintt2();
+		var (n, q) = readintt2();
+		var arr = readints().Select(x => x - 1).ToArray();
 
-		var graph = makelist2(n, 0, 0);
-		for (int i = 0; i < m; ++i) {
-			var (a, b) = readintt2();
-			--a; --b;
-			graph[a].Add(b);
-			graph[b].Add(a);
+		var te = makearr(n, 1);
+		foreach (var a in arr) {
+			te[a] = te[a] == 1 ? 0 : 1;
 		}
 
-		var flag = makearr(n, false);
-		// node数,edge数
-		var list = new List<(long, long)>();
-		for (int i = 0; i < n; ++i) {
-			if (flag[i]) continue;
-
-			var que = new Queue<int>();
-			que.Enqueue(i);
-			long nodes = 0;
-			long edges = 0;
-			while (que.Count > 0) {
-				int node = que.Dequeue();
-				if (flag[node]) continue;
-				flag[node] = true;
-				nodes += 1;
-				edges += graph[node].Count;
-				foreach (var g in graph[node]) {
-					que.Enqueue(g);
-				}
-			}
-			list.Add((nodes, edges / 2));
-		}
+		writeline(te.Sum());
 
 
-		long ans = 0;
-		foreach (var (ns, es) in list) {
-			long all = ns * (ns - 1l) / 2l;
-			ans += all - es;
-		}
-
-		writeline(ans);
 
 	} // end of method
 } // end of class

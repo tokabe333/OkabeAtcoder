@@ -571,65 +571,6 @@ struct Edge {
 	}
 } // end of class
 
-/// union by rankと経路圧縮をする
-/// O(a(N)) 
-class UnionFind {
-	/// 親のノード番号
-	public int[] parents;
-
-	/// 属する集合の要素数　
-	public int[] sizes;
-
-	/// ノード数NのUnionFindを作成
-	public UnionFind(int n) {
-		this.parents = new int[n];
-		this.sizes = new int[n];
-		for (int i = 0; i < n; ++i) {
-			// 初期状態では親を持たない
-			this.parents[i] = -1;
-			// 集合サイズは1
-			this.sizes[i] = 1;
-		}
-	} // end of constructor
-
-	/// ノードiの親を返す
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int Root(int node) {
-		// 根を見つけたらノード番号を変えす
-		if (this.parents[node] == -1) return node;
-
-		// 根までの経路を全て根に直接つなぐ
-		else {
-			int parent = this.Root(this.parents[node]);
-			this.parents[node] = parent;
-			return parent;
-		}
-	} // end of method
-
-	/// ノードuとvの属する集合を結合する
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Unite(int u, int v) {
-		int ru = this.Root(u);
-		int rv = this.Root(v);
-		if (ru == rv) return;
-		// 大きい集合の根に結合(union by rank)
-		// 高さが高々log2になる
-		if (ru > rv) {
-			int tmp = ru;
-			ru = rv;
-			rv = tmp;
-		}
-		this.parents[ru] = rv;
-		this.sizes[rv] = this.sizes[ru] + this.sizes[rv];
-		this.sizes[ru] = this.sizes[rv];
-	} // end of method
-
-	/// ノードuとvが同じ集合に属しているか
-	public bool Connected(int u, int v) {
-		return this.Root(u) == this.Root(v);
-	} // end of method
-} // end of class
-
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -643,42 +584,60 @@ class Kyopuro {
 		var (n, m) = readintt2();
 
 		var graph = makelist2(n, 0, 0);
+		var setgraph = new HashSet<int>[n];
+		for (int i = 0; i < n; ++i) { setgraph[i] = new HashSet<int>(); }
 		for (int i = 0; i < m; ++i) {
 			var (a, b) = readintt2();
 			--a; --b;
 			graph[a].Add(b);
 			graph[b].Add(a);
-		}
-
-		var flag = makearr(n, false);
-		// node数,edge数
-		var list = new List<(long, long)>();
-		for (int i = 0; i < n; ++i) {
-			if (flag[i]) continue;
-
-			var que = new Queue<int>();
-			que.Enqueue(i);
-			long nodes = 0;
-			long edges = 0;
-			while (que.Count > 0) {
-				int node = que.Dequeue();
-				if (flag[node]) continue;
-				flag[node] = true;
-				nodes += 1;
-				edges += graph[node].Count;
-				foreach (var g in graph[node]) {
-					que.Enqueue(g);
-				}
-			}
-			list.Add((nodes, edges / 2));
+			setgraph[a].Add(b);
+			setgraph[b].Add(a);
 		}
 
 
 		long ans = 0;
-		foreach (var (ns, es) in list) {
-			long all = ns * (ns - 1l) / 2l;
-			ans += all - es;
+		for (int i = 0; i < n; ++i) {
+			var set = new HashSet<int>();
+			for (int j = 0; j < graph[i].Count; ++j) {
+				for (int k = 0; k < graph[graph[i][j]].Count; ++k) {
+					if (setgraph[i].Contains(graph[graph[i][j]][k]) == true) continue;
+					if (graph[graph[i][j]][k] == i) continue;
+					set.Add(graph[graph[i][j]][k]);
+				}
+			}
+			// write("i:" + (i + 1) + " count:" + set.Count + "  ");
+			// foreach (var s in set) write((s + 1) + " ");
+			// writeline();
+			ans += set.Count;
+			foreach (var s in set) {
+				foreach (var g in graph[i]) {
+					if (graph[s].Contains(g) == false) ans += 1;
+				}
+			}
+			foreach (var s in set) {
+				graph[i].Add(s);
+				graph[s].Add(i);
+				setgraph[i].Add(s);
+				setgraph[s].Add(i);
+			}
 		}
+		// long ans = 0l;
+		// for (int i = 0; i < n; ++i) {
+		// 	var set = new HashSet<int>();
+		// 	foreach (var one in setgraph[i]) {
+		// 		foreach (var two in setgraph[one]) {
+		// 			if (setgraph[i].Contains(two)) continue;
+		// 			if (i == two) continue;
+		// 			set.Add(two);
+		// 		}
+		// 	}
+		// 	write("i:" + (i + 1) + " count:" + set.Count + "  ");
+		// 	foreach (var s in set) write((s + 1) + " ");
+		// 	writeline();
+		// 	ans += set.Count;
+		// 	foreach(var )
+		// }
 
 		writeline(ans);
 
