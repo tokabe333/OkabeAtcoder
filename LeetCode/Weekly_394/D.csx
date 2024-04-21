@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -693,7 +692,8 @@ public class Solution {
 				// 更新余地がない場合は次
 				if (distance[next.node] < cost + next.cost) continue;
 				distance[next.node] = cost + next.cost;
-				pq.Enqueue(new Edge(cost + next.cost, next.node));
+				// if (next.edge_no != -1) this.ans[next.edge_no] = true;
+				pq.Enqueue(new Edge(cost + next.cost, next.node, -1));
 			}
 		} // end of while
 
@@ -703,8 +703,7 @@ public class Solution {
 
 
 	public bool[] FindAnswer(int n, int[][] edges) {
-		this.ans = new bool[n];
-		for (int i = 0; i < n; ++i) this.ans[i] = false;
+		this.ans = new bool[edges.Length];
 
 		var graph = makelist2(n, 0, default(Edge));
 		for (int i = 0; i < edges.Length; ++i) {
@@ -714,6 +713,20 @@ public class Solution {
 			graph[a].Add(new Edge(w, b, i));
 			graph[b].Add(new Edge(w, a, i));
 		}
+
+		var dist = this.Dijkstra(graph, 0);
+		for (int i = 0; i < n; ++i) this.ans[i] = false;
+		for (int i = 0; i < edges.Length; ++i) {
+			int a = edges[i][0];
+			int b = edges[i][1];
+			int w = edges[i][2];
+			if (Abs(dist[a] - dist[b]) == w) {
+				this.ans[i] = true;
+				writeline($"a:{a} b:{b} w:{w}");
+			}
+		}
+		printlist(dist);
+		printlist(ans);
 
 		return new bool[3];
 	}
