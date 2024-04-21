@@ -608,7 +608,7 @@ public class Solution {
 		}
 
 		int ans = 0;
-		for (int i = 1; i < n; ++i) {
+		for (int i = 1; i <= n; ++i) {
 			if (incs(i) || decs(i)) ans = i;
 		}
 
