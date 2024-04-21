@@ -8,8 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Threading;
-using System.Globalization;
+using System.Runtime.InteropServices.Marshalling;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -573,49 +572,53 @@ struct Edge {
 	}
 } // end of class
 
-
 public class Solution {
-	public int LongestMonotonicSubarray(int[] nums) {
-		int n = nums.Length;
+	// public static void Main() {
+	// 	var hoge = new int[3][];
+	// 	hoge[0] = new int[1] { 1 };
+	// 	hoge[1] = new int[1] { 2 };
+	// 	hoge[2] = new int[1] { 3 };
+	// 	var s = new Solution();
+	// 	s.MinimumOperations(hoge);
+	// }
 
-		bool incs(int len) {
-			for (int i = 0; i <= n - len; ++i) {
-				bool f = true;
-				for (int j = i; j < i + len - 1; ++j) {
-					if (nums[j] <= nums[j + 1]) {
-						f = false;
-						break;
-					}
-				}
-				if (f) return true;
+
+	public int MinimumOperations(int[][] masu) {
+		int h = masu.Length;
+		int w = masu[0].Length;
+
+		var kosu = makearr2(10, w, 0);
+		// 各列の個数
+		for (int j = 0; j < w; ++j) {
+			for (int i = 0; i < h; ++i) {
+				kosu[masu[i][j]][j] += 1;
 			}
-			return false;
 		}
 
+		var dp = makearr2(10, w + 1, 100000);
+		for (int i = 0; i < 10; ++i) dp[i][0] = 0;
 
-		bool decs(int len) {
-			for (int i = 0; i <= n - len; ++i) {
-				bool f = true;
-				for (int j = i; j < i + len - 1; ++j) {
-					if (nums[j] >= nums[j + 1]) {
-						f = false;
-						break;
-					}
+		for (int j = 0; j < w; ++j) {
+			for (int i = 0; i < 10; ++i) {
+
+				for (int k = 0; k < 10; ++k) {
+					// iからkへの移動
+					if (i == k) continue;
+					int diff = h - kosu[k][j];
+					dp[k][j + 1] = Min(dp[i][j] + diff, dp[k][j + 1]);
+					// dp[j + 1][k] = Min(dp[j][i] + diff, dp[j + 1][k]);
 				}
-				if (f) return true;
+
 			}
-			return false;
 		}
 
-		int ans = 0;
-		for (int i = 1; i < n; ++i) {
-			if (incs(i) || decs(i)) ans = i;
+		// printlist2(kosu);
+		// printlist2(dp);
+		int ans = iinf;
+		for (int i = 0; i < 10; ++i) {
+			ans = Min(ans, dp[i].Last());
 		}
 
-		writeline(ans);
-
-		writeline(incs(3));
-		writeline(decs(3));
 
 		return ans;
 	}

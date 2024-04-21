@@ -84,7 +84,7 @@ class Util {
 	public static long m998 = 998244353;
 	public static int a10_9 = 1000000000;
 	public static long a10_18 = 1000000000000000000;
-	public static int iinf = 1 << 31;
+	public static int iinf = 1 << 30;
 	public static long linf = (1l << 61) - (1l << 31);
 
 	/// <summary>1行読みこみ</summary>
@@ -573,13 +573,14 @@ struct Edge {
 } // end of class
 
 public class Solution {
-	public static void Main() {
-		var hoge = makearr2(2, 3, 0);
-		hoge[0] = new int[3] { 1, 0, 2 };
-		hoge[1] = new int[3] { 1, 0, 2 };
-		var s = new Solution();
-		s.MinimumOperations(hoge);
-	}
+	// public static void Main() {
+	// 	var hoge = new int[3][];
+	// 	hoge[0] = new int[1] { 1 };
+	// 	hoge[1] = new int[1] { 2 };
+	// 	hoge[2] = new int[1] { 3 };
+	// 	var s = new Solution();
+	// 	s.MinimumOperations(hoge);
+	// }
 
 
 	public int MinimumOperations(int[][] masu) {
@@ -590,11 +591,9 @@ public class Solution {
 		// 各列の個数
 		for (int j = 0; j < w; ++j) {
 			for (int i = 0; i < h; ++i) {
-				kosu[j][masu[i][j]] += 1;
+				kosu[masu[i][j]][j] += 1;
 			}
 		}
-
-		printlist2(kosu);
 
 		var dp = makearr2(10, w + 1, iinf);
 		for (int i = 0; i < 10; ++i) dp[i][0] = 0;
@@ -605,7 +604,7 @@ public class Solution {
 				for (int k = 0; k < 10; ++k) {
 					// iからkへの移動
 					if (i == k) continue;
-					int diff = h - kosu[j][k];
+					int diff = h - kosu[k][j];
 					dp[k][j + 1] = Min(dp[i][j] + diff, dp[k][j + 1]);
 					// dp[j + 1][k] = Min(dp[j][i] + diff, dp[j + 1][k]);
 				}
@@ -613,9 +612,14 @@ public class Solution {
 			}
 		}
 
-		printlist2(dp);
+		// printlist2(kosu);
+		// printlist2(dp);
+		int ans = iinf;
+		for (int i = 0; i < 10; ++i) {
+			ans = Min(ans, dp[i].Last());
+		}
 
 
-		return 9;
+		return ans;
 	}
 }

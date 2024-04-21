@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.InteropServices.Marshalling;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -573,49 +572,24 @@ struct Edge {
 } // end of class
 
 public class Solution {
-	public static void Main() {
-		var hoge = makearr2(2, 3, 0);
-		hoge[0] = new int[3] { 1, 0, 2 };
-		hoge[1] = new int[3] { 1, 0, 2 };
-		var s = new Solution();
-		s.MinimumOperations(hoge);
-	}
+	public int NumberOfSpecialChars(string word) {
+		string s = word;
+		int n = s.Length;
 
-
-	public int MinimumOperations(int[][] masu) {
-		int h = masu.Length;
-		int w = masu[0].Length;
-
-		var kosu = makearr2(10, w, 0);
-		// 各列の個数
-		for (int j = 0; j < w; ++j) {
-			for (int i = 0; i < h; ++i) {
-				kosu[j][masu[i][j]] += 1;
+		var arr = new int[26];
+		for (int i = 0; i < n; ++i) {
+			if ('a' <= s[i] && s[i] <= 'z') {
+				arr[s[i] - 'a'] |= 1;
+			} else {
+				arr[s[i] - 'A'] |= 2;
 			}
 		}
 
-		printlist2(kosu);
-
-		var dp = makearr2(10, w + 1, iinf);
-		for (int i = 0; i < 10; ++i) dp[i][0] = 0;
-
-		for (int j = 0; j < w; ++j) {
-			for (int i = 0; i < 10; ++i) {
-
-				for (int k = 0; k < 10; ++k) {
-					// iからkへの移動
-					if (i == k) continue;
-					int diff = h - kosu[j][k];
-					dp[k][j + 1] = Min(dp[i][j] + diff, dp[k][j + 1]);
-					// dp[j + 1][k] = Min(dp[j][i] + diff, dp[j + 1][k]);
-				}
-
-			}
+		int ans = 0;
+		for (int i = 0; i < arr.Length; ++i) {
+			if (arr[i] == 3) ans += 1;
 		}
 
-		printlist2(dp);
-
-
-		return 9;
+		return ans;
 	}
 }

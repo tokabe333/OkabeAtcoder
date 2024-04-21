@@ -375,6 +375,8 @@ public class Util {
 		System.Console.Out.Flush();
 	} // end of func
 } // end of class
+
+
 class MyPriorityQueue<T> {
 	/// 内部で持つヒープ配列
 	public List<T> heap = new List<T>();

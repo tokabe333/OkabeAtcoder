@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Runtime.InteropServices.Marshalling;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -561,61 +561,160 @@ struct YX {
 } // end of class
 
 /// グラフをするときに(値型だけど16byteまではstructが速い)
-struct Edge {
-	public int from;
-	public int to;
+
+/// ノードをつなぐ距離と行き先
+public class Edge {
 	public long cost;
-	public Edge(int from, int to, long cost) {
-		this.from = from;
-		this.to = to;
-		this.cost = cost;
-	}
+	public int node;
+	public int edge_no;
+	public Edge(long c = 0, int n = 0, int no = 0) { this.cost = c; this.node = n; this.edge_no = no; }
+} // end of class
+
+public class MyPriorityQueue<T> {
+	/// 内部で持つヒープ配列
+	public List<T> heap = new List<T>();
+
+	/// 現在の要素数
+	public int Count { get { return heap.Count; } }
+
+	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
+	private Func<T, T, bool> Compare;
+
+	public MyPriorityQueue(Func<T, T, bool> compare) {
+		this.Compare = compare;
+	}  // end of constructor
+
+	/// 新規の値を追加する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Enqueue(T num) {
+		// 追加する要素のノード番号　
+		int node = this.heap.Count;
+		this.heap.Add(num);
+
+		// 可能な限り親と交換
+		while (node > 0) {
+			// 親ノード
+			int p = (node - 1) / 2;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(num, heap[p]) == false) break;
+
+			// 親ノードの値を子に降ろす
+			heap[node] = heap[p];
+			node = p;
+		} // end of while
+
+		// 新規の値を下ろす場所を見つけたので終わり
+		heap[node] = num;
+	} // end of method
+
+	/// 一番優先度の高い値を返す
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T Peek() => this.heap[0];
+
+	/// 一番優先度の高い値を返して削除する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T Dequeue() {
+		// return用の優先度が一番高い値
+		T ret = this.heap[0];
+
+		// 先頭を削除
+		this.Pop();
+
+		return ret;
+	} // end of method
+
+	/// 一番優先度の高い値を削除する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Pop() {
+		// 根に持ってくる値
+		T last = heap[this.heap.Count - 1];
+
+		// 最後尾を削除 O(1)
+		this.heap.RemoveAt(this.heap.Count - 1);
+
+		// 要素がなくなったら終了
+		if (this.heap.Count == 0) return;
+
+		// 先頭を置き換えて降ろしていく
+		int node = 0;
+		while (node * 2 + 1 < this.heap.Count) {
+			int a = node * 2 + 1;
+			int b = node * 2 + 2;
+
+			// 右の子が存在して、なおかつ優先度が高いならば
+			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(last, this.heap[a])) break;
+
+			// 優先度の高い子を上げる
+			this.heap[node] = this.heap[a];
+			node = a;
+		} // end of while
+
+		// 先頭に持ってきた値の置き場所が決まったので更新
+		this.heap[node] = last;
+	} // end of method
+
 } // end of class
 
 public class Solution {
-	public static void Main() {
-		var hoge = makearr2(2, 3, 0);
-		hoge[0] = new int[3] { 1, 0, 2 };
-		hoge[1] = new int[3] { 1, 0, 2 };
-		var s = new Solution();
-		s.MinimumOperations(hoge);
-	}
+	bool[] ans;
+
+	public List<long> Dijkstra(List<List<Edge>> graph, int start) {
+		// 変数用意
+		int n = graph.Count;
+
+		// 最大値
+		long inf = System.Int64.MaxValue;
+
+		// <node, cost> cost降順
+		// var pq = new PriorityQueue<int, long>(new ComparerAsc());
+		var pq = new MyPriorityQueue<Edge>((a, b) => a.cost < b.cost);
+
+		// 確定した距離を保持
+		var distance = new List<long>(makearr<long>(n, inf));
+		distance[start] = 0;
+		pq.Enqueue(new Edge(0, start, -1));
+		while (pq.Count > 0) {
+			var edge = pq.Dequeue();
+			int node = edge.node;
+			long cost = edge.cost;
+			int no = edge.edge_no;
+			// pq.TryDequeue(out node, out cost);
 
 
-	public int MinimumOperations(int[][] masu) {
-		int h = masu.Length;
-		int w = masu[0].Length;
+			// すでに確定した距離以上なら更新余地は無い
+			if (distance[node] < cost) continue;
 
-		var kosu = makearr2(10, w, 0);
-		// 各列の個数
-		for (int j = 0; j < w; ++j) {
-			for (int i = 0; i < h; ++i) {
-				kosu[j][masu[i][j]] += 1;
+			// 各種距離を追加
+			foreach (var next in graph[node]) {
+				// 更新余地がない場合は次
+				if (distance[next.node] < cost + next.cost) continue;
+				distance[next.node] = cost + next.cost;
+				pq.Enqueue(new Edge(cost + next.cost, next.node));
 			}
+		} // end of while
+
+		return distance;
+	} // end of method
+
+
+
+	public bool[] FindAnswer(int n, int[][] edges) {
+		this.ans = new bool[n];
+		for (int i = 0; i < n; ++i) this.ans[i] = false;
+
+		var graph = makelist2(n, 0, default(Edge));
+		for (int i = 0; i < edges.Length; ++i) {
+			int a = edges[i][0];
+			int b = edges[i][1];
+			int w = edges[i][2];
+			graph[a].Add(new Edge(w, b, i));
+			graph[b].Add(new Edge(w, a, i));
 		}
 
-		printlist2(kosu);
-
-		var dp = makearr2(10, w + 1, iinf);
-		for (int i = 0; i < 10; ++i) dp[i][0] = 0;
-
-		for (int j = 0; j < w; ++j) {
-			for (int i = 0; i < 10; ++i) {
-
-				for (int k = 0; k < 10; ++k) {
-					// iからkへの移動
-					if (i == k) continue;
-					int diff = h - kosu[j][k];
-					dp[k][j + 1] = Min(dp[i][j] + diff, dp[k][j + 1]);
-					// dp[j + 1][k] = Min(dp[j][i] + diff, dp[j + 1][k]);
-				}
-
-			}
-		}
-
-		printlist2(dp);
-
-
-		return 9;
+		return new bool[3];
 	}
 }
