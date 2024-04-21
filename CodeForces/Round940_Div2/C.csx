@@ -586,7 +586,18 @@ class Kyopuro {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
+		var nk = readints();
+		int n = nk[0];
+		int k = nk[1];
 
+		for (int i = 0; i < k; ++i) {
+			var rc = readints();
+			if (rc[0] == rc[1]) n -= 1;
+			else n -= 2;
+		}
+
+		// 斜めを使わずに埋める方法
+		var memo = new long[n];
 
 
 	} // end of method

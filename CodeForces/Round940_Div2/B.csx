@@ -586,7 +586,33 @@ class Kyopuro {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void Solve() {
+		long[] nk = readlongs();
+		int n = (int)nk[0];
+		long k = nk[1];
 
+		if (n == 1) {
+			writeline(k);
+			return;
+		}
+
+		string bits = LongToString2bit(k);
+		// writeline(bits);
+		int zeronum = 0;
+		int onenum = 0;
+		for (int i = 0; i < bits.Length; ++i) {
+			if (bits[i] == '0') zeronum += 1;
+			else onenum += 1;
+		}
+		if (zeronum <= 1) {
+			write(k + " ");
+			for (int i = 0; i < n - 1; ++i) write("0 ");
+		} else {
+			long first = (long)Pow(2, (int)(Log2(k))) - 1;
+			long second = k - first;
+			write(first + " " + second + " ");
+			for (int i = 0; i < n - 2; ++i) write("0 ");
+		}
+		writeline();
 
 
 	} // end of method
