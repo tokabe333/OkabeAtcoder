@@ -595,36 +595,25 @@ class Kyopuro {
 			if (rc[0] == rc[1]) n -= 1;
 			else n -= 2;
 		}
-
-		var memo = new Dictionary<int, long>();
-		memo[0] = 0;
-		memo[1] = 1;
-		memo[2] = 3;
-
-		long dfs(int size) {
-			if (memo.ContainsKey(size)) return memo[size];
-			long ans = 0;
-			// 階段の合計
-			long kaidan = (1l + size) * size / 2l;
-
-			// 斜めの成分
-			long nanamenum = size;
-			long sonotanum = kaidan - size;
-
-			// メモ化再起
-			long naname = dfs(size - 1);
-			long sonota = dfs(size - 2);
-
-			ans = nanamenum * naname + sonota * sonotanum;
-			ans %= m107;
-
-
-			if (memo.ContainsKey(size) == false) memo[size] = ans;
-			writeline($"size:{size} ans:{ans}");
-			return ans;
+		if (n <= 0) {
+			writeline(1);
+			return;
 		}
 
-		writeline(dfs(n));
+		var dp = new long[n + 1];
+		dp[0] = 1;
+		dp[1] = 1;
+		if (n <= 1) {
+			writeline(dp[n]);
+			return;
+		}
+
+		for (int i = 2; i <= n; ++i) {
+			dp[i] = (dp[i - 1] + 2 * (i - 1) * dp[i - 2]) % m107;
+		}
+
+		writeline(dp.Last());
+
 
 	} // end of method
 } // end of class

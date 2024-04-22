@@ -595,9 +595,24 @@ class Kyopuro {
 			if (rc[0] == rc[1]) n -= 1;
 			else n -= 2;
 		}
+		if (n <= 0) {
+			writeline(1);
+			return;
+		}
 
-		// 斜めを使わずに埋める方法
-		var memo = new long[n];
+		var dp = new long[n + 1];
+		dp[0] = 1;
+		dp[1] = 1;
+		if (n <= 1) {
+			writeline(dp[n]);
+			return;
+		}
+
+		for (int i = 2; i <= n; ++i) {
+			dp[i] = (dp[i - 1] + 2 * (i - 1) * dp[i - 2]) % m107;
+		}
+
+		writeline(dp.Last());
 
 
 	} // end of method
