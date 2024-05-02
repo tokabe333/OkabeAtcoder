@@ -637,7 +637,7 @@ class Kyopuro {
 			}
 		}
 
-		printlist(ans);
+		// printlist(ans);
 		print(ans.Max());
 
 	} // end of method

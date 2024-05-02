@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Data;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -583,62 +582,7 @@ class Kyopuro {
 
 	public void Solve() {
 
-		var (h, w) = readintt2();
-		var masu = new string[h];
-		for (int i = 0; i < h; ++i) masu[i] = read();
 
-		var ans = new List<int>(new int[1] { 0 });
-		var flag = makearr2(h, w, false);
-
-		const char c = '#';
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		bool check(int y, int x) {
-			if (0 < y && masu[y - 1][x] == c) return true;
-			if (y < h - 1 && masu[y + 1][x] == c) return true;
-			if (0 < x && masu[y][x - 1] == c) return true;
-			if (x < w - 1 && masu[y][x + 1] == c) return true;
-			return false;
-		}
-
-
-		for (int i = 0; i < h; ++i) {
-			for (int j = 0; j < w; ++j) {
-				if (masu[i][j] == c) continue;
-				if (flag[i][j] == true) continue;
-				if (check(i, j)) {
-					if (ans.Count == 1) ans.Add(1);
-					continue;
-				}
-
-				var que = new Queue<int>();
-				var set = new HashSet<int>();
-				int count = 0;
-				que.Enqueue(i * w + j);
-				while (que.Count > 0) {
-					int yx = que.Dequeue();
-					if (set.Contains(yx)) continue;
-
-					int y = yx / w;
-					int x = yx % w;
-
-					count += 1;
-					flag[y][x] = true;
-					set.Add(yx);
-
-					if (check(y, x)) continue;
-
-					if (0 < y && masu[y - 1][x] != c) que.Enqueue(y * w - w + x);
-					if (y < h - 1 && masu[y + 1][x] != c) que.Enqueue(y * w + w + x);
-					if (0 < x && masu[y][x - 1] != c) que.Enqueue(y * w + x - 1);
-					if (x < w - 1 && masu[y][x + 1] != c) que.Enqueue(y * w + x + 1);
-				}
-				ans.Add(count);
-			}
-		}
-
-		printlist(ans);
-		print(ans.Max());
 
 	} // end of method
 } // end of class
