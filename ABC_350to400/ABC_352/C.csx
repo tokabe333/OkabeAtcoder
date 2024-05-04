@@ -83,7 +83,7 @@ class Util {
 	public static long m998 = 998244353;
 	public static int a10_9 = 1000000000;
 	public static long a10_18 = 1000000000000000000;
-	public static int iinf = 1 << 30;
+	public static int iinf = 1 << 31;
 	public static long linf = (1l << 61) - (1l << 31);
 
 	/// <summary>1行読みこみ</summary>
@@ -582,7 +582,18 @@ class Kyopuro {
 
 	public void Solve() {
 
+		int n = readint();
 
+		long c = 0;
+		var arr = new long[n];
+
+		for (int i = 0; i < n; ++i) {
+			var (a, b) = readlongt2();
+			c = Max(c, b - a);
+			arr[i] = a;
+		}
+
+		writeline(c + arr.Sum());
 
 	} // end of method
 } // end of class

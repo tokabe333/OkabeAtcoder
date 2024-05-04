@@ -582,6 +582,33 @@ class Kyopuro {
 
 	public void Solve() {
 
+		var (n, k) = readintt2();
+		var prr = readints().Select(x => x - 1).ToArray();
+
+		var dict = new Dictionary<int, int>();
+		for (int i = 0; i < n; ++i) {
+			dict[prr[i]] = i;
+		}
+
+		var set = new SortedSet<int>();
+		for (int i = 0; i < k; ++i) {
+			set.Add(dict[i]);
+		}
+
+		int ans = set.Reverse().First() - set.First();
+		// foreach (int s in set) write(s + " ");
+		// writeline();
+		for (int i = 0; i < n - k; ++i) {
+			// writeline($"i-1:{dict[i]} i+k:{dict[i + k]}");
+			set.Remove(dict[i]);
+			set.Add(dict[i + k]);
+			ans = Min(ans, set.Reverse().First() - set.First());
+
+			// foreach (int s in set) write(s + " ");
+			// writeline();
+		}
+
+		writeline(ans);
 
 
 	} // end of method
