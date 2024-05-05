@@ -331,6 +331,23 @@ class Util {
 		}
 	} // end of func
 
+	/// <summary>ジェネリックを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printiter<T>(IEnumerable<T> generic) {
+		foreach (var it in generic) {
+			Write(it + " ");
+		}
+		WriteLine();
+	} // end of func
+
+	/// <summary>ジェネリックを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printlineiter<T>(IEnumerable<T> generic) {
+		foreach (var it in generic) {
+			WriteLine(it + " ");
+		}
+	} // end of func
+
 	/// <summary>数字を1つint型で読み込み</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int readint() {

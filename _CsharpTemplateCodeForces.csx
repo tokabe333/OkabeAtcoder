@@ -331,6 +331,23 @@ class Util {
 		}
 	} // end of func
 
+	/// <summary>ジェネリックを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printiter<T>(IEnumerable<T> generic) {
+		foreach (var it in generic) {
+			Write(it + " ");
+		}
+		WriteLine();
+	} // end of func
+
+	/// <summary>ジェネリックを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printlineiter<T>(IEnumerable<T> generic) {
+		foreach (var it in generic) {
+			WriteLine(it + " ");
+		}
+	} // end of func
+
 	/// <summary>数字を1つint型で読み込み</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int readint() {
@@ -379,131 +396,131 @@ class Util {
 		return ReadLine().Split(' ');
 	} // end of func
 
-	// /// <summary>読み込んだint2つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (int, int) readintt2() {
-	// 	var arr = readints();
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// <summary>読み込んだint2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int) readintt2() {
+		var arr = readints();
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// <summary>読み込んだint3つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (int, int, int) readintt3() {
-	// 	var arr = readints();
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// <summary>読み込んだint3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int, int) readintt3() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// <summary>読み込んだint4つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (int, int, int, int) readintt4() {
-	// 	var arr = readints();
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// <summary>読み込んだint4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int, int, int) readintt4() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// <summary>読み込んだlong2つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (long, long) readlongt2() {
-	// 	var arr = readlongs();
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// <summary>読み込んだlong2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long) readlongt2() {
+		var arr = readlongs();
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// <summary>読み込んだ数long3つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (long, long, long) readlongt3() {
-	// 	var arr = readlongs();
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// <summary>読み込んだ数long3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long, long) readlongt3() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// <summary>読み込んだ数long4つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (long, long, long, long) readlongt4() {
-	// 	var arr = readlongs();
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// <summary>読み込んだ数long4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long, long, long) readlongt4() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// <summary>読み込んだfloat2つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (float, float) readfloatt2() {
-	// 	var arr = readfloats();
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// <summary>読み込んだfloat2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float) readfloatt2() {
+		var arr = readfloats();
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// <summary>読み込んだfloat3つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (float, float, float) readfloatt3() {
-	// 	var arr = readfloats();
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// <summary>読み込んだfloat3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float, float) readfloatt3() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// <summary>読み込んだfloat4つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (float, float, float, float) readfloatt4() {
-	// 	var arr = readfloats();
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// <summary>読み込んだfloat4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float, float, float) readfloatt4() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// <summary>読み込んだdouble2つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (double, double) readdoublet2() {
-	// 	var arr = readdoubles();
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// <summary>読み込んだdouble2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double) readdoublet2() {
+		var arr = readdoubles();
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// <summary>読み込んだdouble3つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (double, double, double) readdoublet3() {
-	// 	var arr = readdoubles();
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// <summary>読み込んだdouble3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double, double) readdoublet3() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// <summary>読み込んだdouble4つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (double, double, double, double) readdoublet4() {
-	// 	var arr = readdoubles();
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// <summary>読み込んだdouble4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double, double, double) readdoublet4() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// <summary>読み込んだstring2つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (string, string) readstringt2() {
-	// 	var arr = ReadLine().Split(' ');
-	// 	return (arr[0], arr[1]);
-	// } // end of func
+	/// <summary>読み込んだstring2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string) readstringt2() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1]);
+	} // end of func
 
-	// /// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (string, string, string) readstringt3() {
-	// 	var arr = ReadLine().Split(' ');
-	// 	return (arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string, string) readstringt3() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (string, string, string, string) readstringt4() {
-	// 	var arr = ReadLine().Split(' ');
-	// 	return (arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string, string, string) readstringt4() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
-	// /// <summary>先頭に要素数(int)と次にでかい数字1つ</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (int, long) readintlongt2() {
-	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-	// 	return ((int)arr[0], arr[1]);
-	// } // end of func
+	/// <summary>先頭に要素数(int)と次にでかい数字1つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long) readintlongt2() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1]);
+	} // end of func
 
-	// /// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (int, long, long) readintlongt3() {
-	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-	// 	return ((int)arr[0], arr[1], arr[2]);
-	// } // end of func
+	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long, long) readintlongt3() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2]);
+	} // end of func
 
-	// /// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
-	// [MethodImpl(MethodImplOptions.AggressiveInlining)]
-	// public static (int, long, long, long) readintlongt4() {
-	// 	var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-	// 	return ((int)arr[0], arr[1], arr[2], arr[3]);
-	// } // end of func
+	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long, long, long) readintlongt4() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
 
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
