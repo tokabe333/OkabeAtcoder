@@ -83,7 +83,7 @@ class Util {
 	public static long m998 = 998244353;
 	public static int a10_9 = 1000000000;
 	public static long a10_18 = 1000000000000000000;
-	public static int iinf = 1 << 30;
+	public static int iinf = 1 << 31;
 	public static long linf = (1l << 61) - (1l << 31);
 
 	/// <summary>1行読みこみ</summary>
@@ -573,57 +573,26 @@ struct Edge {
 
 
 public class Solution {
-	public static void Main() {
-		var s = new Solution();
-		var nums = new int[4] { 1, 14, 14, 15 };
-		int c1 = 2;
-		int c2 = 1;
-		int ans = s.MinCostToEqualizeArray(nums, c1, c2);
+	// public static void Main() {
+	// 	string s = "2A";
+	// 	writeline(IsValid(s));
+	// }
 
-		writeline(ans);
-	}
+	public bool IsValid(string s) {
+		if (s.Length < 3) return false;
+		var set = new HashSet<char>(new char[10] { 'a', 'i', 'u', 'e', 'o', 'A', 'I', 'U', 'E', 'O' });
 
-	public int MinCostToEqualizeArray(int[] arr, int cost1, int cost2) {
-		// long[] arr = copyarr(nums);
-		int n = arr.Length;
-		long c1 = cost1;
-		long c2 = cost2;
-		if (c1 * 2 <= c2) {
 
-			int m = arr.Max();
-			long count = 0;
-			for (int i = 0; i < n; ++i) count += m - arr[i];
-			return (int)((count * c1) % m107);
-		}
-
-		Array.Sort(arr);
-		Array.Reverse(arr);
-
-		int func(int mm) {
-			var brr = copyarr(arr);
-			long ans = 0;
-			int ind = 0;
-			while (ind < n - 1) {
-				if (brr[ind] == mm) {
-					ind += 1;
-					continue;
-				}
-				int num = mm - brr[ind];
-				ans = (ans + num * c2) % m107;
-				brr[ind] += num;
-				brr[ind + 1] += num;
-				ind += 1;
+		bool vow = false;
+		bool cos = false;
+		foreach (var c in s.ToCharArray()) {
+			if (!('0' <= c && c <= '9') && !('a' <= c && c <= 'z') && !('A' <= c && c <= 'Z')) return false;
+			if (set.Contains(c)) {
+				vow = true;
+			} else if ('a' <= c && c <= 'z' || 'A' <= c && c <= 'Z') {
+				cos = true;
 			}
-
-			ans = (ans + (mm - brr[n - 1]) * c1) % m107;
-
-			return (int)ans;
 		}
-
-		for (int a = 15; a <= 30; ++a) {
-			writeline(func(a));
-		}
-
-		return 0;
+		return vow & cos;
 	}
 }

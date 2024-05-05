@@ -570,59 +570,73 @@ struct Edge {
 		this.cost = cost;
 	}
 } // end of class
-
-
 public class Solution {
-	public static void Main() {
-		var s = new Solution();
-		var nums = new int[4] { 1, 14, 14, 15 };
-		int c1 = 2;
-		int c2 = 1;
-		int ans = s.MinCostToEqualizeArray(nums, c1, c2);
 
-		writeline(ans);
-	}
+	/// 最大公約数を計算 int
+	public int Gcd(int a, int b) {
+		if (a == 1 || b == 1) return 1;
+		if (a <= 0 || b <= 0) return 0;
 
-	public int MinCostToEqualizeArray(int[] arr, int cost1, int cost2) {
-		// long[] arr = copyarr(nums);
-		int n = arr.Length;
-		long c1 = cost1;
-		long c2 = cost2;
-		if (c1 * 2 <= c2) {
-
-			int m = arr.Max();
-			long count = 0;
-			for (int i = 0; i < n; ++i) count += m - arr[i];
-			return (int)((count * c1) % m107);
-		}
-
-		Array.Sort(arr);
-		Array.Reverse(arr);
-
-		int func(int mm) {
-			var brr = copyarr(arr);
-			long ans = 0;
-			int ind = 0;
-			while (ind < n - 1) {
-				if (brr[ind] == mm) {
-					ind += 1;
-					continue;
-				}
-				int num = mm - brr[ind];
-				ans = (ans + num * c2) % m107;
-				brr[ind] += num;
-				brr[ind + 1] += num;
-				ind += 1;
+		while (a >= 1 && b >= 1) {
+			if (a < b) {
+				int c = a;
+				a = b;
+				b = c;
 			}
-
-			ans = (ans + (mm - brr[n - 1]) * c1) % m107;
-
-			return (int)ans;
+			a %= b;
 		}
 
-		for (int a = 15; a <= 30; ++a) {
-			writeline(func(a));
+		return Max(a, b);
+	} // end of method
+
+	/// 最大公約数を計算 long
+	public long Gcd(long a, long b) {
+		if (a == 1 || b == 1) return 1;
+		if (a <= 0 || b <= 0) return 0;
+
+		while (a >= 1 && b >= 1) {
+			if (a < b) {
+				long c = a;
+				a = b;
+				b = c;
+			}
+			a %= b;
 		}
+
+		return Max(a, b);
+	} // end of method
+
+	/// 最小公倍数を計算(longにしてるのでintから漏れることはなさそう)
+	public int Lcm(int a, int b) {
+		long ab = a * b;
+		ab /= Gcd(a, b);
+		return (int)ab;
+	} // end of method
+
+	/// 最小公倍数を計算(128bitにしてるのでlongから漏れることはなさそう)
+	public long Lcm(long a, long b) {
+		Int128 ab = a * b;
+		ab /= Gcd(a, b);
+		return (long)ab;
+	} // end of method
+
+
+
+	public int MinAnagramLength(string s) {
+		var dict = new Dictionary<char, int>();
+
+		foreach (var c in s.ToCharArray()) {
+			if (dict.ContainsKey(c)) dict[c] += 1;
+			else dict[c] = 1;
+		}
+
+
+		long gcd = dict.First().Value;
+		foreach (var kv in dict) {
+			gcd = Gcd(gcd, kv.Value);
+		}
+
+		return s.Length / (int)gcd;
 
 		return 0;
 	}

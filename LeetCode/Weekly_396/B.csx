@@ -83,7 +83,7 @@ class Util {
 	public static long m998 = 998244353;
 	public static int a10_9 = 1000000000;
 	public static long a10_18 = 1000000000000000000;
-	public static int iinf = 1 << 30;
+	public static int iinf = 1 << 31;
 	public static long linf = (1l << 61) - (1l << 31);
 
 	/// <summary>1行読みこみ</summary>
@@ -573,56 +573,32 @@ struct Edge {
 
 
 public class Solution {
-	public static void Main() {
-		var s = new Solution();
-		var nums = new int[4] { 1, 14, 14, 15 };
-		int c1 = 2;
-		int c2 = 1;
-		int ans = s.MinCostToEqualizeArray(nums, c1, c2);
+	// public static void Main() {
+	// 	var m = new Solution();
+	// 	m.MinimumOperationsToMakeKPeriodic("leetcodeleet", 4);
+	// }
 
-		writeline(ans);
-	}
+	public int MinimumOperationsToMakeKPeriodic(string s, int k) {
+		var dict = new Dictionary<string, int>();
+		int n = s.Length;
 
-	public int MinCostToEqualizeArray(int[] arr, int cost1, int cost2) {
-		// long[] arr = copyarr(nums);
-		int n = arr.Length;
-		long c1 = cost1;
-		long c2 = cost2;
-		if (c1 * 2 <= c2) {
-
-			int m = arr.Max();
-			long count = 0;
-			for (int i = 0; i < n; ++i) count += m - arr[i];
-			return (int)((count * c1) % m107);
+		for (int i = 0; i < n; i += k) {
+			string sub = s.Substring(i, k);
+			if (dict.ContainsKey(sub)) dict[sub] += 1;
+			else dict[sub] = 1;
 		}
 
-		Array.Sort(arr);
-		Array.Reverse(arr);
-
-		int func(int mm) {
-			var brr = copyarr(arr);
-			long ans = 0;
-			int ind = 0;
-			while (ind < n - 1) {
-				if (brr[ind] == mm) {
-					ind += 1;
-					continue;
-				}
-				int num = mm - brr[ind];
-				ans = (ans + num * c2) % m107;
-				brr[ind] += num;
-				brr[ind + 1] += num;
-				ind += 1;
+		int max = 0;
+		int sum = 0;
+		foreach (var kv in dict) {
+			if (kv.Value > max) {
+				max = kv.Value;
 			}
-
-			ans = (ans + (mm - brr[n - 1]) * c1) % m107;
-
-			return (int)ans;
+			sum += kv.Value;
 		}
 
-		for (int a = 15; a <= 30; ++a) {
-			writeline(func(a));
-		}
+		return sum - max;
+
 
 		return 0;
 	}
