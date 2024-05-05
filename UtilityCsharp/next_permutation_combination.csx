@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+
+using System.Diagnostics;
 using static System.Console;
 using static System.Math;
 using static Util;
@@ -579,6 +581,38 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+
+	public void Solve() {
+		var arr = new int[5];
+		for (int i = 0; i < arr.Length; ++i) arr[i] = i;
+		arr[0] = 1;
+		arr[1] = 3;
+		arr[2] = 4;
+		arr[3] = 6;
+		arr[4] = 334;
+
+		Stopwatch stopwatch = new Stopwatch();
+		stopwatch.Start();
+
+		// var hoge = AllPermutation(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+		// var hoge = Combination(5, 3);
+		var hoge = CombinationArr(arr, 3);
+
+		stopwatch.Stop();
+		Console.WriteLine($"SortedSet ベンチマーク: {stopwatch.ElapsedMilliseconds} ミリ秒");
+
+		foreach (var h in hoge) {
+			foreach (var hh in h) Console.Write(hh + " ");
+			Console.WriteLine();
+		}
+
+		// writeline(hoge.Length);
+
+
+	} // end of method
+
+
+
 	/// <summary> 
 	/// 全ての順列を列挙する
 	/// AllPermutation(0,1,3,6,7) のような呼び方も可能
@@ -627,42 +661,52 @@ class Kyopuro {
 	} // end of method
 
 
-
-	public void Solve() {
-
-		var (n, m) = readintt2();
-		var taka = makearr2(n, n, 0);
-		var aoki = makearr2(n, n, 0);
-
-		for (int i = 0; i < m; ++i) {
-			var (a, b) = readintt2();
-			--a; --b;
-			taka[a][b] = 1;
-			taka[b][a] = 1;
-		}
-		for (int i = 0; i < m; ++i) {
-			var (a, b) = readintt2();
-			--a; --b;
-			aoki[a][b] = 1;
-			aoki[b][a] = 1;
-		}
-
-		var allperm = AllPermutation(Enumerable.Range(0, n).ToArray());
-		foreach (var perm in allperm) {
-			bool flag = true;
-			for (int i = 0; i < n; ++i) {
-				for (int j = 0; j < n; ++j) {
-					if (i == j) continue;
-					if (aoki[i][j] == taka[perm[i]][perm[j]]) continue;
-					flag = false;
-				}
+	/// <summary> 
+	/// nCrのコンビネーションを列挙する
+	/// </summary>
+	IEnumerable<List<int>> Combination(int n, int r, int st = 0) {
+		for (int i = st; i < n; i++) {
+			//残り1回ならこれで終了
+			if (r == 1) {
+				yield return new List<int> { i };
+				continue;
 			}
-			if (flag) {
-				writeline("Yes");
-				return;
-			}
-		}
-		writeline("No");
 
+			//iを獲る選択肢を列挙
+			foreach (var c in Combination(n, r - 1, i + 1)) {
+				var comb = new List<int>();
+				comb.Add(i);
+				comb.AddRange(c);
+				yield return comb;
+			}
+
+			//(iを獲らない選択肢は次のループで行われる)
+		}
+	} // end of method
+
+	/// <summary> 
+	/// nCrのコンビネーションを列挙する(配列からr個取ってくる)
+	/// </summary>
+	IEnumerable<List<int>> CombinationArr(int[] arr, int r, int st = 0) {
+		int n = arr.Length;
+		for (int i = st; i < n; i++) {
+			//残り1回ならこれで終了
+			if (r == 1) {
+				yield return new List<int> { arr[i] };
+				continue;
+			}
+
+			//iを獲る選択肢を列挙
+			foreach (var c in CombinationArr(arr, r - 1, i + 1)) {
+				var comb = new List<int>();
+				comb.Add(arr[i]);
+				comb.AddRange(c);
+				yield return comb;
+			}
+
+			//(iを獲らない選択肢は次のループで行われる)
+		}
 	} // end of method
 } // end of class
+
+
