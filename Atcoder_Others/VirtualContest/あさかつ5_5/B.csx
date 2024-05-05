@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Collections;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -581,44 +582,13 @@ class Kyopuro {
 
 
 	public void Solve() {
-		var (n, m, k) = readlongt3();
-		var ab = new long[2][];
-		ab[0] = readlongs();
-		ab[1] = readlongs();
 
-		long time = 0;
-		long count = 0;
-		int ai = 0;
-		int bi = 0;
-		while (time < k) {
-			int func() {
-				if (ai == n - 1) return bi == m - 1 ? -1 : 1;
-				if (bi == m - 1) return ai == n - 1 ? -1 : 0;
+		string s = read();
+		var set = new HashSet<char>(new char[5] { 'a', 'i', 'u', 'e', 'o' });
 
-				if (ab[0][ai] <= ab[1][bi]) {
-					return time + ab[0][ai] < k ? 0 : -1;
-				} else {
-					return time + ab[1][bi] < k ? 1 : -1;
-				}
-
-				return -1;
-			}
-			int yomuhou = func();
-			writeline($"yomu:{yomuhou} time:{time} count:{count}");
-			if (yomuhou == 0) {
-				time += ab[0][ai];
-				ai += 1;
-				count += 1;
-			} else if (yomuhou == 1) {
-				time += ab[1][bi];
-				bi += 1;
-				count += 1;
-			} else {
-				break;
-			}
+		foreach (var c in s.ToCharArray()) {
+			if (set.Contains(c) == false) write(c);
 		}
-
-		writeline(count);
-
+		writeline();
 	} // end of method
 } // end of class
