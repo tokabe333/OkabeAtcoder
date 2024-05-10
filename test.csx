@@ -67,12 +67,17 @@ class Program {
 	} // end of method
 
 	static void Main() {
-		int n = int.Parse(Console.ReadLine());
-		var arr = Console.ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		var list = new List<int>(new int[] { 3, 1, 7, 2, 4 });
+		list.Sort();
+		foreach (var l in list) Write(l + " ");
+		WriteLine();
 
-		var p = new Program();
-		foreach (var a in arr) {
-			WriteLine(p.IsPrime(a) ? "Yes" : "No");
-		}
+		// int n = int.Parse(Console.ReadLine());
+		// var arr = Console.ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+
+		// var p = new Program();
+		// foreach (var a in arr) {
+		// 	WriteLine(p.IsPrime(a) ? "Yes" : "No");
+		// }
 	}
 }

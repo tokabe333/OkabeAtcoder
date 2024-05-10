@@ -688,28 +688,28 @@ class Kyopuro {
 		return 0;
 	} // end of method
 
+
+	/// <summary> ポラードのロー法で素因数分解 </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	List<long> _PrimeFactorize(long n) {
+		if (n == 1) return new List<long>();
+
+		// 約数を1つ用意
+		long p = pollard(n);
+		// 約数が自身と一致する → 素数である → 素因数は自身のみ
+		if (p == n) return new List<long>(new long[] { n });
+
+		// 約数で分割する
+		var left = _PrimeFactorize(p);
+		var right = _PrimeFactorize(n / p);
+
+		left.AddRange(right);
+		return left;
+	}
+
 	/// <summary> ポラードのロー法で素因数分解 </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	List<long> PrimeFactorize(long n) {
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		List<long> _PrimeFactorize(long n) {
-			if (n == 1) return new List<long>();
-
-			// 約数を1つ用意
-			long p = pollard(n);
-			// 約数が自身と一致する → 素数である → 素因数は自身のみ
-			if (p == n) return new List<long>(new long[] { n });
-
-			// 約数で分割する
-			var left = _PrimeFactorize(p);
-			var right = _PrimeFactorize(n / p);
-
-			left.AddRange(right);
-			return left;
-		}
-
-
 		var primes = _PrimeFactorize(n);
 		primes.Sort();
 		return primes;
@@ -739,7 +739,7 @@ class Kyopuro {
 			// writeline($"v:{v} count:{count}");
 			ans += count;
 		}
-		printlist(primes);
+		// printlist(primes);
 		writeline(ans);
 
 	} // end of method
