@@ -651,9 +651,57 @@ class Kyopuro {
 
 	public void Solve() {
 
-		for (int i = 0; i < 100; ++i) {
-			writeline($"i:{i} prime:{IsPrime(i)}");
+		// var sw = new Stopwatch();
+		// sw.Start();
+
+		long lmax = 100000l;
+		var prr = new List<long>(new long[1] { 2 });
+		var arr = new bool[lmax + 1];
+		for (int i = 2; i <= lmax; i += 2) arr[i] = false;
+		for (int i = 3; i <= lmax; i += 2) {
+			if (arr[i]) continue;
+			prr.Add(i);
+			int ii = i;
+			while (ii <= lmax) {
+				arr[ii] = true;
+				ii += i;
+			}
 		}
+
+
+
+		// sw.Stop();
+		// writeline(sw.Elapsed);
+		// return;
+
+		int q = readint();
+		for (int i = 0; i < q; ++i) {
+			long a = readlong();
+
+			if (a == 1 || IsPrime(a)) {
+				writeline("No");
+				continue;
+			}
+			foreach (long p in prr) {
+				if (a % p != 0) continue;
+				a /= p;
+				break;
+			}
+			if (a == 1 || IsPrime(a)) {
+				writeline("No");
+				continue;
+			}
+
+			foreach (long p in prr) {
+				if (a % p != 0) continue;
+				a /= p;
+				break;
+			}
+
+
+			writeline(IsPrime(a) ? "Yes" : "No");
+		}
+
 
 
 	} // end of method
