@@ -688,59 +688,43 @@ class Kyopuro {
 		return 0;
 	} // end of method
 
+
+	/// <summary> ポラードのロー法で素因数分解 </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	List<long> _PrimeFactorize(long n) {
+		if (n == 1) return new List<long>();
+
+		// 約数を1つ用意
+		long p = pollard(n);
+		// 約数が自身と一致する → 素数である → 素因数は自身のみ
+		if (p == n) return new List<long>(new long[] { n });
+
+		// 約数で分割する
+		var left = _PrimeFactorize(p);
+		var right = _PrimeFactorize(n / p);
+
+		left.AddRange(right);
+		return left;
+	}
+
 	/// <summary> ポラードのロー法で素因数分解 </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	List<long> PrimeFactorize(long n) {
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		List<long> _PrimeFactorize(long n) {
-			if (n == 1) return new List<long>();
-
-			// 約数を1つ用意
-			long p = pollard(n);
-			// 約数が自身と一致する → 素数である → 素因数は自身のみ
-			if (p == n) return new List<long>(new long[] { n });
-
-			// 約数で分割する
-			var left = _PrimeFactorize(p);
-			var right = _PrimeFactorize(n / p);
-
-			left.AddRange(right);
-			return left;
-		}
-
-
 		var primes = _PrimeFactorize(n);
 		primes.Sort();
 		return primes;
 	} // end of method
 
 	public void Solve() {
-		// https://atcoder.jp/contests/abc169/tasks/abc169_d
 
-		long n = readlong();
-		var primes = PrimeFactorize(n);
-		var dict = new Dictionary<long, long>();
-		foreach (var p in primes) {
-			if (dict.ContainsKey(p)) dict[p] += 1;
-			else dict[p] = 1;
+		long n = 100000000;
+		var sw = new Stopwatch();
+		sw.Start();
+		for (int i = 0; i < 100000; ++i) {
+			var arr = PrimeFactorize(n);
 		}
-
-		long ans = 0;
-		foreach (var v in dict.Values) {
-			long count = 0;
-			long hoge = 1;
-			long vv = v;
-			while (hoge <= vv) {
-				count += 1;
-				vv -= hoge;
-				hoge += 1;
-			}
-			// writeline($"v:{v} count:{count}");
-			ans += count;
-		}
-		printlist(primes);
-		writeline(ans);
+		sw.Stop();
+		writeline(sw.Elapsed);
 
 	} // end of method
 } // end of class
