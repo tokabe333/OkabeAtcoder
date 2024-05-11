@@ -598,43 +598,40 @@ class Kyopuro {
 
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int UpperBound<T>(T[] a, T v) {
-		return UpperBound(a, v, Comparer<T>.Default);
+	public int LowerBound<T>(T[] a, T v) {
+		return LowerBound(a, v, Comparer<T>.Default);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int UpperBound<T>(T[] a, T v, Comparer<T> cmp) {
+	public int LowerBound<T>(T[] a, T v, Comparer<T> cmp) {
 		var l = 0;
 		var r = a.Length - 1;
 		while (l <= r) {
 			var mid = l + (r - l) / 2;
 			var res = cmp.Compare(a[mid], v);
-			if (res <= 0) l = mid + 1;
+			if (res == -1) l = mid + 1;
 			else r = mid - 1;
 		}
 		return l;
 	}
-
 	public void Solve() {
-		int n = readint();
-		var arr = readstrings();
+		long n = readint();
+		var arr = readlongs();
+		long mod = 10000l * 10000l;
+		long half = mod / 2l;
+		long ans = 0;
+		Array.Sort(arr);
+		// printlist(arr);
+		for (long l = 0; l < n; ++l) {
+			long num = mod - arr[l];
+			long mid = LowerBound(arr, num);
+			// 全部足す
+			ans += arr[l] * (n - 1);
+			// midの右側はmodされるので引く
+			long f = mid <= l ? 1 : 0;
+			ans -= half * (n - mid - f);
 
-		var dict = new Dictionary<Int128, long>();
-		Int128 b = 200;
-		Int128 mod = 100000000l * 100000000l + 61;
-		Int128 ans = 0;
-
-		foreach (var a in arr) {
-			Int128 hash = 0;
-			foreach (var c in a) {
-				hash = (hash * b + c) % mod;
-				if (dict.ContainsKey(hash)) {
-					ans += dict[hash];
-					dict[hash] += 1;
-				} else {
-					dict[hash] = 1;
-				}
-			}
+			// writeline($"l:{l} mid:{mid}  nmf:{n - mid - f} ans:{ans} ");
 		}
 
 		writeline(ans);

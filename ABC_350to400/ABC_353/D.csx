@@ -597,44 +597,41 @@ class Kyopuro {
 	} // end of func
 
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int UpperBound<T>(T[] a, T v) {
-		return UpperBound(a, v, Comparer<T>.Default);
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int UpperBound<T>(T[] a, T v, Comparer<T> cmp) {
-		var l = 0;
-		var r = a.Length - 1;
-		while (l <= r) {
-			var mid = l + (r - l) / 2;
-			var res = cmp.Compare(a[mid], v);
-			if (res <= 0) l = mid + 1;
-			else r = mid - 1;
-		}
-		return l;
-	}
-
 	public void Solve() {
-		int n = readint();
-		var arr = readstrings();
+		Int128 n = readlong();
+		// var arr = read().Split(' ').Select(x => Int128.Parse(x)).ToArray();
+		var arr = readlongs();
 
-		var dict = new Dictionary<Int128, long>();
-		Int128 b = 200;
-		Int128 mod = 100000000l * 100000000l + 61;
+		var dict = new Dictionary<long, long>();
+		for (int i = 0; i < n; ++i) {
+			long len = arr[i].ToString().Length;
+			if (dict.ContainsKey(len)) dict[len] += 1;
+			else dict[len] = 1;
+		}
+
+		// foreach (var kv in dict) writeline(kv);
+
 		Int128 ans = 0;
+		for (long i = 0; i < n; ++i) {
+			Int128 a = arr[i];
+			long alen = a.ToString().Length;
+			dict[alen] -= 1;
 
-		foreach (var a in arr) {
-			Int128 hash = 0;
-			foreach (var c in a) {
-				hash = (hash * b + c) % mod;
-				if (dict.ContainsKey(hash)) {
-					ans += dict[hash];
-					dict[hash] += 1;
-				} else {
-					dict[hash] = 1;
-				}
+			// if (i == n - 1) {
+			// 	foreach (var kv in dict) writeline(kv);
+			// }
+
+			foreach (var kv in dict) {
+				long len = kv.Key;
+				long num = kv.Value;
+
+				// writeline($"a:{a * (long)Pow(10, len)} num:{num} plus:{a * (long)Pow(10, len) * num}");
+				ans = (ans + a * (long)Pow(10, len) * num) % m998;
 			}
+			// writeline();
+
+			// 自分より左の数だけ自分が足される
+			ans = (ans + a * i) % m998;
 		}
 
 		writeline(ans);

@@ -597,25 +597,21 @@ class Kyopuro {
 	} // end of func
 
 
+	/// <summary>文字列をHash化 O(N)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int UpperBound<T>(T[] a, T v) {
-		return UpperBound(a, v, Comparer<T>.Default);
-	}
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int UpperBound<T>(T[] a, T v, Comparer<T> cmp) {
-		var l = 0;
-		var r = a.Length - 1;
-		while (l <= r) {
-			var mid = l + (r - l) / 2;
-			var res = cmp.Compare(a[mid], v);
-			if (res <= 0) l = mid + 1;
-			else r = mid - 1;
+	Int128 StringToHash(string s) {
+		Int128 b = 200;
+		Int128 mod = 100000000l * 100000000l + 61;
+		Int128 hash = 0;
+		foreach (var c in s) {
+			hash = (hash * b + c) % mod;
 		}
-		return l;
-	}
+		return hash;
+	} // end of method
 
 	public void Solve() {
+		// https://atcoder.jp/contests/abc353/tasks/abc353_e
+
 		int n = readint();
 		var arr = readstrings();
 
