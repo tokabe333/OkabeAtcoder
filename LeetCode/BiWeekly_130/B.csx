@@ -589,37 +589,43 @@ struct Edge {
 } // end of class
 
 public class Solution {
+	public int MaxPointsInsideSquare(int[][] points, string s) {
+		var mindists = makearr2(30, 2, iinf);
+		var dict = new Dictionary<int, int>();
 
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	bool check(int[] arr) {
-		for (int i = 1; i < arr.Length; ++i) {
-			if (arr[0] != arr[i]) return false;
-		}
-		return true;
-	}
-
-	public int MinimumSubstringsInPartition(string s) {
-		int n = s.Length;
-		int ans = 0;
-		int l = 0;
-		while (l < n) {
-			var arr = new int[26];
-			for (int i = l; i < n; ++i) arr[s[i] - 'a'] += 1;
-
-			int r = n - 1;
-			while (r >= 0) {
-				bool ret = check(arr);
-				if (ret == true) {
-					ans += 1;
-					l = r;
-					break;
-				}
-				arr[s[r] - 'a'] -= 1;
-				--r;
+		int n = points.Length;
+		for (int i = 0; i < n; ++i) {
+			int x = Abs(points[i][0]);
+			int y = Abs(points[i][1]);
+			int c = s[i] - 'a';
+			int dist = Max(x, y);
+			if (mindists[c][0] == iinf) {
+				mindists[c][0] = dist;
+			} else if (dist <= mindists[c][0]) {
+				mindists[c][1] = mindists[c][0];
+				mindists[c][0] = dist;
+			} else if (dist < mindists[c][1]) {
+				mindists[c][1] = dist;
 			}
+
+			if (dict.ContainsKey(dist)) dict[dist] += 1;
+			else dict[dist] = 1;
 		}
 
-		return 0;
+		int maxdist = iinf;
+		for (int i = 0; i < mindists.Length; ++i) {
+			maxdist = Min(maxdist, mindists[i][1] - 1);
+		}
+
+		int ans = 0;
+		foreach (var kv in dict) {
+			// writeline(kv);
+			if (kv.Key <= maxdist) ans += kv.Value;
+		}
+
+		// printlist2(mindists);
+		// writeline($"maxdist:{maxdist}");
+		// writeline(ans);
+		return ans;
 	}
 }

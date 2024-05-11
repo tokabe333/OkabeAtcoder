@@ -593,8 +593,11 @@ public class Solution {
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	bool check(int[] arr) {
-		for (int i = 1; i < arr.Length; ++i) {
-			if (arr[0] != arr[i]) return false;
+		int nonzero = -1;
+		for (int i = 0; i < arr.Length; ++i) {
+			if (arr[i] == 0) continue;
+			if (nonzero == -1) nonzero = arr[i];
+			else if (nonzero != arr[i]) return false;
 		}
 		return true;
 	}
@@ -603,23 +606,18 @@ public class Solution {
 		int n = s.Length;
 		int ans = 0;
 		int l = 0;
-		while (l < n) {
-			var arr = new int[26];
-			for (int i = l; i < n; ++i) arr[s[i] - 'a'] += 1;
 
-			int r = n - 1;
-			while (r >= 0) {
-				bool ret = check(arr);
-				if (ret == true) {
-					ans += 1;
-					l = r;
-					break;
-				}
-				arr[s[r] - 'a'] -= 1;
-				--r;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		int func(int num, int l, int[] arr) {
+			while (l < n) {
+				arr[s[l] - 'a'] += 1;
+
+				l += 1;
 			}
+
+			return 0;
 		}
 
-		return 0;
+		return ans;
 	}
 }

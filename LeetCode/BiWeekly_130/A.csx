@@ -589,37 +589,16 @@ struct Edge {
 } // end of class
 
 public class Solution {
+	public bool SatisfiesConditions(int[][] masu) {
+		int h = masu.Length;
+		int w = masu[0].Length;
 
-
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	bool check(int[] arr) {
-		for (int i = 1; i < arr.Length; ++i) {
-			if (arr[0] != arr[i]) return false;
-		}
-		return true;
-	}
-
-	public int MinimumSubstringsInPartition(string s) {
-		int n = s.Length;
-		int ans = 0;
-		int l = 0;
-		while (l < n) {
-			var arr = new int[26];
-			for (int i = l; i < n; ++i) arr[s[i] - 'a'] += 1;
-
-			int r = n - 1;
-			while (r >= 0) {
-				bool ret = check(arr);
-				if (ret == true) {
-					ans += 1;
-					l = r;
-					break;
-				}
-				arr[s[r] - 'a'] -= 1;
-				--r;
+		for (int i = 0; i < h; ++i) {
+			for (int j = 0; j < w; ++j) {
+				if (i < h - 1 && masu[i][j] != masu[i + 1][j]) return false;
+				if (j < w - 1 && masu[i][j] == masu[i][j + 1]) return false;
 			}
 		}
-
-		return 0;
+		return true;
 	}
 }
