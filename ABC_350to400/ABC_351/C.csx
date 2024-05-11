@@ -9,13 +9,81 @@ using static System.Console;
 using static System.Math;
 using static Util;
 
+#region using(AtCoder等非対応)
+// using pii = (int, int);
+// using pll = (long, long);
+// using pdd = (double, double);
+// using pss = (string, string);
+// using pis = (int, string);
+// using psi = (string, int);
+// using pls = (long, string);
+// using psl = (string, long);
+// using pds = (double, string);
+// using psd = (string, double);
+// using pid = (int, double);
+// using pdi = (double, int);
+// using pld = (long, double);
+// using pdl = (double, long);
+// using vb = bool[];
+// using vvb = bool[][];
+// using vvvb = bool[][][];
+// using vi = int[];
+// using vvi = int[][];
+// using vvvi = int[][][];
+// using vl = long[];
+// using vvl = long[][];
+// using vvvl = long[][][];
+// using vd = double[];
+// using vvd = double[][];
+// using vvvd = double[][][];
+// using vs = string[];
+// using vvs = string[][];
+// using vvvs = string[][][];
+// using listb = System.Collections.Generic.List<bool>;
+// using llistb = System.Collections.Generic.List<System.Collections.Generic.List<bool>>;
+// using lllistb = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<bool>>>;
+// using listi = System.Collections.Generic.List<int>;
+// using llisti = System.Collections.Generic.List<System.Collections.Generic.List<int>>;
+// using lllisti = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<int>>>;
+// using listl = System.Collections.Generic.List<long>;
+// using llistl = System.Collections.Generic.List<System.Collections.Generic.List<long>>;
+// using lllistl = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<long>>>;
+// using listd = System.Collections.Generic.List<double>;
+// using llistd = System.Collections.Generic.List<System.Collections.Generic.List<double>>;
+// using lllistd = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<double>>>;
+// using lists = System.Collections.Generic.List<string>;
+// using llists = System.Collections.Generic.List<System.Collections.Generic.List<string>>;
+// using lllists = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<string>>>;
+// using mii = System.Collections.Generic.SortedDictionary<int, int>;
+// using mll = System.Collections.Generic.SortedDictionary<long, long>;
+// using mss = System.Collections.Generic.SortedDictionary<string, string>;
+// using mis = System.Collections.Generic.SortedDictionary<int, string>;
+// using msi = System.Collections.Generic.SortedDictionary<string, int>;
+// using mls = System.Collections.Generic.SortedDictionary<long, string>;
+// using msl = System.Collections.Generic.SortedDictionary<string, long>;
+// using umii = System.Collections.Generic.Dictionary<int, int>;
+// using umll = System.Collections.Generic.Dictionary<long, long>;
+// using umss = System.Collections.Generic.Dictionary<string, string>;
+// using umis = System.Collections.Generic.Dictionary<int, string>;
+// using umsi = System.Collections.Generic.Dictionary<string, int>;
+// using umls = System.Collections.Generic.Dictionary<long, string>;
+// using umsl = System.Collections.Generic.Dictionary<string, long>;
+// using seti = System.Collections.Generic.SortedSet<int>;
+// using setl = System.Collections.Generic.SortedSet<long>;
+// using sets = System.Collections.Generic.SortedSet<string>;
+// using useti = System.Collections.Generic.HashSet<int>;
+// using usetl = System.Collections.Generic.HashSet<long>;
+// using usets = System.Collections.Generic.HashSet<string>;
+#endregion
+
+
 class Util {
 	public static double PI = 3.141592653589793;
 	public static long m107 = 1000000007;
 	public static long m998 = 998244353;
 	public static int a10_9 = 1000000000;
 	public static long a10_18 = 1000000000000000000;
-	public static int iinf = 1 << 30;
+	public static int iinf = 1 << 31;
 	public static long linf = (1l << 61) - (1l << 31);
 
 	/// <summary>1行読みこみ</summary>
@@ -263,23 +331,6 @@ class Util {
 		}
 	} // end of func
 
-	/// <summary>ジェネリックを出力</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void printiter<T>(IEnumerable<T> generic) {
-		foreach (var it in generic) {
-			Write(it + " ");
-		}
-		WriteLine();
-	} // end of func
-
-	/// <summary>ジェネリックを出力</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void printlineiter<T>(IEnumerable<T> generic) {
-		foreach (var it in generic) {
-			WriteLine(it + " ");
-		}
-	} // end of func
-
 	/// <summary>数字を1つint型で読み込み</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static int readint() {
@@ -326,6 +377,132 @@ class Util {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static string[] readstrings() {
 		return ReadLine().Split(' ');
+	} // end of func
+
+	/// <summary>読み込んだint2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int) readintt2() {
+		var arr = readints();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだint3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int, int) readintt3() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだint4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int, int, int) readintt4() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだlong2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long) readlongt2() {
+		var arr = readlongs();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだ数long3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long, long) readlongt3() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだ数long4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long, long, long) readlongt4() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだfloat2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float) readfloatt2() {
+		var arr = readfloats();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだfloat3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float, float) readfloatt3() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだfloat4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float, float, float) readfloatt4() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだdouble2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double) readdoublet2() {
+		var arr = readdoubles();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだdouble3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double, double) readdoublet3() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだdouble4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double, double, double) readdoublet4() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだstring2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string) readstringt2() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string, string) readstringt3() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string, string, string) readstringt4() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字1つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long) readintlongt2() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long, long) readintlongt3() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long, long, long) readintlongt4() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
@@ -405,7 +582,25 @@ class Kyopuro {
 
 	public void Solve() {
 
+		int n = readint();
+		var arr = readints();
 
+		var stack = new Stack<int>();
+		for (int i = 0; i < n; ++i) {
+			stack.Push(arr[i]);
+			while (true) {
+				if (stack.Count == 1) break;
+				int a = stack.Pop();
+				int b = stack.Peek();
+				if (a != b) {
+					stack.Push(a);
+					break;
+				}
+				stack.Pop();
+				stack.Push(a + 1);
+			}
+		}
+		writeline(stack.Count);
 
 	} // end of method
 } // end of class
