@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Runtime.InteropServices.Marshalling;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -605,9 +606,17 @@ class Kyopuro {
 			else dict[c] = 1;
 		}
 
-		foreach (var kv in dict) {
-			writeline(kv);
+		long n = s.Length;
+		long ans = 0;
+		long flag = 0;
+		foreach (var v in dict.Values) {
+			ans = ans + v * (n - v);
+			if (v >= 2) flag = 1;
 		}
+		ans >>= 1;
+
+		ans += flag;
+		writeline(ans);
 
 
 	} // end of method

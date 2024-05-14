@@ -129,7 +129,7 @@ int main() {
         ans  = ans + (n - c);
     }
 
-    // cout << ans << endl;
+    cout << ans << endl;
     ans /= 2;
 
     rep(i, 30) {
