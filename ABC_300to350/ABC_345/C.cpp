@@ -123,13 +123,13 @@ int main() {
 
     ll ans = 0;
 
-    // printvec(arr);
+    printvec(arr);
     rep(i, n) {
         ll c = arr[s[i] - 'a'];
         ans  = ans + (n - c);
     }
 
-    // cout << ans << endl;
+    cout << ans << endl;
     ans /= 2;
 
     rep(i, 30) {

@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\KyopuroCsharpLocal.csproj": {}
+    "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\KyopuroCsharpLocal.csproj": {
+    "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\KyopuroCsharpLocal.csproj",
+        "projectUniqueName": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
         "projectName": "KyopuroCsharpLocal",
-        "projectPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\KyopuroCsharpLocal.csproj",
-        "packagesPath": "C:\\Users\\tokab\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\obj\\",
+        "projectPath": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
+        "packagesPath": "/Users/okabesouta/.nuget/packages/",
+        "outputPath": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\tokab\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/okabesouta/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -60,7 +58,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.202/PortableRuntimeIdentifierGraph.json"
+>>>>>>> 4bd2dfe69827a939336614e83f019b8c5621c5d2
         }
       }
     }
