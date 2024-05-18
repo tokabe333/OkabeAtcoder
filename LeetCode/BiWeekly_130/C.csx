@@ -611,6 +611,9 @@ public class Solution {
 		int func(int num, int l, int[] arr) {
 			while (l < n) {
 				arr[s[l] - 'a'] += 1;
+				if (check(arr) == false) {
+					arr[s[l] - 'a'] -= 1;
+				}
 
 				l += 1;
 			}

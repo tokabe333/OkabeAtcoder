@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Numerics;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -598,131 +599,30 @@ class Kyopuro {
 
 
 	public void Solve() {
-
-		// yx 面積8
-		var masu = makearr2<long>(4, 4, 0);
-		masu[0][0] = 2;
-		masu[1][0] = 1;
-		masu[2][0] = 2;
-		masu[3][0] = 1;
-		masu[0][1] = 1;
-		masu[1][1] = 2;
-		masu[2][1] = 1;
-		masu[3][1] = 2;
-		masu[0][2] = 0;
-		masu[1][2] = 1;
-		masu[2][2] = 0;
-		masu[3][2] = 1;
-		masu[0][3] = 1;
-		masu[1][3] = 0;
-		masu[2][3] = 1;
-		masu[3][3] = 0;
-
-		long inf = (long)Pow(10, 9);
-		var (a, b, c, d) = readlongt4();
-		a += inf;
-		b += inf;
-		c += inf;
-		d += inf;
-		long w = (c - a);
-		long h = (d - b);
-		long ans = 0;
-		long xmod = a % 4;
-		long ymod = b % 4;
-
-		// 正統派
-		if (h >= 4 && w >= 4) {
-			//4x4の正方形を切る
-			long block = 0;
-			for (long i = 0; i < 4; ++i) {
-				for (long j = 0; j < 4; ++j) {
-					block += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
-			}
-			ans += block * (h / 4) * (w / 4);
-
-			// writeline($"block:{block} ans:{ans}");
-
-
-			// 上にはみ出た部分 
-			long ue = 0;
-			for (long i = 0; i < h % 4; ++i) {
-				for (long j = 0; j < 4; ++j) {
-					ue += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
-			}
-			ans += ue * (w / 4);
-			// writeline($"ue:{ue} w/4:{w / 4} ans:{ans}");
-
-			// 右にはみ出た部分
-			long migi = 0;
-			for (long j = 0; j < w % 4; ++j) {
-				for (long i = 0; i < 4; ++i) {
-					migi += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
-			}
-			ans += migi * (h / 4);
-
-			// writeline($"migi:{migi} h/4:{h / 4} ans:{ans}");
-
-			// 右上
-			long ur = 0;
-			for (long i = 0; i < h % 4; ++i) {
-				for (long j = 0; j < w % 4; ++j) {
-					ur += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
-			}
-			// writeline($"ur:{ur}");
-			ans += ur;
+		long n = readlong();
+		var cards = makearr2((int)n, 3, 0l);
+		for (int i = 0; i < n; ++i) {
+			var ac = readlongs();
+			cards[i][0] = ac[0];
+			cards[i][1] = ac[1];
+			cards[i][2] = i + 1;
 		}
 
-		// 小さいやつ
-		else if (h < 4 && w < 4) {
-			for (long i = 0; i < h; ++i) {
-				for (long j = 0; j < w; ++j) {
-					ans += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
+		cards = cards.OrderBy((a) => a[0]).ToArray();
+		long min = iinf;
+		var ans = new List<long>();
+		for (long i = n - 1; i >= 0; --i) {
+			if (min > cards[i][1]) {
+				ans.Add(cards[i][2]);
 			}
-		}
-
-		// 縦長
-		else if (h >= 4 && w < 4) {
-			// ブロック
-			long block = 0;
-			for (long i = 0; i < 4; ++i) {
-				for (long j = 0; j < w; ++j) {
-					block += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
-			}
-			ans += block * (h / 4);
-			// はみ出た部分
-			for (long i = 0; i < h % 4; ++i) {
-				for (long j = 0; j < w; ++j) {
-					ans += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
-			}
-		}
-
-		// 横長
-		else if (h < 4 && w >= 4) {
-			// ブロック
-			long block = 0;
-			for (long i = 0; i < h; ++i) {
-				for (long j = 0; j < 4; ++j) {
-					block += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
-			}
-			ans += block * (w / 4);
-			// はみ出た部分
-			for (long i = 0; i < h; ++i) {
-				for (long j = 0; j < w % 4; ++j) {
-					ans += masu[(ymod + i) % 4][(xmod + j) % 4];
-				}
-			}
+			min = Min(cards[i][1], min);
 		}
 
 
-		writeline(ans);
+		ans.Sort();
+		writeline(ans.Count);
+		printlist(ans);
+
 
 	} // end of method
 } // end of class
