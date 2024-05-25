@@ -1,10 +1,13 @@
 require "prime"
 
 def main()
+	a, b = readints()
 
-
-
-	
+	if a == b
+		puts -1
+	else
+		puts 6 - a - b
+	end
 end
 
 

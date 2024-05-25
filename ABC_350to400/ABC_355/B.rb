@@ -1,11 +1,17 @@
 require "prime"
 
 def main()
+	n, m = readints()
+	arr = readints()
+	brr = readints()
 
-
-
+	crr = arr + brr 
+	crr = crr.sort 
 	
+	hash = HashSet.new(arr)
+	p hash
 end
+
 
 
 

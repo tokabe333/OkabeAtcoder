@@ -588,55 +588,42 @@ struct Edge {
 	}
 } // end of class
 
+
 class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
-	/// [l, r) は求めたい半開区間
-	/// k は現在のノード番号
-	/// [a, b) はkに対応する半開区間
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private long Query(int l, int r, int k, int a, int b, int n) {
-		// writeline($"l:{l} r:{r} k:{k} a:{a} b:{b}");
-		// 現在の対応ノード区間が求めたい区間に含まれないとき
-		// → 単位元を返す
-		if (r <= a || b <= l) return 0;
+	public void Solve() {
+		long n = readlong();
+		var list = new List<(long, int)>();
+		for (int i = 0; i < n; ++i) {
+			var lr = readlongs();
+			list.Add((lr[0], -1));
+			list.Add((lr[1], 1));
+		}
 
 
-
-		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
-		// → 現在のノードの値を返す
-		if (l <= a && b <= r) {
-			long tei = (long)Log2(b - a);
-			long j = a / (long)Pow(2, tei);
-			// writeline($"a:{a} b:{b} tei:{tei} j:{j} left:{Pow(2l, tei) * j} right:{Pow(2l, tei) * (j + 1) - 1}");
-			// writeline();
-			if (tei != n) {
-				writeline($"? {tei} {j}");
-				long hoge = readlong();
-				return hoge;
+		long ans = 0;
+		long kaburi = 0;
+		list.Sort();
+		// printlist(list);
+		foreach (var (kukan, sf) in list) {
+			// writeline($"kukan:{kukan} sf:{sf}");
+			if (sf == -1) {
+				ans += kaburi;
+				kaburi += 1;
+			} else {
+				kaburi -= 1;
 			}
 		}
 
-		// 左半分と右半分で見る
-		int m = (a + b) / 2;
-		long leftValue = Query(l, r, k * 2 + 1, a, m, n);
-		long rightValue = Query(l, r, k * 2 + 2, m, b, n);
-		return (leftValue + rightValue) % 100;
-	} // end of method
+		writeline(ans);
 
-	public void Solve() {
-		var (n, l, r) = readintt3();
-
-		long ans = Query(l, r + 1, 0, 0, (int)Pow(2, n) + 1, n);
-
-		// long ans = Query(0, 8, 0, 0, 8, 3);
-		writeline($"! {ans}");
 
 	} // end of method
 } // end of class

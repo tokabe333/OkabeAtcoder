@@ -590,53 +590,41 @@ struct Edge {
 
 class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
-	/// [l, r) は求めたい半開区間
-	/// k は現在のノード番号
-	/// [a, b) はkに対応する半開区間
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private long Query(int l, int r, int k, int a, int b, int n) {
-		// writeline($"l:{l} r:{r} k:{k} a:{a} b:{b}");
-		// 現在の対応ノード区間が求めたい区間に含まれないとき
-		// → 単位元を返す
-		if (r <= a || b <= l) return 0;
+	public void Solve() {
+		var (n, m) = readintt2();
+		var arr = readints();
+		var brr = readints();
 
+		var set = new HashSet<int>();
+		foreach (var a in arr) set.Add(a);
 
+		var crr = new int[n + m];
+		for (int i = 0; i < n; ++i) crr[i] = arr[i];
+		for (int i = 0; i < m; ++i) crr[i + n] = brr[i];
 
-		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
-		// → 現在のノードの値を返す
-		if (l <= a && b <= r) {
-			long tei = (long)Log2(b - a);
-			long j = a / (long)Pow(2, tei);
-			// writeline($"a:{a} b:{b} tei:{tei} j:{j} left:{Pow(2l, tei) * j} right:{Pow(2l, tei) * (j + 1) - 1}");
-			// writeline();
-			if (tei != n) {
-				writeline($"? {tei} {j}");
-				long hoge = readlong();
-				return hoge;
+		Array.Sort(crr);
+		bool flag = false;
+		foreach (var c in crr) {
+			if (set.Contains(c)) {
+				if (flag) {
+					writeline("Yes");
+					return;
+				} else {
+					flag = true;
+				}
+			} else {
+				flag = false;
 			}
 		}
+		writeline("No");
 
-		// 左半分と右半分で見る
-		int m = (a + b) / 2;
-		long leftValue = Query(l, r, k * 2 + 1, a, m, n);
-		long rightValue = Query(l, r, k * 2 + 2, m, b, n);
-		return (leftValue + rightValue) % 100;
-	} // end of method
-
-	public void Solve() {
-		var (n, l, r) = readintt3();
-
-		long ans = Query(l, r + 1, 0, 0, (int)Pow(2, n) + 1, n);
-
-		// long ans = Query(0, 8, 0, 0, 8, 3);
-		writeline($"! {ans}");
 
 	} // end of method
 } // end of class

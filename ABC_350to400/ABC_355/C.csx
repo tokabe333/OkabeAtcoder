@@ -590,53 +590,45 @@ struct Edge {
 
 class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
-	/// [l, r) は求めたい半開区間
-	/// k は現在のノード番号
-	/// [a, b) はkに対応する半開区間
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private long Query(int l, int r, int k, int a, int b, int n) {
-		// writeline($"l:{l} r:{r} k:{k} a:{a} b:{b}");
-		// 現在の対応ノード区間が求めたい区間に含まれないとき
-		// → 単位元を返す
-		if (r <= a || b <= l) return 0;
+	public void Solve() {
+		var (n, t) = readlongt2();
+		var arr = readlongs();
 
+		var vrr = new long[n];
+		var hrr = new long[n];
+		long naname1 = 0; // 左上から右下
+		long naname2 = 0; // 右上から左下
 
+		for (int i = 0; i < t; ++i) {
+			long a = arr[i] - 1l;
+			long y = a / n;
+			long x = a % n;
 
-		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
-		// → 現在のノードの値を返す
-		if (l <= a && b <= r) {
-			long tei = (long)Log2(b - a);
-			long j = a / (long)Pow(2, tei);
-			// writeline($"a:{a} b:{b} tei:{tei} j:{j} left:{Pow(2l, tei) * j} right:{Pow(2l, tei) * (j + 1) - 1}");
-			// writeline();
-			if (tei != n) {
-				writeline($"? {tei} {j}");
-				long hoge = readlong();
-				return hoge;
+			// 縦横
+			vrr[x] += 1l;
+			hrr[y] += 1l;
+
+			// 斜め
+			if (y == x) naname1 += 1l;
+			if (n - x - 1 == y) naname2 += 1l;
+
+			// writeline($"n-x-1:{n - x - 1} y:{y} naname2: " + naname2);
+
+			if (vrr[x] == n || hrr[y] == n || naname1 == n || naname2 == n) {
+				writeline(i + 1);
+				return;
 			}
+
 		}
 
-		// 左半分と右半分で見る
-		int m = (a + b) / 2;
-		long leftValue = Query(l, r, k * 2 + 1, a, m, n);
-		long rightValue = Query(l, r, k * 2 + 2, m, b, n);
-		return (leftValue + rightValue) % 100;
-	} // end of method
-
-	public void Solve() {
-		var (n, l, r) = readintt3();
-
-		long ans = Query(l, r + 1, 0, 0, (int)Pow(2, n) + 1, n);
-
-		// long ans = Query(0, 8, 0, 0, 8, 3);
-		writeline($"! {ans}");
+		writeline(-1);
 
 	} // end of method
 } // end of class

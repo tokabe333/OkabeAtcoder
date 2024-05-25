@@ -588,55 +588,50 @@ struct Edge {
 	}
 } // end of class
 
+
 class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
 
-	/// [l, r) は求めたい半開区間
-	/// k は現在のノード番号
-	/// [a, b) はkに対応する半開区間
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private long Query(int l, int r, int k, int a, int b, int n) {
-		// writeline($"l:{l} r:{r} k:{k} a:{a} b:{b}");
-		// 現在の対応ノード区間が求めたい区間に含まれないとき
-		// → 単位元を返す
-		if (r <= a || b <= l) return 0;
-
-
-
-		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
-		// → 現在のノードの値を返す
-		if (l <= a && b <= r) {
-			long tei = (long)Log2(b - a);
-			long j = a / (long)Pow(2, tei);
-			// writeline($"a:{a} b:{b} tei:{tei} j:{j} left:{Pow(2l, tei) * j} right:{Pow(2l, tei) * (j + 1) - 1}");
-			// writeline();
-			if (tei != n) {
-				writeline($"? {tei} {j}");
-				long hoge = readlong();
-				return hoge;
-			}
+	public void Solve() {
+		long n = readlong();
+		var sections = new long[n][];
+		var list = new List<long>();
+		for (int i = 0; i < n; ++i) {
+			sections[i] = readlongs();
+			list.Add(sections[i][0]);
+			list.Add(sections[i][1]);
 		}
 
-		// 左半分と右半分で見る
-		int m = (a + b) / 2;
-		long leftValue = Query(l, r, k * 2 + 1, a, m, n);
-		long rightValue = Query(l, r, k * 2 + 2, m, b, n);
-		return (leftValue + rightValue) % 100;
-	} // end of method
+		// 座標圧縮
+		list = list.Distinct().ToList();
+		list.Sort();
+		var cdict = new Dictionary<long, long>();
+		for (int i = 0; i < list.Count; ++i) {
+			cdict[list[i]] = i;
+		}
 
-	public void Solve() {
-		var (n, l, r) = readintt3();
+		// 圧縮した区間
+		var coords = new long[n][];
+		for (int i = 0; i < n; ++i) {
+			coords[i] = new long[2];
+			coords[i][0] = cdict[sections[i][0]];
+			coords[i][1] = cdict[sections[i][1]];
+		}
 
-		long ans = Query(l, r + 1, 0, 0, (int)Pow(2, n) + 1, n);
+		writeline();
+		printlist(list);
+		printlist2(coords);
 
-		// long ans = Query(0, 8, 0, 0, 8, 3);
-		writeline($"! {ans}");
+		coords = coords.OrderBy(c => c[0]).ThenBy(c => c[1]).ToArray();
+		printlist2(coords);
+
+
 
 	} // end of method
 } // end of class
