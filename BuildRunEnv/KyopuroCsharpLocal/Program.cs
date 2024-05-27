@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Diagnostics;
 
 #region using(AtCoder等非対応)
 // using pii = (int, int);
@@ -590,53 +591,140 @@ struct Edge {
 
 class Kyopuro {
 	public static void Main() {
-		// preprocess();
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
-		// finalprocess();
+		finalprocess();
 	} // end of func
 
-
-	/// [l, r) は求めたい半開区間
-	/// k は現在のノード番号
-	/// [a, b) はkに対応する半開区間
+	/// <summary> ミラーラビンの素数判定法 </summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private long Query(int l, int r, int k, int a, int b, int n) {
-		// writeline($"l:{l} r:{r} k:{k} a:{a} b:{b}");
-		// 現在の対応ノード区間が求めたい区間に含まれないとき
-		// → 単位元を返す
-		if (r <= a || b <= l) return 0;
+	public bool IsPrime(long n) {
+		// 例外と自明処理
+		if (n <= 1) return false;
+		if (n == 2) return true;
+		if (n % 2 == 0) return false;
+
+		// n - 1 = 2^s * d と表す
+		long s = 0;
+		long d = n - 1;
+		while (d % 2 == 0) {
+			s += 1;
+			d >>= 1;
+		}
+
+		// このパターンで2^64以下を網羅
+		// 本来は不確定なヒューリスティック法だがこのパターンだと2^64以下で必ず判定可能なことが保証
+		var arr = new long[] { 2, 325, 9375, 28178, 450775, 9780504, 1795265022 };
+		foreach (var a in arr) {
+			if (a % n == 0) return true;
+			System.Int128 x = KurikaeshiPow(a, d, n);
+			if (x == 1) continue;
+
+			long t;
+			for (t = 0; t < s; ++t) {
+				if (x == n - 1) break;
+				x = x * x % n;
+			}
+			if (t == s) return false;
+		}
+		return true;
+	} // end of method
+
+	/// <summary>a^nを繰り返し二乗法</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public long KurikaeshiPow(System.Int128 a, System.Int128 n, long m = long.MaxValue) {
+		System.Int128 mod = m;
+		if (n == 0) return 1;
+		if (n == 1) return (long)(a % mod);
+
+		System.Int128 ret = 1;
+		while (n > 0) {
+			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
+			if ((n & 1) == 1) ret = (ret * a) % mod;
+			n >>= 1;
+			a = (a * a) % mod;
+		}
+
+		return (long)ret;
+	} // end of method
+
+	/// 最大公約数を計算 long
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public long Gcd(long a, long b) {
+		a = Abs(a);
+		b = Abs(b);
+		if (b == 0) return a;
+		else return Gcd(b, a % b);
+	} // end of method
+
+	/// <summary> Pollard ロー法、nが合成数のときnの非自明な約数を高確率で求める </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	long pollard(long n) {
+		if (n % 2 == 0) return 2; // 偶数のときは2を約数に持つ
+		if (IsPrime(n)) return n; // 素数の時は自身のみ
 
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		System.Int128 func(System.Int128 x) {
+			return (x * x + 1) % n;
+		}
 
-		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
-		// → 現在のノードの値を返す
-		if (l <= a && b <= r) {
-			long tei = (long)Log2(b - a);
-			long j = a / (long)Pow(2, tei);
-			// writeline($"a:{a} b:{b} tei:{tei} j:{j} left:{Pow(2l, tei) * j} right:{Pow(2l, tei) * (j + 1) - 1}");
-			// writeline();
-			if (tei != n) {
-				writeline($"? {tei} {j}");
-				long hoge = readlong();
-				return hoge;
+		long step = 0;
+		while (true) {
+			step += 1;
+			System.Int128 x = step;
+			System.Int128 y = func(x);
+
+			while (true) {
+				long p = Gcd((long)(y - x + n), n);
+				if (p == 0 || p == n) break;
+				if (p != 1) return p;
+				x = func(x);
+				y = func(func(y));
 			}
 		}
 
-		// 左半分と右半分で見る
-		int m = (a + b) / 2;
-		long leftValue = Query(l, r, k * 2 + 1, a, m, n);
-		long rightValue = Query(l, r, k * 2 + 2, m, b, n);
-		return (leftValue + rightValue) % 100;
+		return 0;
+	} // end of method
+
+
+	/// <summary> ポラードのロー法で素因数分解 </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	List<long> _PrimeFactorize(long n) {
+		if (n == 1) return new List<long>();
+
+		// 約数を1つ用意
+		long p = pollard(n);
+		// 約数が自身と一致する → 素数である → 素因数は自身のみ
+		if (p == n) return new List<long>(new long[] { n });
+
+		// 約数で分割する
+		var left = _PrimeFactorize(p);
+		var right = _PrimeFactorize(n / p);
+
+		left.AddRange(right);
+		return left;
+	}
+
+	/// <summary> ポラードのロー法で素因数分解 </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	List<long> PrimeFactorize(long n) {
+		var primes = _PrimeFactorize(n);
+		primes.Sort();
+		return primes;
 	} // end of method
 
 	public void Solve() {
-		var (n, l, r) = readintt3();
 
-		long ans = Query(l, r + 1, 0, 0, (int)Pow(2, n) + 1, n);
-
-		// long ans = Query(0, 8, 0, 0, 8, 3);
-		writeline($"! {ans}");
+		long n = 100000000;
+		var sw = new Stopwatch();
+		sw.Start();
+		for (int i = 0; i < 100000; ++i) {
+			var arr = PrimeFactorize(n);
+		}
+		sw.Stop();
+		writeline(sw.Elapsed);
 
 	} // end of method
 } // end of class

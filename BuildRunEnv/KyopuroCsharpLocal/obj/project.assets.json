@@ -8,26 +8,24 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\tokab\\.nuget\\packages\\": {}
+    "/home/souta/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\KyopuroCsharpLocal.csproj",
+      "projectUniqueName": "/home/souta/デスクトップ/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
       "projectName": "KyopuroCsharpLocal",
-      "projectPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\KyopuroCsharpLocal.csproj",
-      "packagesPath": "C:\\Users\\tokab\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\obj\\",
+      "projectPath": "/home/souta/デスクトップ/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
+      "packagesPath": "/home/souta/.nuget/packages/",
+      "outputPath": "/home/souta/デスクトップ/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\tokab\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/souta/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -66,16 +64,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/snap/dotnet-sdk/245/sdk/8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "キャッシュ ファイルの読み取りの問題 C:\\Users\\tokab\\Desktop\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpLocal\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
-    }
-  ]
+  }
 }
