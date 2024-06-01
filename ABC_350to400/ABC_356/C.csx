@@ -596,80 +596,43 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	/// <summary> 
-	/// 全ての順列を列挙する
-	/// AllPermutation(0,1,3,6,7) のような呼び方も可能
-	/// </summary>
-	T[][] AllPermutation<T>(params T[] array) where T : IComparable {
-		// return用変数
-		long resnum = 1;
-		for (long i = 2; i <= array.Length; ++i) resnum *= i;
-		var res = new T[resnum][];
-		res[0] = copyarr(array);
-
-		var a = copyarr(array);
-		var n = a.Length;
-		var next = true;
-		long resind = 1;
-		while (next) {
-			next = false;
-
-			// 後ろから A_i < A_(i+1) のインデックスを探す
-			int i;
-			for (i = n - 2; i >= 0; i--) {
-				if (a[i].CompareTo(a[i + 1]) < 0) break;
-			}
-			// 全てのiに対して A_i >= A_(i+1) なら終了
-			if (i < 0) break;
-
-			// 置き換える場所(左)が見つかったので置き換える場所(右)を探す
-			// A_i < A_j (i < j)
-			var j = n;
-			do {
-				j--;
-			} while (a[i].CompareTo(a[j]) > 0);
-
-			// まだ更新余地があるなら
-			// A_iとA_jを入れ替えて、A_(i+1)以降を反転
-			if (a[i].CompareTo(a[j]) < 0) {
-				var tmp = a[i];
-				a[i] = a[j];
-				a[j] = tmp;
-				Array.Reverse(a, i + 1, n - i - 1);
-				res[resind++] = copyarr(a);
-				next = true;
-			}
-		}
-		return res;
-	} // end of method
 
 
 	public void Solve() {
 		var (n, m, k) = readintt3();
-		var ok  = makearr<bool>(m, false);
+		var ok = makearr<bool>(m, false);
 		var arr = new int[m][];
-		for(int i = 0; i < m; ++i){
+		for (int i = 0; i < m; ++i) {
 			var hoge = readsplit();
 			arr[i] = new int[int.Parse(hoge[0])];
-			for(int j = 0;j < arr[i].Length;++j) arr[i][j] = int.Parse(hoge[j + 1]) - 1;
-			if(hoge[hoge.Length - 1] == "o") ok[i] = true;
+			for (int j = 0; j < arr[i].Length; ++j) arr[i][j] = int.Parse(hoge[j + 1]) - 1;
+			if (hoge[hoge.Length - 1] == "o") ok[i] = true;
 		}
 
-		printlist(ok);
-		printlist2(arr);
+		// printlist(ok);
+		// printlist2(arr);
 
-		int pow = 1 << 15;
+		int pow = 1 << n;
 		int ans = 0;
-		for(int q = 0; q <= pow; ++q){
+		for (int q = 0; q < pow; ++q) {
+			// writeline("q:" + q + " 2:" + IntToString2bit(q));
 			int flag = 1;
-			for(int i = 0; i < m; ++i){
+			for (int i = 0; i < m; ++i) {
 				int c = 0;
-				for(int j = 0; j < arr[i].Length; ++i){
-					
-				}	
+				for (int j = 0; j < arr[i].Length; ++j) {
+					if (((q >> arr[i][j]) & 1) == 1) {
+						c += 1;
+					}
+				}
+				if ((ok[i] == true && c < k) || (ok[i] == false && c >= k)) {
+					flag = 0;
+					break;
+				}
 			}
+			ans += flag;
 		}
 
-		
+		writeline(ans);
+
 	} // end of method
 } // end of class

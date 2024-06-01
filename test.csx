@@ -717,14 +717,6 @@ class Kyopuro {
 
 	public void Solve() {
 
-		long n = 100000000;
-		var sw = new Stopwatch();
-		sw.Start();
-		for (int i = 0; i < 100000; ++i) {
-			var arr = PrimeFactorize(n);
-		}
-		sw.Stop();
-		writeline(sw.Elapsed);
-
+		WriteLine2bit(1152921504606846975);
 	} // end of method
 } // end of class
