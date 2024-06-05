@@ -493,69 +493,36 @@ class Kyopuro {
 
 
 	public void Solve() {
-
 		int n = readint();
 		string s = read();
 
-		int lnum = s.Count((c) => c == '(');
-		int rnum = s.Count((c) => c == ')');
-		if (lnum == rnum) {
-			int l = 0, r = 0;
-			for (int i = 0; i < n; ++i) {
-				if (s[i] == '(') {
-					l = i;
-					break;
+		int l = 0;
+		var stack = new Stack<char>();
+		for (int i = 0; i < n; ++i) {
+			if (s[i] == '(') l += 1;
+			if (s[i] == ')') {
+				if (l > 0) {
+					while (stack.Count > 0 && stack.Peek() != '(') {
+						stack.Pop();
+					}
+					if (stack.Count > 0) stack.Pop();
+					l -= 1;
+				} else {
+					stack.Push(s[i]);
 				}
+			} else {
+				stack.Push(s[i]);
 			}
-			for (int i = n - 1; i >= 0; --i) {
-				if (s[i] == ')') {
-					r = i;
-					break;
-				}
-			}
-			for (int i = 0; i < l; ++i) write(s[i]);
-			for (int i = r + 1; i < n; ++i) write(s[i]);
-			writeline();
-		} else if (lnum < rnum) {
-			int rc = 0;
-			int l = 0, r = 0;
-			for (int i = 0; i < n; ++i) {
-				if (s[i] == ')') rc += 1;
-				if (rc == lnum) {
-					r = i;
-					break;
-				}
-			}
-			for (int i = 0; i < n; ++i) {
-				if (s[i] == '(') {
-					l = i;
-					break;
-				}
-			}
-
-			for (int i = 0; i < l; ++i) write(s[i]);
-			for (int i = r + 1; i < n; ++i) write(s[i]);
-			writeline();
-		} else if (lnum > rnum) {
-			int lc = 0;
-			int l = 0, r = 0;
-			for (int i = n - 1; i >= 0; --i) {
-				if (s[i] == '(') lc += 1;
-				if (lc > rnum) {
-					l = i;
-					break;
-				}
-			}
-			for (int i = n - 1; i >= 0; --i) {
-				if (s[i] == ')') {
-					r = i;
-					break;
-				}
-			}
-			for (int i = 0; i < l; ++i) write(s[i]);
-			for (int i = r + 1; i < n; ++i) write(s[i]);
-			writeline();
 		}
+
+		var ans = new List<char>();
+		while (stack.Count > 0) {
+			ans.Add(stack.Pop());
+		}
+		for (int i = ans.Count - 1; i >= 0; --i) {
+			write(ans[i]);
+		}
+		writeline();
 
 	} // end of func
 } // end of class
