@@ -613,7 +613,7 @@ class Kyopuro {
 			}
 		}
 
-		printlist2(dp);
+		// printlist2(dp);
 
 		writeline(Max(dp[0][n], dp[1][n]));
 
