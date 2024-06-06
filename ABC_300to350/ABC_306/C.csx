@@ -599,23 +599,28 @@ class Kyopuro {
 
 	public void Solve() {
 		int n = readint();
-		var dp = makearr2(3, n + 1, 0l);
+		var arr = readline().Split(' ').Select(x => int.Parse(x) - 1).ToArray();
+		var count = new int[n];
+		var ans = new List<(int, int)>(new (int, int)[n]);
 
-		for (int j = 0; j < n; ++j) {
-			var (doku, num) = readintlongt2();
-			dp[0][j + 1] = dp[0][j];
-			dp[1][j + 1] = dp[1][j];
-
-			if (doku == 0) {
-				dp[0][j + 1] = Max(dp[0][j + 1], Max(dp[0][j] + num, dp[1][j] + num));
-			} else {
-				dp[1][j + 1] = Max(dp[1][j + 1], dp[0][j] + num);
+		for (int i = 0; i < arr.Length; ++i) {
+			int a = arr[i];
+			count[a] += 1;
+			if (count[a] == 2) {
+				ans[a] = (i, a + 1);
 			}
 		}
 
-		printlist2(dp);
+		ans.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+		for (int i = 0; i < ans.Count; ++i) {
+			write($"{ans[i].Item2} ");
+		}
+		writeline();
 
-		writeline(Max(dp[0][n], dp[1][n]));
+
+
+
+
 
 
 	} // end of method

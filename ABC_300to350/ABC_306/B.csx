@@ -598,24 +598,15 @@ class Kyopuro {
 
 
 	public void Solve() {
-		int n = readint();
-		var dp = makearr2(3, n + 1, 0l);
-
-		for (int j = 0; j < n; ++j) {
-			var (doku, num) = readintlongt2();
-			dp[0][j + 1] = dp[0][j];
-			dp[1][j + 1] = dp[1][j];
-
-			if (doku == 0) {
-				dp[0][j + 1] = Max(dp[0][j + 1], Max(dp[0][j] + num, dp[1][j] + num));
-			} else {
-				dp[1][j + 1] = Max(dp[1][j + 1], dp[0][j] + num);
-			}
+		Int128 ans = 0;
+		int[] arr = readints();
+		for (int i = arr.Length - 1; i >= 0; --i) {
+			ans <<= 1;
+			ans += arr[i];
+			// ans <<= 1;
 		}
 
-		printlist2(dp);
-
-		writeline(Max(dp[0][n], dp[1][n]));
+		writeline(ans);
 
 
 	} // end of method
