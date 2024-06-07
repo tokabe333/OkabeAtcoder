@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
+using static System.ComponentModel.TypeDescriptor;
 using static Util;
 
 class Util {
@@ -328,6 +329,33 @@ class Util {
 		return ReadLine().Split(' ');
 	} // end of func
 
+	/// <summary>自由な型で2変数を入力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void readt2<T1, T2>(out T1 a, out T2 b) {
+		string[] s = ReadLine().Split(' ');
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+	} // end of func
+
+	/// <summary>自由な型で3変数を入力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void readt3<T1, T2, T3>(out T1 a, out T2 b, out T3 c) {
+		string[] s = ReadLine().Split(' ');
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
+	} // end of func
+
+	/// <summary>自由な型で4変数を入力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void readt4<T1, T2, T3, T4>(out T1 a, out T2 b, out T3 c, out T4 d) {
+		string[] s = ReadLine().Split(' ');
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
+		d = (T4)GetConverter(typeof(T4)).ConvertFromString(s[3]);
+	} // end of func
+
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void WriteLine16<T>(T num) {
@@ -370,6 +398,28 @@ class Util {
 	public static void finalprocess() {
 		System.Console.Out.Flush();
 	} // end of func
+} // end of class
+
+/// Dictionayは毎回ContainsKeyをするのが面倒
+class HashMap<K, V> : Dictionary<K, V> {
+	new public V this[K i] {
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
+	}
+} // end of class
+
+/// Dictionayは毎回ContainsKeyをするのが面倒
+class SortedMap<K, V> : SortedDictionary<K, V> {
+	new public V this[K i] {
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
+	}
 } // end of class
 
 /// 座標に便利(値型だけど16byteまではstructが速い)

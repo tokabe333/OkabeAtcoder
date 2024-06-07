@@ -7,75 +7,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
+using static System.ComponentModel.TypeDescriptor;
 using static Util;
-
-#region using(AtCoder等非対応)
-// using pii = (int, int);
-// using pll = (long, long);
-// using pdd = (double, double);
-// using pss = (string, string);
-// using pis = (int, string);
-// using psi = (string, int);
-// using pls = (long, string);
-// using psl = (string, long);
-// using pds = (double, string);
-// using psd = (string, double);
-// using pid = (int, double);
-// using pdi = (double, int);
-// using pld = (long, double);
-// using pdl = (double, long);
-// using vb = bool[];
-// using vvb = bool[][];
-// using vvvb = bool[][][];
-// using vi = int[];
-// using vvi = int[][];
-// using vvvi = int[][][];
-// using vl = long[];
-// using vvl = long[][];
-// using vvvl = long[][][];
-// using vd = double[];
-// using vvd = double[][];
-// using vvvd = double[][][];
-// using vs = string[];
-// using vvs = string[][];
-// using vvvs = string[][][];
-// using listb = System.Collections.Generic.List<bool>;
-// using llistb = System.Collections.Generic.List<System.Collections.Generic.List<bool>>;
-// using lllistb = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<bool>>>;
-// using listi = System.Collections.Generic.List<int>;
-// using llisti = System.Collections.Generic.List<System.Collections.Generic.List<int>>;
-// using lllisti = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<int>>>;
-// using listl = System.Collections.Generic.List<long>;
-// using llistl = System.Collections.Generic.List<System.Collections.Generic.List<long>>;
-// using lllistl = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<long>>>;
-// using listd = System.Collections.Generic.List<double>;
-// using llistd = System.Collections.Generic.List<System.Collections.Generic.List<double>>;
-// using lllistd = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<double>>>;
-// using lists = System.Collections.Generic.List<string>;
-// using llists = System.Collections.Generic.List<System.Collections.Generic.List<string>>;
-// using lllists = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<string>>>;
-// using mii = System.Collections.Generic.SortedDictionary<int, int>;
-// using mll = System.Collections.Generic.SortedDictionary<long, long>;
-// using mss = System.Collections.Generic.SortedDictionary<string, string>;
-// using mis = System.Collections.Generic.SortedDictionary<int, string>;
-// using msi = System.Collections.Generic.SortedDictionary<string, int>;
-// using mls = System.Collections.Generic.SortedDictionary<long, string>;
-// using msl = System.Collections.Generic.SortedDictionary<string, long>;
-// using umii = System.Collections.Generic.Dictionary<int, int>;
-// using umll = System.Collections.Generic.Dictionary<long, long>;
-// using umss = System.Collections.Generic.Dictionary<string, string>;
-// using umis = System.Collections.Generic.Dictionary<int, string>;
-// using umsi = System.Collections.Generic.Dictionary<string, int>;
-// using umls = System.Collections.Generic.Dictionary<long, string>;
-// using umsl = System.Collections.Generic.Dictionary<string, long>;
-// using seti = System.Collections.Generic.SortedSet<int>;
-// using setl = System.Collections.Generic.SortedSet<long>;
-// using sets = System.Collections.Generic.SortedSet<string>;
-// using useti = System.Collections.Generic.HashSet<int>;
-// using usetl = System.Collections.Generic.HashSet<long>;
-// using usets = System.Collections.Generic.HashSet<string>;
-#endregion
-
 
 class Util {
 	public static double PI = 3.141592653589793;
@@ -396,131 +329,12 @@ class Util {
 		return ReadLine().Split(' ');
 	} // end of func
 
-	/// <summary>読み込んだint2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, int) readintt2() {
-		var arr = readints();
-		return (arr[0], arr[1]);
-	} // end of func
+	public static void readt2<T1, T2>(out T1 a, out T2 b) {
+		string[] s = ReadLine().Split(' ');
 
-	/// <summary>読み込んだint3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, int, int) readintt3() {
-		var arr = readints();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだint4つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, int, int, int) readintt4() {
-		var arr = readints();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>読み込んだlong2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (long, long) readlongt2() {
-		var arr = readlongs();
-		return (arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>読み込んだ数long3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (long, long, long) readlongt3() {
-		var arr = readlongs();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだ数long4つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (long, long, long, long) readlongt4() {
-		var arr = readlongs();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>読み込んだfloat2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (float, float) readfloatt2() {
-		var arr = readfloats();
-		return (arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>読み込んだfloat3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (float, float, float) readfloatt3() {
-		var arr = readfloats();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだfloat4つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (float, float, float, float) readfloatt4() {
-		var arr = readfloats();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>読み込んだdouble2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (double, double) readdoublet2() {
-		var arr = readdoubles();
-		return (arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>読み込んだdouble3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (double, double, double) readdoublet3() {
-		var arr = readdoubles();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだdouble4つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (double, double, double, double) readdoublet4() {
-		var arr = readdoubles();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>読み込んだstring2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (string, string) readstringt2() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (string, string, string) readstringt3() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (string, string, string, string) readstringt4() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>先頭に要素数(int)と次にでかい数字1つ</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, long) readintlongt2() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, long, long) readintlongt3() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, long, long, long) readintlongt4() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+	}
 
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -566,6 +380,28 @@ class Util {
 	} // end of func
 } // end of class
 
+/// Dictionayは毎回ContainsKeyをするのが面倒
+class HashMap<K, V> : Dictionary<K, V> {
+	new public V this[K i] {
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
+	}
+} // end of class
+
+/// Dictionayは毎回ContainsKeyをするのが面倒
+class SortedMap<K, V> : SortedDictionary<K, V> {
+	new public V this[K i] {
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
+	}
+} // end of class
+
 /// 座標に便利(値型だけど16byteまではstructが速い)
 struct YX {
 	public int y;
@@ -596,44 +432,12 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	HashSet<long> set;
-
-	bool dfs(long n, Stack<char> stack) {
-		writeline("n:" + n);
-		if (n == 1) {
-			while (stack.Count > 0) {
-				write("" + stack.Pop());
-			}
-			finalprocess();
-			Environment.Exit(0);
-		}
-
-		if (set.Contains(n)) return false;
-		set.Add(n);
-
-		n -= 1;
-
-		if (n % 3 == 0) {
-			stack.Push('B');
-			dfs(n / 3, stack);
-			stack.Pop();
-		}
-		if (n % 2 == 0) {
-			stack.Push('A');
-			dfs(n / 2, stack);
-			stack.Pop();
-		}
-
-		return true;
-	}
 
 	public void Solve() {
-		long n = readlong();
-		set = new HashSet<long>();
 
-
-		var stack = new Stack<char>();
-		dfs(n, stack);
+		int a; long b;
+		readt2(out a, out b);
+		writeline(a + " " + b);
 
 	} // end of method
 } // end of class
