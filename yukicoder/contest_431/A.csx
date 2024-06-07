@@ -596,44 +596,38 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	HashSet<long> set;
-
-	bool dfs(long n, Stack<char> stack) {
-		writeline("n:" + n);
-		if (n == 1) {
-			while (stack.Count > 0) {
-				write("" + stack.Pop());
-			}
-			finalprocess();
-			Environment.Exit(0);
-		}
-
-		if (set.Contains(n)) return false;
-		set.Add(n);
-
-		n -= 1;
-
-		if (n % 3 == 0) {
-			stack.Push('B');
-			dfs(n / 3, stack);
-			stack.Pop();
-		}
-		if (n % 2 == 0) {
-			stack.Push('A');
-			dfs(n / 2, stack);
-			stack.Pop();
-		}
-
-		return true;
-	}
 
 	public void Solve() {
-		long n = readlong();
-		set = new HashSet<long>();
+		var (a1, a2, a3) = readlongt3();
+		var (b1, b2, b3) = readlongt3();
 
+		var a = a2 * b3 - a3 * b2;
+		var b = a3 * b1 - a1 * b3;
+		var c = a1 * b2 - a2 * b1;
 
-		var stack = new Stack<char>();
-		dfs(n, stack);
+		writeline($"{a} {b} {c}");
+
 
 	} // end of method
 } // end of class
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

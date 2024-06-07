@@ -599,7 +599,7 @@ class Kyopuro {
 	HashSet<long> set;
 
 	bool dfs(long n, Stack<char> stack) {
-		writeline("n:" + n);
+		// writeline("n:" + n);
 		if (n == 1) {
 			while (stack.Count > 0) {
 				write("" + stack.Pop());
