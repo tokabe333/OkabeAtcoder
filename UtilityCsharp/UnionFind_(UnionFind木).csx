@@ -62,6 +62,7 @@ class UnionFind {
 	} // end of method
 
 	/// ノードuとvが同じ集合に属しているか
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public bool Connected(int u, int v) {
 		return this.Root(u) == this.Root(v);
 	} // end of method

@@ -19,6 +19,7 @@ public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
 
 
 /// (nume / deno) % mod を計算
+[MethodImpl(MethodImplOptions.AggressiveInlining)]
 long ModDiv(long nume, long deno, long mod) {
 	return (nume * KurikaeshiPow(deno, mod - 2, mod)) % mod;
 } // end of method

@@ -98,6 +98,7 @@ class MaximumFlow {
 	} // end of method
 
 	/// startからgoalまでの最大流量を計算
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public long MaxFlow(int start, int goal) {
 		long totalFlow = 0;
 		while (true) {
