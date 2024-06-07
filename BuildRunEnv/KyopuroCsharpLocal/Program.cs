@@ -5,19 +5,18 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using static System.Console;
 using static System.Math;
-using static System.ComponentModel.TypeDescriptor;
 using static Util;
 
 class Util {
-	public static double PI = 3.141592653589793;
-	public static long m107 = 1000000007;
-	public static long m998 = 998244353;
-	public static int a10_9 = 1000000000;
-	public static long a10_18 = 1000000000000000000;
-	public static int iinf = 1 << 30;
-	public static long linf = (1l << 61) - (1l << 31);
+	public const long m107 = 1000000007;
+	public const long m998 = 998244353;
+	public const int a10_9 = 1000000000;
+	public const long a10_18 = 1000000000000000000;
+	public const int iinf = 1 << 30;
+	public const long linf = (1l << 61) - (1l << 31);
 
 	/// <summary>1行読みこみ</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -329,31 +328,130 @@ class Util {
 		return ReadLine().Split(' ');
 	} // end of func
 
-	/// <summary>自由な型で2変数を入力</summary>
+	/// <summary>読み込んだint2つをタプルで返す(分解代入用)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void readt2<T1, T2>(out T1 a, out T2 b) {
-		string[] s = ReadLine().Split(' ');
-		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
-		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+	public static (int, int) readintt2() {
+		var arr = readints();
+		return (arr[0], arr[1]);
 	} // end of func
 
-	/// <summary>自由な型で3変数を入力</summary>
+	/// <summary>読み込んだint3つをタプルで返す(分解代入用)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void readt3<T1, T2, T3>(out T1 a, out T2 b, out T3 c) {
-		string[] s = ReadLine().Split(' ');
-		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
-		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
-		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
+	public static (int, int, int) readintt3() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2]);
 	} // end of func
 
-	/// <summary>自由な型で4変数を入力</summary>
+	/// <summary>読み込んだint4つをタプルで返す(分解代入用)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void readt4<T1, T2, T3, T4>(out T1 a, out T2 b, out T3 c, out T4 d) {
-		string[] s = ReadLine().Split(' ');
-		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
-		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
-		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
-		d = (T4)GetConverter(typeof(T4)).ConvertFromString(s[3]);
+	public static (int, int, int, int) readintt4() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだlong2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long) readlongt2() {
+		var arr = readlongs();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだ数long3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long, long) readlongt3() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだ数long4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long, long, long) readlongt4() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだfloat2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float) readfloatt2() {
+		var arr = readfloats();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだfloat3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float, float) readfloatt3() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだfloat4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float, float, float) readfloatt4() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだdouble2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double) readdoublet2() {
+		var arr = readdoubles();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだdouble3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double, double) readdoublet3() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだdouble4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double, double, double) readdoublet4() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだstring2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string) readstringt2() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string, string) readstringt3() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string, string, string) readstringt4() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字1つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long) readintlongt2() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long, long) readintlongt3() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long, long, long) readintlongt4() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2], arr[3]);
 	} // end of func
 
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
@@ -430,10 +528,14 @@ struct YX {
 		this.y = y;
 		this.x = x;
 	}
+
+	// デバッグ出力
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
 /// グラフをするときに(値型だけど16byteまではstructが速い)
-struct Edge : IComparable {
+struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
@@ -444,72 +546,13 @@ struct Edge : IComparable {
 	}
 
 	/// コスト順にソートできるように
-	public int CompareTo(object obj) => this.cost.CompareTo(((Edge)obj).cost);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
 
 	/// デバッグ出力用
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
-
-
-/// union by rankと経路圧縮をする
-/// O(a(N)) 
-class UnionFind {
-	/// 親のノード番号
-	public int[] parents;
-
-	/// 属する集合の要素数　
-	public int[] sizes;
-
-	/// ノード数NのUnionFindを作成
-	public UnionFind(int n) {
-		this.parents = new int[n];
-		this.sizes = new int[n];
-		for (int i = 0; i < n; ++i) {
-			// 初期状態では親を持たない
-			this.parents[i] = -1;
-			// 集合サイズは1
-			this.sizes[i] = 1;
-		}
-	} // end of constructor
-
-	/// ノードiの親を返す
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int Root(int node) {
-		// 根を見つけたらノード番号を変えす
-		if (this.parents[node] == -1) return node;
-
-		// 根までの経路を全て根に直接つなぐ
-		else {
-			int parent = this.Root(this.parents[node]);
-			this.parents[node] = parent;
-			return parent;
-		}
-	} // end of method
-
-	/// ノードuとvの属する集合を結合する
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Unite(int u, int v) {
-		int ru = this.Root(u);
-		int rv = this.Root(v);
-		if (ru == rv) return;
-		// 大きい集合の根に結合(union by rank)
-		// 高さが高々log2になる
-		if (ru > rv) {
-			int tmp = ru;
-			ru = rv;
-			rv = tmp;
-		}
-		this.parents[ru] = rv;
-		this.sizes[rv] = this.sizes[ru] + this.sizes[rv];
-		this.sizes[ru] = this.sizes[rv];
-	} // end of method
-
-	/// ノードuとvが同じ集合に属しているか
-	public bool Connected(int u, int v) {
-		return this.Root(u) == this.Root(v);
-	} // end of method
-} // end of class
-
 
 class Kyopuro {
 	public static void Main() {
@@ -519,49 +562,10 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-
 	public void Solve() {
-		int n, h, w;
-		readt3(out n, out h, out w);
-		var cities = new long[n][];
-		for (int i = 0; i < n; ++i) cities[i] = readlongs();
-		var edges = new Edge[n * (n - 1)];
-		// var edges = new List<Edge>();
 
-		// 距離一覧
-		int index = 0;
-		for (int i = 0; i < n; ++i) {
-			long x1 = cities[i][0];
-			long y1 = cities[i][1];
-			for (int j = 0; j < n; ++j) {
-				if (i == j) continue;
-				// 距離を計算
-				long x2 = cities[j][0];
-				long y2 = cities[j][1];
-				long dx = Min(Abs(x1 - x2), Min(x1, x2) + (w - Max(x1, x2)));
-				long dy = Min(Abs(y1 - y2), Min(y1, y2) + (h - Max(y1, y2)));
-				// 追加
-				// edges.Add(new Edge(i, j, dx + dy));
-				edges[index] = new Edge(i, j, dx + dy);
-				index += 1;
-			}
-		}
-
-		// 距離順
-		// edges.Sort((a, b) => a.cost.CompareTo(b.cost));
-		Array.Sort(edges);
-
-		// 最小全域木
-		var uf = new UnionFind(n);
-		long ans = 0;
-		for (int i = 0; i < edges.Length; ++i) {
-			writeline(edges[i]);
-			if (uf.Connected(edges[i].from, edges[i].to)) continue;
-			uf.Unite(edges[i].from, edges[i].to);
-			ans += edges[i].cost;
-		}
-
-		writeline(ans);
+		var a = new Edge(1, 1, 1);
+		writeline(Marshal.SizeOf(a));
 
 	} // end of method
 } // end of class

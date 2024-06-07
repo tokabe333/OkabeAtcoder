@@ -430,10 +430,14 @@ struct YX {
 		this.y = y;
 		this.x = x;
 	}
+
+	// デバッグ出力
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
 /// グラフをするときに(値型だけど16byteまではstructが速い)
-struct Edge : IComparable {
+struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
@@ -444,9 +448,11 @@ struct Edge : IComparable {
 	}
 
 	/// コスト順にソートできるように
-	public int CompareTo(object obj) => this.cost.CompareTo(((Edge)obj).cost);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
 
 	/// デバッグ出力用
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 

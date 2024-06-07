@@ -11,13 +11,12 @@ using static System.ComponentModel.TypeDescriptor;
 using static Util;
 
 class Util {
-	public static double PI = 3.141592653589793;
-	public static long m107 = 1000000007;
-	public static long m998 = 998244353;
-	public static int a10_9 = 1000000000;
-	public static long a10_18 = 1000000000000000000;
-	public static int iinf = 1 << 30;
-	public static long linf = (1l << 61) - (1l << 31);
+	public const long m107 = 1000000007;
+	public const long m998 = 998244353;
+	public const int a10_9 = 1000000000;
+	public const long a10_18 = 1000000000000000000;
+	public const int iinf = 1 << 30;
+	public const long linf = (1l << 61) - (1l << 31);
 
 	/// <summary>1行読みこみ</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -400,7 +399,7 @@ class Util {
 	} // end of func
 } // end of class
 
-/// Dictionayは毎回ContainsKeyをするのが面倒
+/// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class HashMap<K, V> : Dictionary<K, V> {
 	new public V this[K i] {
 		get {
@@ -411,7 +410,7 @@ class HashMap<K, V> : Dictionary<K, V> {
 	}
 } // end of class
 
-/// Dictionayは毎回ContainsKeyをするのが面倒
+/// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class SortedMap<K, V> : SortedDictionary<K, V> {
 	new public V this[K i] {
 		get {
@@ -430,10 +429,14 @@ struct YX {
 		this.y = y;
 		this.x = x;
 	}
+
+	// デバッグ出力
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
 /// グラフをするときに(値型だけど16byteまではstructが速い)
-struct Edge {
+struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
@@ -442,6 +445,14 @@ struct Edge {
 		this.to = to;
 		this.cost = cost;
 	}
+
+	/// コスト順にソートできるように
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
+
+	/// デバッグ出力用
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 
 class Kyopuro {
