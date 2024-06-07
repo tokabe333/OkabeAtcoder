@@ -8,7 +8,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Reflection.Metadata.Ecma335;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -563,23 +562,11 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (h, w) = readintt2();
-		var s = new string[h];
-		for (int i = 0; i < h; ++i) s[i] = read();
-
-		for (int i = 0; i < h; ++i) {
-			for (int j = 0; j < w; ++j) {
-				if (s[i][j] == '#') continue;
-				int num = 0;
-				if (0 < i && s[i - 1][j] == '#') num++;
-				if (i < h - 1 && s[i + 1][j] == '#') num++;
-				if (0 < j && s[i][j - 1] == '#') num++;
-				if (j < w - 1 && s[i][j + 1] == '#') num++;
-				if (num >= 2) {
-					writeline($"{i + 1} {j + 1}");
-					return;
-				}
-			}
+		int n = readint();
+		if (n % 5 < 3) {
+			writeline(n / 5 * 5);
+		} else {
+			writeline((n + 5) / 5 * 5);
 		}
 
 
