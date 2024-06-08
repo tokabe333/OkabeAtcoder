@@ -11,7 +11,7 @@ using static Util;
 
 class Util {
 	public const long m107 = 1000000007;
-	public const long m998 = 998244353;
+	public static Int128 m998 = 998244353;
 	public const int a10_9 = 1000000000;
 	public const long a10_18 = 1000000000000000000;
 	public const int iinf = 1 << 30;
@@ -562,121 +562,46 @@ class Kyopuro {
 	} // end of func
 
 
-	/// 隣接グラフに対してトポロジカルソートをする
-	/// 出来ない場合は要素0の配列を返す
-	public List<int> TopologicalSort(List<List<int>> graph) {
-		// ノード数
-		int n = graph.Count;
+	/// a^nを繰り返し二乗法
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public Int128 KurikaeshiPow(Int128 a, Int128 n, Int128 mod) {
+		if (n == 0) return 1;
+		if (n == 1) return a % mod;
 
-		// 各ノードの入次数を記録
-		int[] inputNodes = new int[n];
-		for (int i = 0; i < n; ++i) {
-			foreach (int to in graph[i]) {
-				inputNodes[to] += 1;
-			}
+		Int128 ret = 1;
+		while (n > 0) {
+			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
+			if ((n & 1) == 1) ret = (ret * a) % mod;
+			n >>= 1;
+			a = (a * a) % mod;
 		}
 
-		// 入力の次数が0のノードを記録
-		var queue = new Queue<int>();
-		for (int i = 0; i < n; ++i) {
-			if (inputNodes[i] > 0) continue;
-			queue.Enqueue(i);
-		}
-
-		// トポロジカルソート結果
-		List<int> sorted = new List<int>();
-
-		// 手順1 : 入次数が0のノードをキューに追加
-		// 手順2 : キューからノードを取り出しソート結果に追加
-		// 手順3 : 隣接するノードの入次数を-1
-		// 手順4 : 手順1 ~ 手順3 を繰り返し
-		while (queue.Count > 0) {
-			// キューから取り出し
-			int node = queue.Dequeue();
-
-			// 隣接するノードの入次数を-1
-			foreach (int to in graph[node]) {
-				inputNodes[to] -= 1;
-				// 入次数が0ならキューに追加
-				if (inputNodes[to] == 0) queue.Enqueue(to);
-			}
-
-			// ソート結果に追加
-			sorted.Add(node);
-		}
-
-		// ソートしたノード数がgraphのノード数と一致すればトポロジカルソート成功
-		// 一致しなければトポロジカルソートできないグラフ(非DAG)
-		return sorted.Count == n ? sorted : new List<int>();
+		return ret;
 	} // end of method
 
+
+	/// (nume / deno) % mod を計算
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	Int128 ModDiv(Int128 nume, Int128 deno, Int128 mod) {
+		return (nume * KurikaeshiPow(deno, mod - 2, mod)) % mod;
+	} // end of method
+
+
+
 	public void Solve() {
-		int n = readint();
+		Int128 n = readlong();
+		Int128 keta = n.ToString().Length;
 
-		var graph = makelist2(n, 0, 0);
-		var arr = readints();
-		var innum = new long[n];
-		// 向きを反転して入力
-		for (int i = 0; i < n; ++i) {
-			int a = arr[i] - 1;
-			if (a == i) continue;
-			graph[i].Add(a);
-			innum[a] += 1;
+		Int128 a = KurikaeshiPow(10, keta, m998);
+		if (a == 1) {
+			writeline(n % m998);
+			return;
 		}
 
-		var listgraph = new List<List<List<int>>>();
-		var count = makearr(n, 1l);
-		long dfs(int node, HashSet<int> set) {
-			if (count[node] > 0) {
-				return count[node];
-			}
-			if (set.Contains(node)) return 0l;
-			set.Add(node);
+		Int128 am1 = KurikaeshiPow(a, n, m998);
+		Int128 num = (am1 - 1 + m998) % m998;
+		Int128 right = ModDiv(num, a - 1, m998);
 
-			if (graph[node].Count == 0) {
-				count[node] = 1;
-				return 1;
-			}
-			long ret = dfs(graph[node][0], set);
-			count[node] = ret;
-			return ret;
-		}
-
-		for (int i = 0; i < n; ++i) {
-			if (innum[i] > 0) continue;
-			if (count[i] > 0) continue;
-			long hoge = dfs(i, new HashSet<int>());
-		}
-
-
-		void dfs2(int node, HashSet<int> set) {
-			if (set.Contains(node)) return;
-			set.Add(node);
-			if (graph[node].Count == 0) return;
-			dfs(graph[node][0], set);
-		}
-
-		for (int i = 0; i < n; ++i) {
-			if (count[i] > 0) continue;
-			var set = new HashSet<int>();
-			writeline("i:" + i + " set:" + set.Count);
-			dfs2(i, set);
-			foreach (var s in set) {
-				count[s] = set.Count;
-			}
-		}
-
-		printlist(innum);
-		printlist(count);
-
-		long ans = 0;
-		for (int i = 0; i < n; ++i) {
-			ans += count[i];
-		}
-		writeline(ans);
-
-
-
-
+		writeline((n * right) % m998);
 	} // end of method
 } // end of class

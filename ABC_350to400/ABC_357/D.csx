@@ -11,7 +11,7 @@ using static Util;
 
 class Util {
 	public const long m107 = 1000000007;
-	public const long m998 = 998244353;
+	public static Int128 m998 = 998244353;
 	public const int a10_9 = 1000000000;
 	public const long a10_18 = 1000000000000000000;
 	public const int iinf = 1 << 30;
@@ -561,10 +561,47 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+
+	/// a^nを繰り返し二乗法
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public Int128 KurikaeshiPow(Int128 a, Int128 n, Int128 mod) {
+		if (n == 0) return 1;
+		if (n == 1) return a % mod;
+
+		Int128 ret = 1;
+		while (n > 0) {
+			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
+			if ((n & 1) == 1) ret = (ret * a) % mod;
+			n >>= 1;
+			a = (a * a) % mod;
+		}
+
+		return ret;
+	} // end of method
+
+
+	/// (nume / deno) % mod を計算
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	Int128 ModDiv(Int128 nume, Int128 deno, Int128 mod) {
+		return (nume * KurikaeshiPow(deno, mod - 2, mod)) % mod;
+	} // end of method
+
+
+
 	public void Solve() {
-		long n = readlong();
+		Int128 n = readlong();
+		Int128 keta = n.ToString().Length;
 
+		Int128 a = KurikaeshiPow(10, keta, m998);
+		if (a == 1) {
+			writeline(n % m998);
+			return;
+		}
 
+		Int128 am1 = KurikaeshiPow(a, n, m998);
+		Int128 num = (am1 - 1 + m998) % m998;
+		Int128 right = ModDiv(num, a - 1, m998);
 
+		writeline((n * right) % m998);
 	} // end of method
 } // end of class
