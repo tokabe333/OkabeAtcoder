@@ -9,13 +9,82 @@ using static System.Console;
 using static System.Math;
 using static Util;
 
+#region using(AtCoder等非対応)
+// using pii = (int, int);
+// using pll = (long, long);
+// using pdd = (double, double);
+// using pss = (string, string);
+// using pis = (int, string);
+// using psi = (string, int);
+// using pls = (long, string);
+// using psl = (string, long);
+// using pds = (double, string);
+// using psd = (string, double);
+// using pid = (int, double);
+// using pdi = (double, int);
+// using pld = (long, double);
+// using pdl = (double, long);
+// using vb = bool[];
+// using vvb = bool[][];
+// using vvvb = bool[][][];
+// using vi = int[];
+// using vvi = int[][];
+// using vvvi = int[][][];
+// using vl = long[];
+// using vvl = long[][];
+// using vvvl = long[][][];
+// using vd = double[];
+// using vvd = double[][];
+// using vvvd = double[][][];
+// using vs = string[];
+// using vvs = string[][];
+// using vvvs = string[][][];
+// using listb = System.Collections.Generic.List<bool>;
+// using llistb = System.Collections.Generic.List<System.Collections.Generic.List<bool>>;
+// using lllistb = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<bool>>>;
+// using listi = System.Collections.Generic.List<int>;
+// using llisti = System.Collections.Generic.List<System.Collections.Generic.List<int>>;
+// using lllisti = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<int>>>;
+// using listl = System.Collections.Generic.List<long>;
+// using llistl = System.Collections.Generic.List<System.Collections.Generic.List<long>>;
+// using lllistl = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<long>>>;
+// using listd = System.Collections.Generic.List<double>;
+// using llistd = System.Collections.Generic.List<System.Collections.Generic.List<double>>;
+// using lllistd = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<double>>>;
+// using lists = System.Collections.Generic.List<string>;
+// using llists = System.Collections.Generic.List<System.Collections.Generic.List<string>>;
+// using lllists = System.Collections.Generic.List<System.Collections.Generic.List<System.Collections.Generic.List<string>>>;
+// using mii = System.Collections.Generic.SortedDictionary<int, int>;
+// using mll = System.Collections.Generic.SortedDictionary<long, long>;
+// using mss = System.Collections.Generic.SortedDictionary<string, string>;
+// using mis = System.Collections.Generic.SortedDictionary<int, string>;
+// using msi = System.Collections.Generic.SortedDictionary<string, int>;
+// using mls = System.Collections.Generic.SortedDictionary<long, string>;
+// using msl = System.Collections.Generic.SortedDictionary<string, long>;
+// using umii = System.Collections.Generic.Dictionary<int, int>;
+// using umll = System.Collections.Generic.Dictionary<long, long>;
+// using umss = System.Collections.Generic.Dictionary<string, string>;
+// using umis = System.Collections.Generic.Dictionary<int, string>;
+// using umsi = System.Collections.Generic.Dictionary<string, int>;
+// using umls = System.Collections.Generic.Dictionary<long, string>;
+// using umsl = System.Collections.Generic.Dictionary<string, long>;
+// using seti = System.Collections.Generic.SortedSet<int>;
+// using setl = System.Collections.Generic.SortedSet<long>;
+// using sets = System.Collections.Generic.SortedSet<string>;
+// using useti = System.Collections.Generic.HashSet<int>;
+// using usetl = System.Collections.Generic.HashSet<long>;
+// using usets = System.Collections.Generic.HashSet<string>;
+#endregion
+
+
 class Util {
-	public const long m107 = 1000000007;
-	public const long m998 = 998244353;
-	public const int a10_9 = 1000000000;
-	public const long a10_18 = 1000000000000000000;
-	public const int iinf = 1 << 30;
-	public const long linf = (1l << 61) - (1l << 31);
+	public static double PI = 3.141592653589793;
+	public static long m107 = 1000000007;
+	public static long m998 = 998244353;
+	public static int a10_9 = 1000000000;
+	public static long a10_18 = 1000000000000000000;
+	public static int iinf = 1 << 30;
+	public static long linf = (1l << 61) - (1l << 31);
 
 	/// <summary>1行読みこみ</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -497,28 +566,6 @@ class Util {
 	} // end of func
 } // end of class
 
-/// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
-class HashMap<K, V> : Dictionary<K, V> {
-	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
-	}
-} // end of class
-
-/// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
-class SortedMap<K, V> : SortedDictionary<K, V> {
-	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
-	}
-} // end of class
-
 /// 座標に便利(値型だけど16byteまではstructが速い)
 struct YX {
 	public int y;
@@ -527,14 +574,10 @@ struct YX {
 		this.y = y;
 		this.x = x;
 	}
-
-	// デバッグ出力
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
 /// グラフをするときに(値型だけど16byteまではstructが速い)
-struct Edge : IComparable<Edge> {
+struct Edge {
 	public int from;
 	public int to;
 	public long cost;
@@ -543,14 +586,6 @@ struct Edge : IComparable<Edge> {
 		this.to = to;
 		this.cost = cost;
 	}
-
-	/// コスト順にソートできるように
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
-
-	/// デバッグ出力用
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 
 class Kyopuro {
@@ -561,40 +596,31 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+
 	public void Solve() {
-		char b = '#', w = '.';
-		int n = readint();
-		var masu = new List<char[][]>();
-		masu.Add(new char[1][1]);
-		masu[0][0][0] = b;
-
-		int k3  = 1;
-		int k31;
-		for(int k = 1; k <= n; ++k){
-			k31 = k3;
-			k3 *= 3;
-			var m = new char[k3][];
-			for(int i = 0 ; i < 3; ++i){
-				m[i] = new char[k3];
-				for(int j = 0; j < 3; ++j){
-
-					if(i == 1 && j == 1){
-						for(int y = 0; y < k31; ++y){
-							for(int x = 0; x < k31; ++x){
-								m[k31 * i + y][k31 * j + x]  = w;
-							}
-						}
-
-					}
-				}
+		string s = read();
+		int low = 0, up = 0;
+		for(int i = 0; i < s.Length; ++i){
+			if('a' <= s[i] && s[i] <= 'z'){
+				low += 1;
+			}else{
+				up += 1;
 			}
-
-			writeline("k:"+k);
-			printlist2(m);
-			writeline();
 		}
 
-
+		for(int i = 0; i <s.Length; ++i){
+			if(low > up){
+				if('A' <= s[i] && s[i] <='Z'){
+					char c = (char)(s[i] - 'A' + 'a');
+					write(c);
+				}
+				else write(s[i]);
+			}else{
+				if('a' <= s[i] && s[i] <= 'z') write((char)(s[i] - 'a' + 'A'));
+				else write(s[i]);
+			}
+		}
+		writeline();
 
 
 	} // end of method
