@@ -222,7 +222,7 @@ class Util {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void printlist2<T>(List<List<T>> list) {
 		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+			WriteLine(string.Join("", l));
 		}
 	} // end of func
 
@@ -230,7 +230,7 @@ class Util {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void printlist2<T>(T[][] list) {
 		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+			WriteLine(string.Join("", l));
 		}
 	} // end of func	
 
@@ -565,34 +565,46 @@ class Kyopuro {
 		char b = '#', w = '.';
 		int n = readint();
 		var masu = new List<char[][]>();
-		masu.Add(new char[1][1]);
+		masu.Add(makearr2<char>(1, 1, b));
 		masu[0][0][0] = b;
 
-		int k3  = 1;
+		int k3 = 1;
 		int k31;
-		for(int k = 1; k <= n; ++k){
+		for (int k = 1; k <= n; ++k) {
 			k31 = k3;
 			k3 *= 3;
-			var m = new char[k3][];
-			for(int i = 0 ; i < 3; ++i){
-				m[i] = new char[k3];
-				for(int j = 0; j < 3; ++j){
+			var m = makearr2(k3, k3, b);
+			for (int i = 0; i < 3; ++i) {
+				for (int j = 0; j < 3; ++j) {
 
-					if(i == 1 && j == 1){
-						for(int y = 0; y < k31; ++y){
-							for(int x = 0; x < k31; ++x){
-								m[k31 * i + y][k31 * j + x]  = w;
+					if (i == 1 && j == 1) {
+						for (int y = 0; y < k31; ++y) {
+							for (int x = 0; x < k31; ++x) {
+								m[k31 * i + y][k31 * j + x] = w;
 							}
 						}
 
+					} else {
+						for (int y = 0; y < k31; ++y) {
+							for (int x = 0; x < k31; ++x) {
+								m[k31 * i + y][k31 * j + x] = masu[k - 1][y][x];
+							}
+						}
 					}
 				}
 			}
 
-			writeline("k:"+k);
-			printlist2(m);
-			writeline();
+			// writeline("k:" + k);
+			// printlist2(m);
+			// writeline();
+			// masu.Add(m);
+			// // writeline("k:" + k);
+			// // printlist2(m);
+			// // writeline();
+			masu.Add(m);
 		}
+
+		printlist2(masu[n]);
 
 
 
