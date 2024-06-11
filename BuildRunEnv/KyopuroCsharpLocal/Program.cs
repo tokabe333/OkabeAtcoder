@@ -9,7 +9,6 @@ using static System.Console;
 using static System.Math;
 using static Util;
 
-
 class Util {
 	public const long m107 = 1000000007;
 	public const long m998 = 998244353;
@@ -17,74 +16,589 @@ class Util {
 	public const long a10_18 = 1000000000000000000;
 	public const int iinf = 1 << 30;
 	public const long linf = (1l << 61) - (1l << 31);
-}
+
+	/// <summary>1行読みこみ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string read() => ReadLine();
+
+	/// <summary>1行読みこみ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string readln() => ReadLine();
+
+	/// <summary>1行読みこみ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string readline() => ReadLine();
+
+	/// <summary>改行なし出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void write() => Write("");
+
+	/// <summary>改行なし出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void write<T>(T value) => Write(value);
+
+	/// <summary>改行あり出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void writeln() => WriteLine("");
+
+	/// <summary>改行あり出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void writeln<T>(T value) => WriteLine(value);
+
+	/// <summary>改行あり出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void writeline() => WriteLine("");
+
+	/// <summary>改行あり出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void writeline<T>(T value) => WriteLine(value);
+
+	/// <summary>改行なし出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void print() => Write("");
+
+	/// <summary>改行なし出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void print<T>(T value) => Write(value);
+
+	/// <summary>改行あり出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void println() => WriteLine("");
+
+	/// <summary>改行あり出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void println<T>(T value) => WriteLine(value);
+
+	/// <summary>改行あり出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printline() => WriteLine("");
+
+	/// <summary>改行あり出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printline<T>(T value) => WriteLine(value);
+
+	/// <summary>任意の要素数・初期値の配列を作って初期化する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static T[] makearr<T>(int num, T value) {
+		var arr = new T[num];
+		for (int i = 0; i < num; ++i) arr[i] = value;
+		return arr;
+	} // end of func
+
+	/// <summary>任意の要素数・初期値の２次元配列を作って初期化する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static T[][] makearr2<T>(int height, int width, T value) {
+		var arr = new T[height][];
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new T[width];
+			for (int j = 0; j < width; ++j) {
+				arr[i][j] = value;
+			}
+		}
+		return arr;
+	} // end of func
+
+	/// <summary>任意の要素数・初期値の3次元配列を作って初期化する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static T[][][] makearr3<T>(int height, int width, int depth, T value) {
+		var arr = new T[height][][];
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new T[width][];
+			for (int j = 0; j < width; ++j) {
+				arr[i][j] = new T[depth];
+				for (int k = 0; k < depth; ++k) {
+					arr[i][j][k] = value;
+				}
+			}
+		}
+		return arr;
+	} // end of func
+
+	/// <summary>任意の要素数・初期値のListを作って初期化する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static List<T> makelist<T>(int num, T value) {
+		return new List<T>(makearr(num, value));
+	} // end of func
+
+	/// <summary>任意の要素数・初期値の2次元Listを作って初期化する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static List<List<T>> makelist2<T>(int height, int width, T value) {
+		var arr = new List<List<T>>();
+		for (int i = 0; i < height; ++i) {
+			arr.Add(makelist(width, value));
+		}
+		return arr;
+	} // end of func
+
+	/// <summary>任意の要素数・初期値の3次元Listを作って初期化する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static List<List<List<T>>> makelist3<T>(int height, int width, int depth, T value) {
+		var arr = new List<List<List<T>>>();
+		for (int i = 0; i < height; ++i) {
+			arr[i] = new List<List<T>>();
+			for (int j = 0; j < width; ++j) {
+				arr[i].Add(makelist(depth, value));
+			}
+		}
+		return arr;
+	} // end of func
+
+	/// <summary>1次元配列のディープコピーを行う</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static T[] copyarr<T>(T[] arr) {
+		T[] brr = new T[arr.Length];
+		Array.Copy(arr, brr, arr.Length);
+		return brr;
+	} // end of func 
+
+	/// <summary>2次元配列のディープコピーを行う</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static T[][] copyarr2<T>(T[][] arr) {
+		T[][] brr = new T[arr.Length][];
+		for (int i = 0; i < arr.Length; ++i) {
+			brr[i] = new T[arr[i].Length];
+			Array.Copy(arr[i], brr[i], arr[i].Length);
+		}
+		return brr;
+	} // end of func
+
+	/// <summary>3次元配列のディープコピーを行う</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static T[][][] copyarr3<T>(T[][][] arr) {
+		T[][][] brr = new T[arr.Length][][];
+		for (int i = 0; i < arr.Length; ++i) {
+			brr[i] = new T[arr[i].Length][];
+			for (int j = 0; j < arr[i].Length; ++j) {
+				brr[i][j] = new T[arr[i][j].Length];
+				Array.Copy(arr[i][j], brr[i][j], arr[i][j].Length);
+			}
+		}
+		return brr;
+	} // end of func
+
+	/// <summary>1次元Listのディープコピーを行う</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static List<T> copylist<T>(List<T> list) {
+		return new List<T>(list);
+	} // end of func
+
+	/// <summary>2次元Listのディープコピーを行う</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static List<List<T>> copylist2<T>(List<List<T>> list) {
+		List<List<T>> list2 = new List<List<T>>();
+		for (int i = 0; i < list.Count; ++i) {
+			list2.Add(new List<T>(list[i]));
+		}
+		return list2;
+	} // end of func
+
+	/// <summary>3次元Listのディープコピーを行う</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static List<List<List<T>>> copylist3<T>(List<List<List<T>>> list) {
+		List<List<List<T>>> list2 = new List<List<List<T>>>();
+		for (int i = 0; i < list.Count; ++i) {
+			List<List<T>> tmplist = new List<List<T>>();
+			for (int j = 0; j < list[i].Count; ++i) {
+				tmplist.Add(new List<T>(list[i][j]));
+			}
+			list2.Add(tmplist);
+		}
+		return list2;
+	} // end of func
+
+	/// <summary>1次元Listを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printlist<T>(List<T> list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// <summary>1次元配列を出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printlist<T>(T[] list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// <summary>2次元リストを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printlist2<T>(List<List<T>> list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
+
+	/// <summary>2次元配列を出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printlist2<T>(T[][] list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func	
+
+	/// <summary>1次元Listを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printarr<T>(List<T> list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// <summary>1次元配列を出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printarr<T>(T[] list) {
+		WriteLine(string.Join(" ", list));
+	} // end of func
+
+	/// <summary>2次元リストを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printarr2<T>(List<List<T>> list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
+
+	/// <summary>2次元配列を出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printarr2<T>(T[][] list) {
+		foreach (var l in list) {
+			WriteLine(string.Join(" ", l));
+		}
+	} // end of func
+
+	/// <summary>ジェネリックを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printiter<T>(IEnumerable<T> generic) {
+		foreach (var it in generic) {
+			Write(it + " ");
+		}
+		WriteLine();
+	} // end of func
+
+	/// <summary>ジェネリックを出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printlineiter<T>(IEnumerable<T> generic) {
+		foreach (var it in generic) {
+			WriteLine(it + " ");
+		}
+	} // end of func
+
+	/// <summary>数字を1つint型で読み込み</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static int readint() {
+		return int.Parse(ReadLine());
+	} // end of func
+
+	/// <summary>数字を1つlong型で読み込み</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static long readlong() {
+		return long.Parse(ReadLine());
+	} // end of func
+
+	/// <summary>入力を空白区切りのstringで返す(変則的な入力に対応)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string[] readsplit() {
+		return ReadLine().Split(' ');
+	} // end of func
+
+	/// <summary>数字をスペース区切りでint型で入力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static int[] readints() {
+		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
+	} // end of func
+
+	/// <summary>数字をスペース区切りでlong型で入力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static long[] readlongs() {
+		return ReadLine().Split(' ').Select(_ => long.Parse(_)).ToArray();
+	} // end of func
+
+	/// <summary>数字をスペース区切りでfloat型で入力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static float[] readfloats() {
+		return ReadLine().Split(' ').Select(_ => float.Parse(_)).ToArray();
+	} // end of func
+
+	/// <summary>数字をスペース区切りでdouble型で入力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static double[] readdoubles() {
+		return ReadLine().Split(' ').Select(_ => double.Parse(_)).ToArray();
+	} // end of func
+
+	/// <summary>文字列をスペース区切りで入力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string[] readstrings() {
+		return ReadLine().Split(' ');
+	} // end of func
+
+	/// <summary>読み込んだint2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int) readintt2() {
+		var arr = readints();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだint3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int, int) readintt3() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだint4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int, int, int) readintt4() {
+		var arr = readints();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだlong2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long) readlongt2() {
+		var arr = readlongs();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだ数long3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long, long) readlongt3() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだ数long4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (long, long, long, long) readlongt4() {
+		var arr = readlongs();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだfloat2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float) readfloatt2() {
+		var arr = readfloats();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだfloat3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float, float) readfloatt3() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだfloat4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (float, float, float, float) readfloatt4() {
+		var arr = readfloats();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだdouble2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double) readdoublet2() {
+		var arr = readdoubles();
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだdouble3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double, double) readdoublet3() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだdouble4つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (double, double, double, double) readdoublet4() {
+		var arr = readdoubles();
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>読み込んだstring2つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string) readstringt2() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string, string) readstringt3() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (string, string, string, string) readstringt4() {
+		var arr = ReadLine().Split(' ');
+		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字1つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long) readintlongt2() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long, long) readintlongt3() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2]);
+	} // end of func
+
+	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, long, long, long) readintlongt4() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void WriteLine16<T>(T num) {
+		WriteLine(string.Format("{0:0.################}", num));
+	} // end of func
+
+	/// <summary>整数を二進数で表示</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void WriteLine2bit(int num) {
+		WriteLine(Convert.ToString(num, 2));
+	} // end of func
+
+	/// <summary>整数を二進数で表示</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void WriteLine2bit(long num) {
+		WriteLine(Convert.ToString(num, 2));
+	} // end of func
+
+	/// <summary>整数を2進数表現した文字列に</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string IntToString2bit(int num) {
+		return Convert.ToString(num, 2);
+	} // end of func
+
+	/// <summary>整数を2進数表現した文字列に</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static string LongToString2bit(long num) {
+		return Convert.ToString(num, 2);
+	} // end of func
+
+	/// <summary>出力のflush削除</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void preprocess() {
+		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
+		System.Console.SetOut(sw);
+	} // end of func
+
+	/// <summary>出力をflush</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void finalprocess() {
+		System.Console.Out.Flush();
+	} // end of func
+} // end of class
 
 
 class Kyopuro {
 	public static void Main() {
+		preprocess();
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
+		finalprocess();
 	} // end of func
 
-	/// ある値X未満の最大値のkeyを返す
-	/// 存在しなければiinf
-	public int FindMaxLessThanX(SortedSet<int> set, int x) {
-		foreach (int num in set.GetViewBetween(set.Min, x - 1).Reverse()) return num;
-		return iinf;
-	} // end of func
 
-	/// ある値X未満の最大値のkeyを返す
-	/// 存在しなければlinf
-	public long FindMaxLessThanX(SortedSet<long> set, long x) {
-		foreach (long num in set.GetViewBetween(set.Min, x - 1).Reverse()) return num;
-		return linf;
-	} /// end of func
+	/// <summary> 
+	/// 全ての順列を列挙する
+	/// AllPermutation(0,1,3,6,7) のような呼び方も可能
+	/// </summary>
+	T[][] AllPermutation<T>(params T[] array) where T : IComparable {
+		// return用変数
+		long resnum = 1;
+		for (long i = 2; i <= array.Length; ++i) resnum *= i;
+		var res = new T[resnum][];
+		res[0] = copyarr(array);
 
-	  /// ある値X未満の最大値のkeyを返す
-	  /// 存在しなければiinf
-	public int FindMaxLessThanX(int[] arr, int x) {
-		int left = 0;
-		int right = arr.Length - 1;
-		int mid;
-		int max = -iinf;
+		var a = copyarr(array);
+		var n = a.Length;
+		var next = true;
+		long resind = 1;
+		while (next) {
+			next = false;
 
-		while (left <= right) {
-			mid = (left + right) / 2;
-			if (arr[mid] < x) {
-				max = arr[mid];
-				left = mid + 1;
-			} else {
-				right = mid - 1;
+			// 後ろから A_i < A_(i+1) のインデックスを探す
+			int i;
+			for (i = n - 2; i >= 0; i--) {
+				if (a[i].CompareTo(a[i + 1]) < 0) break;
+			}
+			// 全てのiに対して A_i >= A_(i+1) なら終了
+			if (i < 0) break;
+
+			// 置き換える場所(左)が見つかったので置き換える場所(右)を探す
+			// A_i < A_j (i < j)
+			var j = n;
+			do {
+				j--;
+			} while (a[i].CompareTo(a[j]) > 0);
+
+			// まだ更新余地があるなら
+			// A_iとA_jを入れ替えて、A_(i+1)以降を反転
+			if (a[i].CompareTo(a[j]) < 0) {
+				var tmp = a[i];
+				a[i] = a[j];
+				a[j] = tmp;
+				Array.Reverse(a, i + 1, n - i - 1);
+				res[resind++] = copyarr(a);
+				next = true;
 			}
 		}
-		return max > -iinf ? max : -iinf;
-	} // end of func
+		return res;
+	} // end of method
 
-	public long FindMaxLessThanX(long[] arr, long x) {
-		long left = 0;
-		long right = arr.Length - 1;
-		long mid;
-		long max = -linf;
+	int dfs(List<int[]> list, int y, int x, int height, int depth, int[] perm) {
+		if (depth == list.Count) return height;
 
-		while (left <= right) {
-			mid = (left + right) / 2;
-			if (arr[mid] < x) {
-				max = arr[mid];
-				left = mid + 1;
-			} else {
-				right = mid - 1;
-			}
-		}
-		return max > -linf ? max : -linf;
+		int ret = 0;
+
+		// 縦横
+		int index = perm[depth];
+		if (list[index][1] <= y && list[index][2] <= x) ret = Max(ret, dfs(list, list[index][1], list[index][2], height + list[index][0], depth + 1, perm));
+		if (list[index][2] <= y && list[index][1] <= x) ret = Max(ret, dfs(list, list[index][2], list[index][1], height + list[index][0], depth + 1, perm));
+
+		return ret;
 	}
 
 	public void Solve() {
+		int n = readint();
+		var arr = new int[n][];
+		for (int i = 0; i < n; ++i) arr[i] = readints();
 
-		var arr = new long[] { 1, 4, 6, 8, };
-		for (long i = 0; i < 10; ++i) {
-			long m = FindMaxLessThanX(arr, i);
-			Console.WriteLine($"i:{i} m:{m}");
+		// 0からnまでの順列列挙一覧
+		var allperms = new int[n + 1][][];
+		allperms[0] = makearr2(0, 0, 0);
+		for (int i = 1; i <= n; ++i) {
+			var tmp = new int[i];
+			for (int j = 0; j < tmp.Length; ++j) tmp[j] = j;
+			allperms[i] = AllPermutation(tmp);
 		}
+
+		int ans = 0;
+		for (int i = 1; i < (1 << n); ++i) {
+			var list = new List<int[]>();
+			for (int j = 0; j < n; ++j) {
+				if ((i & (1 << j)) == 0) continue;
+				list.Add(arr[j]);
+			}
+
+
+			// 順番を列挙
+			foreach (var perm in allperms[list.Count]) {
+				int ret = dfs(list, 1000, 1000, 0, 0, perm);
+				ans = Max(ans, ret);
+			}
+		}
+
+		writeline(ans);
+
 
 	} // end of method
 } // end of class
