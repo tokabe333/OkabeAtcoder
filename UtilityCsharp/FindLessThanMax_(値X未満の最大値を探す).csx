@@ -60,6 +60,8 @@ class Kyopuro {
 		return max > -iinf ? max : -iinf;
 	} // end of func
 
+	/// ある値X未満の最大値のkeyを返す
+	/// 存在しなければlinf
 	public long FindMaxLessThanX(long[] arr, long x) {
 		long left = 0;
 		long right = arr.Length - 1;
@@ -76,7 +78,47 @@ class Kyopuro {
 			}
 		}
 		return max > -linf ? max : -linf;
-	}
+	} // end of func
+
+	/// ある値X未満の最大値のkeyを返す
+	/// 存在しなければiinf
+	public int FindMaxLessThanX(List<int> arr, int x) {
+		int left = 0;
+		int right = arr.Count - 1;
+		int mid;
+		int max = -iinf;
+
+		while (left <= right) {
+			mid = (left + right) / 2;
+			if (arr[mid] < x) {
+				max = arr[mid];
+				left = mid + 1;
+			} else {
+				right = mid - 1;
+			}
+		}
+		return max > -iinf ? max : -iinf;
+	} // end of func
+
+	/// ある値X未満の最大値のkeyを返す
+	/// 存在しなければlinf
+	public long FindMaxLessThanX(List<long> arr, long x) {
+		int left = 0;
+		int right = arr.Count - 1;
+		int mid;
+		long max = -linf;
+
+		while (left <= right) {
+			mid = (left + right) / 2;
+			if (arr[mid] < x) {
+				max = arr[mid];
+				left = mid + 1;
+			} else {
+				right = mid - 1;
+			}
+		}
+		return max > -linf ? max : -linf;
+	} // end of func
 
 	public void Solve() {
 
