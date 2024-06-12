@@ -31,6 +31,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of constructor
 
 	/// <summary>先頭に追加</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void EnqueueFirst(T value) {
 		var node = new Node(value);
 		if (this.head == null) {
@@ -45,6 +46,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>末尾に追加</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void EnqueueLast(T value) {
 		var node = new Node(value);
 		if (tail == null) {
@@ -59,6 +61,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>先頭要素削除</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public T DequeueFirst() {
 		if (this.head == null) return default(T);
 		T ret = this.head.value;
@@ -74,6 +77,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>末尾要素削除</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public T DequeueLast() {
 		if (this.tail == null) return default(T);
 		T ret = this.tail.value;
@@ -89,12 +93,15 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>先頭要素取得(存在しなければdefault)</summary>
-	public T PeekFirst => this.head != null ? this.head.value : default(T);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T PeekFirst() => this.head != null ? this.head.value : default(T);
 
 	/// <summary>末尾要素取得(存在しなければdefault)</summary>
-	public T PeekLast => this.tail != null ? this.tail.value : default(T);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T PeekLast() => this.tail != null ? this.tail.value : default(T);
 
 	/// <summary>valueが含まれるか</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public bool Contains(T value) {
 		var node = this.head;
 		while (node != null) {
@@ -105,6 +112,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>valueを持つ先頭の要素のインデックス</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public int IndexAt(T value) {
 		int index = -1;
 		var node = this.head;
@@ -117,6 +125,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>リストの表示(順方向)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void PrintForward() {
 		var node = this.head;
 		while (node != null) {
@@ -127,6 +136,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>リストの表示(逆方向)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public void PrintBackward() {
 		var node = this.tail;
 		while (node != null) {
@@ -137,6 +147,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>IEnumerable<T>の実装, foreachでの列挙可能に</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public IEnumerator<T> GetEnumerator() {
 		var node = this.head;
 		while (node != null) {
@@ -146,6 +157,7 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 	} // end of method
 
 	/// <summary>IEnumerable<T>の実装</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 } // end of class
 
