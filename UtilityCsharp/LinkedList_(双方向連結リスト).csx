@@ -3,14 +3,12 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
-using System.Threading;
-using System.Collections;
-
-
 
 /// <summary>双方向連結リスト(Dequeue)</summary>
 public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
