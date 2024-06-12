@@ -455,8 +455,6 @@ struct Edge : IComparable<Edge> {
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 
-
-
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -466,98 +464,26 @@ class Kyopuro {
 	} // end of func
 
 
-	/// <summary> 
-	/// 全ての順列を列挙する
-	/// AllPermutation(0,1,3,6,7) のような呼び方も可能
-	/// </summary>
-	T[][] AllPermutation<T>(params T[] array) where T : IComparable {
-		// return用変数
-		long resnum = 1;
-		for (long i = 2; i <= array.Length; ++i) resnum *= i;
-		var res = new T[resnum][];
-		res[0] = copyarr(array);
-
-		var a = copyarr(array);
-		var n = a.Length;
-		var next = true;
-		long resind = 1;
-		while (next) {
-			next = false;
-
-			// 後ろから A_i < A_(i+1) のインデックスを探す
-			int i;
-			for (i = n - 2; i >= 0; i--) {
-				if (a[i].CompareTo(a[i + 1]) < 0) break;
-			}
-			// 全てのiに対して A_i >= A_(i+1) なら終了
-			if (i < 0) break;
-
-			// 置き換える場所(左)が見つかったので置き換える場所(右)を探す
-			// A_i < A_j (i < j)
-			var j = n;
-			do {
-				j--;
-			} while (a[i].CompareTo(a[j]) > 0);
-
-			// まだ更新余地があるなら
-			// A_iとA_jを入れ替えて、A_(i+1)以降を反転
-			if (a[i].CompareTo(a[j]) < 0) {
-				var tmp = a[i];
-				a[i] = a[j];
-				a[j] = tmp;
-				Array.Reverse(a, i + 1, n - i - 1);
-				res[resind++] = copyarr(a);
-				next = true;
-			}
-		}
-		return res;
-	} // end of method
-
-	int dfs(List<int[]> list, int y, int x, int height, int depth, int[] perm) {
-		if (depth == list.Count) return height;
-
-		int ret = 0;
-
-		// 縦横
-		int index = perm[depth];
-		if (list[index][1] <= y && list[index][2] <= x) ret = Max(ret, dfs(list, list[index][1], list[index][2], height + list[index][0], depth + 1, perm));
-		if (list[index][2] <= y && list[index][1] <= x) ret = Max(ret, dfs(list, list[index][2], list[index][1], height + list[index][0], depth + 1, perm));
-
-		return ret;
-	}
-
 	public void Solve() {
 		int n = readint();
-		var arr = new int[n][];
-		for (int i = 0; i < n; ++i) arr[i] = readints();
+		var arr = new int[n];
+		for (int i = 0; i < n; ++i) arr[i] = readint();
 
-		// 0からnまでの順列列挙一覧
-		var allperms = new int[n + 1][][];
-		allperms[0] = makearr2(0, 0, 0);
-		for (int i = 1; i <= n; ++i) {
-			var tmp = new int[i];
-			for (int j = 0; j < tmp.Length; ++j) tmp[j] = j;
-			allperms[i] = AllPermutation(tmp);
-		}
+		var dp = new HashSet<int>[n + 1];
+		for (int i = 0; i < n + 1; ++i) dp[i] = new HashSet<int>();
+		dp[0].Add(0);
+		for (int j = 0; j < n; ++j) {
+			foreach (var i in dp[j]) {
+				// 1来進む
+				dp[j + 1].Add(i + arr[j]);
 
-		int ans = 0;
-		for (int i = 1; i < (1 << n); ++i) {
-			var list = new List<int[]>();
-			for (int j = 0; j < n; ++j) {
-				if ((i & (1 << j)) == 0) continue;
-				list.Add(arr[j]);
-			}
-
-
-			// 順番を列挙
-			foreach (var perm in allperms[list.Count]) {
-				int ret = dfs(list, 1000, 1000, 0, 0, perm);
-				ans = Max(ans, ret);
+				// 2進む
+				if (j == n - 1) continue;
+				dp[j + 2].Add(i + arr[j] * 10 + arr[j + 1]);
 			}
 		}
 
-		writeline(ans);
-
+		writeline(dp[n].Max());
 
 	} // end of method
 } // end of class

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
+using static System.ComponentModel.TypeDescriptor;
 using static Util;
 
 class Util {
@@ -327,130 +328,31 @@ class Util {
 		return ReadLine().Split(' ');
 	} // end of func
 
-	/// <summary>読み込んだint2つをタプルで返す(分解代入用)</summary>
+	/// <summary>自由な型で2変数を入力</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, int) readintt2() {
-		var arr = readints();
-		return (arr[0], arr[1]);
+	public static void readt2<T1, T2>(out T1 a, out T2 b) {
+		string[] s = ReadLine().Split(' ');
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
 	} // end of func
 
-	/// <summary>読み込んだint3つをタプルで返す(分解代入用)</summary>
+	/// <summary>自由な型で3変数を入力</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, int, int) readintt3() {
-		var arr = readints();
-		return (arr[0], arr[1], arr[2]);
+	public static void readt3<T1, T2, T3>(out T1 a, out T2 b, out T3 c) {
+		string[] s = ReadLine().Split(' ');
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
 	} // end of func
 
-	/// <summary>読み込んだint4つをタプルで返す(分解代入用)</summary>
+	/// <summary>自由な型で4変数を入力</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, int, int, int) readintt4() {
-		var arr = readints();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>読み込んだlong2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (long, long) readlongt2() {
-		var arr = readlongs();
-		return (arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>読み込んだ数long3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (long, long, long) readlongt3() {
-		var arr = readlongs();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだ数long4つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (long, long, long, long) readlongt4() {
-		var arr = readlongs();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>読み込んだfloat2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (float, float) readfloatt2() {
-		var arr = readfloats();
-		return (arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>読み込んだfloat3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (float, float, float) readfloatt3() {
-		var arr = readfloats();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだfloat4つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (float, float, float, float) readfloatt4() {
-		var arr = readfloats();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>読み込んだdouble2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (double, double) readdoublet2() {
-		var arr = readdoubles();
-		return (arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>読み込んだdouble3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (double, double, double) readdoublet3() {
-		var arr = readdoubles();
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだdouble4つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (double, double, double, double) readdoublet4() {
-		var arr = readdoubles();
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>読み込んだstring2つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (string, string) readstringt2() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (string, string, string) readstringt3() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>読み込んだstring3つをタプルで返す(分解代入用)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (string, string, string, string) readstringt4() {
-		var arr = ReadLine().Split(' ');
-		return (arr[0], arr[1], arr[2], arr[3]);
-	} // end of func
-
-	/// <summary>先頭に要素数(int)と次にでかい数字1つ</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, long) readintlongt2() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1]);
-	} // end of func
-
-	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, long, long) readintlongt3() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2]);
-	} // end of func
-
-	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static (int, long, long, long) readintlongt4() {
-		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
-		return ((int)arr[0], arr[1], arr[2], arr[3]);
+	public static void readt4<T1, T2, T3, T4>(out T1 a, out T2 b, out T3 c, out T4 d) {
+		string[] s = ReadLine().Split(' ');
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
+		d = (T4)GetConverter(typeof(T4)).ConvertFromString(s[3]);
 	} // end of func
 
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
@@ -497,6 +399,61 @@ class Util {
 	} // end of func
 } // end of class
 
+/// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
+class HashMap<K, V> : Dictionary<K, V> {
+	new public V this[K i] {
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
+	}
+} // end of class
+
+/// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
+class SortedMap<K, V> : SortedDictionary<K, V> {
+	new public V this[K i] {
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
+	}
+} // end of class
+
+/// 座標に便利(値型だけど16byteまではstructが速い)
+struct YX {
+	public int y;
+	public int x;
+	public YX(int y, int x) {
+		this.y = y;
+		this.x = x;
+	}
+
+	// デバッグ出力
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public override string ToString() => $"y:{y} x:{x}";
+} // end of class
+
+/// グラフをするときに(値型だけど16byteまではstructが速い)
+struct Edge : IComparable<Edge> {
+	public int from;
+	public int to;
+	public long cost;
+	public Edge(int from, int to, long cost) {
+		this.from = from;
+		this.to = to;
+		this.cost = cost;
+	}
+
+	/// コスト順にソートできるように
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
+
+	/// デバッグ出力用
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
+} // end of class
 
 class Kyopuro {
 	public static void Main() {
@@ -507,98 +464,26 @@ class Kyopuro {
 	} // end of func
 
 
-	/// <summary> 
-	/// 全ての順列を列挙する
-	/// AllPermutation(0,1,3,6,7) のような呼び方も可能
-	/// </summary>
-	T[][] AllPermutation<T>(params T[] array) where T : IComparable {
-		// return用変数
-		long resnum = 1;
-		for (long i = 2; i <= array.Length; ++i) resnum *= i;
-		var res = new T[resnum][];
-		res[0] = copyarr(array);
-
-		var a = copyarr(array);
-		var n = a.Length;
-		var next = true;
-		long resind = 1;
-		while (next) {
-			next = false;
-
-			// 後ろから A_i < A_(i+1) のインデックスを探す
-			int i;
-			for (i = n - 2; i >= 0; i--) {
-				if (a[i].CompareTo(a[i + 1]) < 0) break;
-			}
-			// 全てのiに対して A_i >= A_(i+1) なら終了
-			if (i < 0) break;
-
-			// 置き換える場所(左)が見つかったので置き換える場所(右)を探す
-			// A_i < A_j (i < j)
-			var j = n;
-			do {
-				j--;
-			} while (a[i].CompareTo(a[j]) > 0);
-
-			// まだ更新余地があるなら
-			// A_iとA_jを入れ替えて、A_(i+1)以降を反転
-			if (a[i].CompareTo(a[j]) < 0) {
-				var tmp = a[i];
-				a[i] = a[j];
-				a[j] = tmp;
-				Array.Reverse(a, i + 1, n - i - 1);
-				res[resind++] = copyarr(a);
-				next = true;
-			}
-		}
-		return res;
-	} // end of method
-
-	int dfs(List<int[]> list, int y, int x, int height, int depth, int[] perm) {
-		if (depth == list.Count) return height;
-
-		int ret = 0;
-
-		// 縦横
-		int index = perm[depth];
-		if (list[index][1] <= y && list[index][2] <= x) ret = Max(ret, dfs(list, list[index][1], list[index][2], height + list[index][0], depth + 1, perm));
-		if (list[index][2] <= y && list[index][1] <= x) ret = Max(ret, dfs(list, list[index][2], list[index][1], height + list[index][0], depth + 1, perm));
-
-		return ret;
-	}
-
 	public void Solve() {
 		int n = readint();
-		var arr = new int[n][];
-		for (int i = 0; i < n; ++i) arr[i] = readints();
+		var arr = new int[n];
+		for (int i = 0; i < n; ++i) arr[i] = readint();
 
-		// 0からnまでの順列列挙一覧
-		var allperms = new int[n + 1][][];
-		allperms[0] = makearr2(0, 0, 0);
-		for (int i = 1; i <= n; ++i) {
-			var tmp = new int[i];
-			for (int j = 0; j < tmp.Length; ++j) tmp[j] = j;
-			allperms[i] = AllPermutation(tmp);
-		}
+		var dp = new HashSet<int>[n + 1];
+		for (int i = 0; i < n + 1; ++i) dp[i] = new HashSet<int>();
+		dp[0].Add(0);
+		for (int j = 0; j < n; ++j) {
+			foreach (var i in dp[j]) {
+				// 1来進む
+				dp[j + 1].Add(i + arr[j]);
 
-		int ans = 0;
-		for (int i = 1; i < (1 << n); ++i) {
-			var list = new List<int[]>();
-			for (int j = 0; j < n; ++j) {
-				if ((i & (1 << j)) == 0) continue;
-				list.Add(arr[j]);
-			}
-
-
-			// 順番を列挙
-			foreach (var perm in allperms[list.Count]) {
-				int ret = dfs(list, 1000, 1000, 0, 0, perm);
-				ans = Max(ans, ret);
+				// 2進む
+				if (j == n - 1) continue;
+				dp[j + 2].Add(i + arr[j] * 10 + arr[j + 1]);
 			}
 		}
 
-		writeline(ans);
-
+		writeline(dp[n].Max());
 
 	} // end of method
 } // end of class
