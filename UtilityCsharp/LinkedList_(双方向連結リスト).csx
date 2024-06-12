@@ -147,38 +147,8 @@ public class LinkedList<T> : IEnumerable<T> where T : IEquatable<T> {
 		}
 	} // end of method
 
+	/// <summary>IEnumerable<T>の実装</summary>
 	IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
-
-
-	// private class LinkedListEnumerator : IEnumerator<T> {
-	// 	private Node<T> current;
-	// 	private Node<T> head;
-
-	// 	public LinkedListEnumerator(Node<T> head) {
-	// 		this.head = head;
-	// 		this.current = null;
-	// 	} // end of constructor
-
-	// 	public object Current {
-	// 		get {
-	// 			if (this.current == null) throw new InvalidOperationException();
-	// 			return this.current.value;
-	// 		}
-	// 	} // ened of property
-
-	// 	object IEnumerator.Current => Current;
-
-	// 	public bool MoveNext() {
-	// 		this.current = this.current == null ? this.head : this.current.next;
-	// 		return this.current != null;
-	// 	} // end of method
-
-	// 	public void Reset() => this.current = null;
-
-	// 	public void Dispose() { }
-	// }
-
-
 } // end of class
 
 class Kyopuro {
@@ -200,10 +170,7 @@ class Kyopuro {
 
 		Console.WriteLine("リストの要素（後方向）:");
 		list.PrintBackward();
-		Console.WriteLine("foreach");
-		foreach (var v in list) {
-			Console.Write(v + " ");
-		}
+
 		Console.WriteLine();
 		list.DequeueFirst();
 		Console.WriteLine("先頭要素を削除後のリストの要素（前方向）:");
