@@ -480,6 +480,16 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	/// <symmary>木の根、ここから全ノードを辿っていく</summary>
 	public Node root;
 
+	public AVLTree() { }
+
+	public AVLTree(T[] array) {
+		for (int i = 0; i < array.Length; ++i) this.Insert(array[i]);
+	} // end of constructor
+
+	public AVLTree(List<T> list) {
+		foreach (T value in list) this.Insert(value);
+	} // end of constructor
+
 	// -------------------------------- 挿入 --------------------------------
 
 	/// <summary>ノード挿入(公開用、外部からはこれを呼ぶ)</summary>
@@ -487,7 +497,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public void Insert(T key) => root = this.Insert(root, key);
 
 	/// <summary>ノード挿入処理、回転した結果を今の注目ノードに置き換える</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public Node Insert(Node node, T key) {
 		if (node == null) return new Node(key);
 
@@ -515,7 +524,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public void Remove(T key) => root = this.Remove(root, key);
 
 	/// <summary>ノード削除処理、削除した結果を今の注目ノードに置き換える</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private Node Remove(Node node, T key) {
 		if (node == null) return null;
 
@@ -564,7 +572,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public bool Contains(T key) => this.Contains(this.root, key);
 
 	/// <summary>再帰的に検索対象を探す</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public bool Contains(Node node, T key) {
 		if (node == null) return false;
 
@@ -594,7 +601,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	} // end of method
 
 	/// <summary>LowerBoundを実装する</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private bool LowerBound(Node node, T key, ref T result) {
 		if (node == null) return false;
 		int compare = node.key.CompareTo(key);
@@ -632,7 +638,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	} // end of method
 
 	/// <summary>UpperBoundを実装する</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private bool UpperBound(Node node, T key, ref T result) {
 		if (node == null) return false;
 
@@ -671,7 +676,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	} // end of method
 
 	/// <summary>key未満の最大要素を探索する</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private bool FindLessThanMax(Node node, T key, ref T result) {
 		if (node == null) return false;
 
@@ -705,13 +709,14 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		this.PrintTree(node.right, indent, true);
 	} // end of method
 
-
 	/// <summary>通りがけ順、中間順、inorder tree walk で表示 (左・中・右)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void PrintTreeInOrder() => this.PrintTreeInOrder(this.root);
+	public void PrintTreeInOrder() {
+		this.PrintTreeInOrder(this.root);
+		Console.WriteLine();
+	} // end of method
 
 	/// <summary>通りがけ順、中間順、inorder tree walk で表示 (左・中・右)</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void PrintTreeInOrder(Node node) {
 		if (node == null) return;
 
@@ -722,7 +727,11 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	} // end of method
 
 	/// <summary>行きがけ順、先行順、preorder tree walk で表示 (中・左・右)</summary>
-	public void PrintTreePreOrder() => this.PrintTreePreOrder(this.root);
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void PrintTreePreOrder() {
+		this.PrintTreePreOrder(this.root);
+		Console.WriteLine();
+	} // end of method
 
 	/// <summary>行きがけ順、先行順、preorder tree walk で表示 (中・左・右)</summary>
 	private void PrintTreePreOrder(Node node) {
@@ -730,8 +739,8 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 		// 中、左、右		
 		for (int i = 0; i < node.count; ++i) Console.Write(node.key + " ");
-		this.PrintTreeInOrder(node.left);
-		this.PrintTreeInOrder(node.right);
+		this.PrintTreePreOrder(node.left);
+		this.PrintTreePreOrder(node.right);
 	} // end of method
 
 	// -------------------------------- 内部処理用 (Util) --------------------------------
@@ -742,7 +751,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 	/// <summary>バランスファクタ(左右の高さの差)を取得、nullなら0</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private int GetBalance(Node node) => node != null ? GetHeight(node.left) - GetHeight(node.right) : 0;
+	private int GetBalance(Node node) => node != null ? this.GetHeight(node.left) - this.GetHeight(node.right) : 0;
 
 	/// <summary>指定されたノード以下の部分木から最小値のノードを返す
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -762,8 +771,8 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		y.left = x;
 		x.right = t2;
 
-		x.height = Max(GetHeight(x.left), GetHeight(x.right)) + 1;
-		y.height = Max(GetHeight(y.left), GetHeight(y.right)) + 1;
+		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
+		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
 
 		return y;
 	} // end of method
@@ -779,8 +788,8 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		x.right = y;
 		y.left = t2;
 
-		y.height = Max(GetHeight(y.left), GetHeight(y.right)) + 1;
-		x.height = Max(GetHeight(x.left), GetHeight(x.right)) + 1;
+		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
+		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
 
 		return x;
 	} // end of method
@@ -789,22 +798,22 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private Node Balance(Node node) {
 		// 左右差を取得
-		int balance = GetBalance(node);
+		int balance = this.GetBalance(node);
 
 		// 左の子の方が大きい (1, 0, -1)ならば偏りがないので 1超過
 		if (balance > 1) {
 			// 左の子の右の子が大きい場合 < この形
 			// L-R回転になるので先にL回転
-			if (GetBalance(node.left) < 0) node.left = RotateLeft(node.left);
-			return RotateRight(node);
+			if (this.GetBalance(node.left) < 0) node.left = this.RotateLeft(node.left);
+			return this.RotateRight(node);
 		}
 
 		// 右の子の方が大きい (1, 0, -1)ならば偏りがないので -1未満
 		if (balance < -1) {
 			// 右の子の左の子が大きい場合 > この形
 			// R-L回転になるので先にR回転
-			if (GetBalance(node.right) > 0) node.right = RotateRight(node.right);
-			return RotateLeft(node);
+			if (this.GetBalance(node.right) > 0) node.right = this.RotateRight(node.right);
+			return this.RotateLeft(node);
 		}
 
 		return node;
@@ -814,12 +823,12 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public IEnumerator<T> GetEnumerator() => this.InOrderTraversal(this.root).GetEnumerator();
 
+
 	/// <summary>foreachをサポート</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
 	/// <summary>foreachを実装</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private IEnumerable<T> InOrderTraversal(Node node) {
 		if (node == null) yield break;
 		// 通りがけ順なので左から
@@ -835,7 +844,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 
 
-
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -846,9 +854,21 @@ class Kyopuro {
 
 
 	public void Solve() {
-		int n = readint();
+
 		var avl = new AVLTree<long>();
 
+		while (true) {
+			var split = readsplit();
+			if (split[0] == "end") return;
+			else if (split[0] == "insert") {
+				avl.Insert(long.Parse(split[1]));
+			} else {
+				var node = avl.root;
+				while (node.right != null) node = node.right;
+				writeline(node.key);
+				avl.Remove(node.key);
+			}
+		}
 
 
 	} // end of method
