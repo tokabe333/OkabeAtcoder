@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
-using System.Collections.ObjectModel;
 
 /// <summary>AVL木</summary>
 public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
