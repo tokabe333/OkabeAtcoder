@@ -31,9 +31,11 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public Node root;
 
 	public AVLTree() { }
+
 	public AVLTree(T[] array) {
 		for (int i = 0; i < array.Length; ++i) this.Insert(array[i]);
 	} // end of constructor
+
 	public AVLTree(List<T> list) {
 		foreach (T value in list) this.Insert(value);
 	} // end of constructor
@@ -287,8 +289,8 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 		// 中、左、右		
 		for (int i = 0; i < node.count; ++i) Console.Write(node.key + " ");
-		this.PrintTreeInOrder(node.left);
-		this.PrintTreeInOrder(node.right);
+		this.PrintTreePreOrder(node.left);
+		this.PrintTreePreOrder(node.right);
 	} // end of method
 
 	// -------------------------------- 内部処理用 (Util) --------------------------------
@@ -377,7 +379,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
 	/// <summary>foreachを実装</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private IEnumerable<T> InOrderTraversal(Node node) {
 		if (node == null) yield break;
 		// 通りがけ順なので左から
@@ -405,7 +406,7 @@ class Kyopuro {
 
 	public static void Main() {
 		var kyopuro = new Kyopuro();
-		kyopuro.Solve();
+		kyopuro.Solve2();
 	} // end of func
 
 	public void Solve() {
@@ -420,7 +421,9 @@ class Kyopuro {
 				long k = long.Parse(split[1]);
 				avl.Insert(k);
 			} else if (split[0] == "print") {
+				Console.Write(" ");
 				avl.PrintTreeInOrder();
+				Console.Write(" ");
 				avl.PrintTreePreOrder();
 			} else if (split[0] == "find") {
 				long k = long.Parse(split[1]);
@@ -431,6 +434,7 @@ class Kyopuro {
 				avl.Remove(k);
 			}
 		}
+		avl.PrintTree();
 	}
 
 	public void Solve2() {
@@ -439,12 +443,14 @@ class Kyopuro {
 
 		tree.Insert(10);
 		tree.Insert(20);
-		tree.Insert(10); // 重複
+		tree.Insert(10);
 		tree.Insert(30);
-		tree.Insert(20); // 重複
+		tree.Insert(20);
 		tree.Insert(40);
 		tree.Insert(50);
 		tree.Insert(25);
+		tree.Insert(25);
+		tree.Insert(20);
 
 		tree.PrintTree();
 
@@ -458,13 +464,13 @@ class Kyopuro {
 		Console.WriteLine();
 
 		bool found;
-		int minmax = tree.FindLessThanMax(15, out found);
+		int minmax = tree.FindLessThanMax(20, out found);
 		Console.WriteLine(found + "find less than :" + minmax);
 
-		int lb = tree.LowerBound(15, out found);
+		int lb = tree.LowerBound(20, out found);
 		Console.WriteLine(found + " find lower bound : " + lb);
 
-		int ub = tree.UpperBound(15, out found);
+		int ub = tree.UpperBound(20, out found);
 		Console.WriteLine(found + " find upper bound : " + ub);
 	} // end of method
 } // end of class
