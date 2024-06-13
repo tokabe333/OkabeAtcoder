@@ -847,6 +847,7 @@ class Kyopuro {
 
 	public void Solve() {
 		int n = readint();
+		var avl = new AVLTree<long>();
 
 
 

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
+using System.Collections.ObjectModel;
 
 /// <summary>AVL木</summary>
 public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
@@ -29,6 +30,14 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 	/// <symmary>木の根、ここから全ノードを辿っていく</summary>
 	public Node root;
+
+	public AVLTree() { }
+	public AVLTree(T[] array) {
+		for (int i = 0; i < array.Length; ++i) this.Insert(array[i]);
+	} // end of constructor
+	public AVLTree(List<T> list) {
+		foreach (T value in list) this.Insert(value);
+	} // end of constructor
 
 	// -------------------------------- 挿入 --------------------------------
 
@@ -239,6 +248,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public void PrintTree() => this.PrintTree(this.root, "", true);
 
 	/// <summary>整形して中身を表示する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void PrintTree(Node node, String indent, bool last) {
 		if (node == null) return;
 		Console.WriteLine($"{indent}+- {node.key} (Count: {node.count})");
@@ -246,6 +256,40 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 		this.PrintTree(node.left, indent, false);
 		this.PrintTree(node.right, indent, true);
+	} // end of method
+
+	/// <summary>通りがけ順、中間順、inorder tree walk で表示 (左・中・右)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void PrintTreeInOrder() {
+		this.PrintTreeInOrder(this.root);
+		Console.WriteLine();
+	} // end of method
+
+	/// <summary>通りがけ順、中間順、inorder tree walk で表示 (左・中・右)</summary>
+	private void PrintTreeInOrder(Node node) {
+		if (node == null) return;
+
+		// 左、中、右
+		this.PrintTreeInOrder(node.left);
+		for (int i = 0; i < node.count; ++i) Console.Write(node.key + " ");
+		this.PrintTreeInOrder(node.right);
+	} // end of method
+
+	/// <summary>行きがけ順、先行順、preorder tree walk で表示 (中・左・右)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void PrintTreePreOrder() {
+		this.PrintTreePreOrder(this.root);
+		Console.WriteLine();
+	} // end of method
+
+	/// <summary>行きがけ順、先行順、preorder tree walk で表示 (中・左・右)</summary>
+	private void PrintTreePreOrder(Node node) {
+		if (node == null) return;
+
+		// 中、左、右		
+		for (int i = 0; i < node.count; ++i) Console.Write(node.key + " ");
+		this.PrintTreeInOrder(node.left);
+		this.PrintTreeInOrder(node.right);
 	} // end of method
 
 	// -------------------------------- 内部処理用 (Util) --------------------------------
@@ -349,12 +393,48 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 } // end of class
 
 class Kyopuro {
+	/// <summary>出力のflush削除</summary>
+	public static void preprocess() {
+		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
+		System.Console.SetOut(sw);
+	} // end of func
+
+	/// <summary>出力をflush</summary>
+	public static void finalprocess() {
+		System.Console.Out.Flush();
+	} // end of func
+
 	public static void Main() {
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve();
 	} // end of func
 
 	public void Solve() {
+		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_8_D&lang=jp
+
+		var avl = new AVLTree<long>();
+		int n = int.Parse(Console.ReadLine());
+
+		for (int i = 0; i < n; ++i) {
+			var split = Console.ReadLine().Split(' ');
+			if (split[0] == "insert") {
+				long k = long.Parse(split[1]);
+				avl.Insert(k);
+			} else if (split[0] == "print") {
+				avl.PrintTreeInOrder();
+				avl.PrintTreePreOrder();
+			} else if (split[0] == "find") {
+				long k = long.Parse(split[1]);
+				bool c = avl.Contains(k);
+				Console.WriteLine(c ? "yes" : "no");
+			} else {
+				long k = long.Parse(split[1]);
+				avl.Remove(k);
+			}
+		}
+	}
+
+	public void Solve2() {
 
 		AVLTree<int> tree = new AVLTree<int>();
 
