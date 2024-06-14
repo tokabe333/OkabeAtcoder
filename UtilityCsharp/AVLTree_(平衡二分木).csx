@@ -91,7 +91,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 				node.count -= 1;
 				return node;
 			}
-
 			// 値が1つなのでノードを削除する
 			// 片方または両方の子がない場合は、子で置き換える(子ノードが高々1子なので)
 			if (node.left == null || node.right == null) {
@@ -99,7 +98,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 				// 両方なければ自身を削除、片方あればそれで置き換える
 				return tmp;
 			}
-
 			// 両方の子がある場合は、右部分木から最小値のノードを探して置き換える
 			else {
 				var minRight = this.FindMin(node.right);
