@@ -47,7 +47,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public void Insert(T key) => root = this.Insert(root, key);
 
 	/// <summary>ノード挿入処理、回転した結果を今の注目ノードに置き換える</summary>
-	public Node Insert(Node node, T key) {
+	private Node Insert(Node node, T key) {
 		if (node == null) return new Node(key);
 
 		int compare = key.CompareTo(node.key);
@@ -93,7 +93,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 			}
 
 			// 値が1つなのでノードを削除する
-
 			// 片方または両方の子がない場合は、子で置き換える(子ノードが高々1子なので)
 			if (node.left == null || node.right == null) {
 				var tmp = node.left != null ? node.left : node.right;
@@ -122,7 +121,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public bool Contains(T key) => this.Contains(this.root, key);
 
 	/// <summary>再帰的に検索対象を探す</summary>
-	public bool Contains(Node node, T key) {
+	private bool Contains(Node node, T key) {
 		if (node == null) return false;
 
 		int compare = key.CompareTo(node.key);
@@ -249,7 +248,6 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public void PrintTree() => this.PrintTree(this.root, "", true);
 
 	/// <summary>整形して中身を表示する</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void PrintTree(Node node, String indent, bool last) {
 		if (node == null) return;
 		Console.WriteLine($"{indent}+- {node.key} (Count: {node.count})");
@@ -391,6 +389,12 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		foreach (var num in this.InOrderTraversal(node.right)) yield return num;
 	} // end of method
 } // end of class
+
+
+
+
+
+
 
 class Kyopuro {
 	/// <summary>出力のflush削除</summary>
