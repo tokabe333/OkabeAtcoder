@@ -11,7 +11,6 @@ using static System.Console;
 using static System.Math;
 using static System.ComponentModel.TypeDescriptor;
 using static Util;
-using System.Formats.Asn1;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -486,8 +485,8 @@ class Kyopuro {
 			}
 		}
 
-		printlist2(star);
-		writeline();
+		// printlist2(star);
+		// writeline();
 
 		for (int j = 0; j <= w; ++j) {
 			for (int i = 0; i < h; ++i) {
@@ -495,7 +494,7 @@ class Kyopuro {
 			}
 		}
 
-		printlist2(star);
+		// printlist2(star);
 
 		long ans = 0;
 		for (int i = 1; i < h - 1; ++i) {
@@ -508,8 +507,7 @@ class Kyopuro {
 				long ur = star[0][j + 3] - star[0][w] - star[i][j + 3] + star[i][w];
 				long ll = star[i + 1][0] - star[i + 1][j] - star[h][0] + star[h][j];
 				long lr = star[i + 1][j + 3] - star[i + 1][w] - star[h][j + 3] + star[h][w];
-				// int ur = 0, ll = 0, lr = 0;
-				writeline($"i:{i} j:{j} ul:{ul} ur:{ur} ll:{ll} lr:{lr}");
+				// writeline($"i:{i} j:{j} ul:{ul} ur:{ur} ll:{ll} lr:{lr}");
 				ans += ul * ur * ll * lr;
 			}
 		}
