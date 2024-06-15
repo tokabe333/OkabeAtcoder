@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+
 class Util {
 	public const long m107 = 1000000007;
 	public const long m998 = 998244353;
@@ -562,20 +563,30 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	long[] fact;
-
 	public void Solve() {
-		fact = new long[1001];
-		fact[0] = 1;
-		for (int i = 1; i <= 1000; ++i) fact[i] = (fact[i - 1] * i) % m998;
-		printlist(fact);
-
-		long k = readlong();
+		var (n, m) = readlongt2();
 		var arr = readlongs();
+		var brr = readlongs();
 
-		for (int i = 1; i <= k; ++i) {
+		Array.Sort(arr);
+		Array.Sort(brr);
 
+		long ans = 0;
+		int ai = 0;
+		int bi = 0;
+		while (ai < arr.Length && bi < brr.Length) {
+			if (brr[bi] <= arr[ai]) {
+				ans += arr[ai];
+				ai += 1;
+				bi += 1;
+				continue;
+			}
+
+			ai += 1;
 		}
+
+		if (bi == brr.Length) writeline(ans);
+		else writeline(-1);
 
 
 	} // end of method

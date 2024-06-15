@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+
 class Util {
 	public const long m107 = 1000000007;
 	public const long m998 = 998244353;
@@ -562,20 +563,59 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	/// a^nを繰り返し二乗法
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
+		if (n == 0) return 1;
+		if (n == 1) return a % mod;
+
+		long ret = 1;
+		while (n > 0) {
+			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
+			if ((n & 1) == 1) ret = (ret * a) % mod;
+			n >>= 1;
+			a = (a * a) % mod;
+		}
+
+		return ret;
+	} // end of method
+
+
+	/// (nume / deno) % mod を計算
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	long ModDiv(long nume, long deno, long mod) {
+		return (nume * KurikaeshiPow(deno, mod - 2, mod)) % mod;
+	} // end of method
+
+
 	long[] fact;
 
 	public void Solve() {
 		fact = new long[1001];
 		fact[0] = 1;
 		for (int i = 1; i <= 1000; ++i) fact[i] = (fact[i - 1] * i) % m998;
-		printlist(fact);
 
-		long k = readlong();
-		var arr = readlongs();
+		int k = readint();
+		var arr = readints();
+		k = Min(k, arr.Sum());
 
-		for (int i = 1; i <= k; ++i) {
+		var memo = new Dictionary<List<int>, long>();
 
+		void dfs(int depth, List<int> list, int[] arr) {
+			if (depth == 0) return;
+			for (int i = 0; i < 26; ++i) {
+				if (arr[i] == 0) continue;
+				list.Add(i);
+				arr[i] -= 1;
+				if (memo.ContainsKey())
+
+					dfs(depth - 1, list, arr);
+				list.RemoveAt(list.Count - 1);
+				arr[i] += 1;
+			}
 		}
+
+
 
 
 	} // end of method
