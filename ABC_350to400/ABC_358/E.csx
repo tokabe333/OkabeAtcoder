@@ -595,23 +595,17 @@ class Kyopuro {
 		fact[0] = 1;
 		for (int i = 1; i <= 1000; ++i) fact[i] = (fact[i - 1] * i) % m998;
 
-		int k = readint();
-		var arr = readints();
-		k = Min(k, arr.Sum());
+		int c = readint();
+		var arr = readlongs();
+		var dp = makearr2(1001, c + 1, 0l);
 
-		var memo = new Dictionary<List<int>, long>();
+		for (int j = 0; j < c; ++j) {
+			for (int i = 0; i <= 1000; ++i) {
 
-		void dfs(int depth, List<int> list, int[] arr) {
-			if (depth == 0) return;
-			for (int i = 0; i < 26; ++i) {
-				if (arr[i] == 0) continue;
-				list.Add(i);
-				arr[i] -= 1;
-				if (memo.ContainsKey())
+				for (int k = 0; k <= c - i; ++k) {
 
-					dfs(depth - 1, list, arr);
-				list.RemoveAt(list.Count - 1);
-				arr[i] += 1;
+				}
+
 			}
 		}
 
