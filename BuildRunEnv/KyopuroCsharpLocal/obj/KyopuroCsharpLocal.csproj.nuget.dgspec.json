@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj": {}
+    "/home/souta/デスクトップ/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj": {}
   },
   "projects": {
-    "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj": {
+    "/home/souta/デスクトップ/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
+        "projectUniqueName": "/home/souta/デスクトップ/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
         "projectName": "KyopuroCsharpLocal",
-        "projectPath": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
-        "packagesPath": "/Users/okabesouta/.nuget/packages/",
-        "outputPath": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/obj/",
+        "projectPath": "/home/souta/デスクトップ/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/KyopuroCsharpLocal.csproj",
+        "packagesPath": "/home/souta/.nuget/packages/",
+        "outputPath": "/home/souta/デスクトップ/OkabeAtcoder/BuildRunEnv/KyopuroCsharpLocal/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/okabesouta/.nuget/NuGet/NuGet.Config"
+          "/home/souta/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -58,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/snap/dotnet-sdk/245/sdk/8.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
