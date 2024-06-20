@@ -44,6 +44,8 @@ class Kyopuro {
 	/// nCkを計算する
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	long nCk(long n, long k, long mod = 998244353l) {
+		// nck = n! / (k! * (n - k)!)
+		// → fact[n!] * inv[k!] * inv[(n - k)!]
 		long nume = 1, deno = 1;
 		for (long i = 0l; i < k; ++i) nume = nume * (n - i) % mod;
 		for (long i = 2l; i <= k; ++i) deno = deno * i % mod;

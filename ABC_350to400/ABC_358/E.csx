@@ -563,53 +563,61 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	/// a^nを繰り返し二乗法
+	/// [0, n]の範囲で a^(-1) mod p を計算
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
-		if (n == 0) return 1;
-		if (n == 1) return a % mod;
-
-		long ret = 1;
-		while (n > 0) {
-			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
-			if ((n & 1) == 1) ret = (ret * a) % mod;
-			n >>= 1;
-			a = (a * a) % mod;
+	long[] EnumInv(long n, long mod = 998244353l) {
+		var inv = new long[n + 1];
+		inv[0] = 1;
+		inv[1] = 1;
+		for (long i = 2; i <= n; ++i) {
+			inv[i] = mod - inv[mod % i] * (mod / i) % mod;
 		}
-
-		return ret;
+		return inv;
 	} // end of method
 
-
-	/// (nume / deno) % mod を計算
+	/// [0, n]の範囲で a! を計算
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	long ModDiv(long nume, long deno, long mod) {
-		return (nume * KurikaeshiPow(deno, mod - 2, mod)) % mod;
+	long[] EnumFact(long n, long mod = 998244353l) {
+		var fact = new long[n + 1];
+		fact[0] = 1;
+		for (long i = 1; i <= n; ++i) {
+			fact[i] = fact[i - 1] * i % mod;
+		}
+		return fact;
 	} // end of method
 
-
-	long[] fact;
 
 	public void Solve() {
-		fact = new long[1001];
-		fact[0] = 1;
-		for (int i = 1; i <= 1000; ++i) fact[i] = (fact[i - 1] * i) % m998;
+		int h = 1000;
+		var fact = EnumFact(h + 1);
+		var inv = EnumInv(h + 1);
 
 		int c = readint();
 		var arr = readlongs();
-		var dp = makearr2(1001, c + 1, 0l);
+		var dp = makearr2(c + 1, 27, 0l);
 
-		for (int j = 0; j < c; ++j) {
-			for (int i = 0; i <= 1000; ++i) {
+		long n = 0; // nCk の n
+		long nck = 0;
+		for (int j = 1; j < 26; ++j) {
+			for (int i = 0; i <= c; ++i) {
 
-				for (int k = 0; k <= c - i; ++k) {
+				// dp[i][j + 1] = dp[i][j + 1] * dp[i][j] % m998;
+				dp[i][j + 1] += dp[i][j];
+				for (int k = 1; k <= c; ++k) {
+					if (arr[j] + i > c) break;
+					n = i;
+					nck = fact[n] * inv[k] % m998 * inv[n - k] % m998;
+					// dp[i + k][j + 1] = dp[i + k][j + 1] * nck % m998;
+					dp[i + k][j + 1] = (dp[i][j] + nck) % m998;
 
+					writeline($"i:{i} j:{j} n:{n} k:{k} nck:{nck}");
 				}
 
 			}
 		}
 
 
+		printlist2(dp);
 
 
 	} // end of method
