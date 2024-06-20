@@ -1,5 +1,6 @@
-using System.Runtime.CompilerServices;
+#pragma warning disable
 
+using System.Runtime.CompilerServices;
 
 /// a^nを繰り返し二乗法
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -21,7 +22,7 @@ public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
 /// (nume / deno) % mod を計算
 [MethodImpl(MethodImplOptions.AggressiveInlining)]
 long ModDiv(long nume, long deno, long mod) {
-	return (nume * KurikaeshiPow(deno, mod - 2, mod)) % mod;
+	return nume * KurikaeshiPow(deno, mod - 2, mod) % mod;
 } // end of method
 
 
