@@ -45,8 +45,8 @@ class Kyopuro {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	long nCk(long n, long k, long mod = 998244353l) {
 		long nume = 1, deno = 1;
-		for (long i = k; i <= n; ++i) nume = (nume * i) % mod;
-		for (long i = 2; i <= k; ++i) deno = (deno * i) % mod;
+		for (long i = 0l; i < k; ++i) nume = nume * (n - i) % mod;
+		for (long i = 2l; i <= k; ++i) deno = deno * i % mod;
 		return ModDiv(nume, deno, mod);
 	} // end of method
 
@@ -58,16 +58,43 @@ class Kyopuro {
 		return npk;
 	} // end of method
 
+	/// [0, n]の範囲で a^(-1) mod p を計算
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	long[] EnumInv(long n, long mod = 998244353l) {
+		var inv = new long[n + 1];
+		inv[0] = 1;
+		inv[1] = 1;
+		for (long i = 2; i <= n; ++i) {
+			inv[i] = mod - inv[mod % i] * (mod / i) % mod;
+		}
+		return inv;
+	} // end of method
+
+	/// [0, n]の範囲で a! を計算
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	long[] EnumFact(long n, long mod = 998244353l) {
+		var fact = new long[n + 1];
+		fact[0] = 1;
+		for (long i = 1; i <= n; ++i) {
+			fact[i] = fact[i - 1] * i % mod;
+		}
+		return fact;
+	} // end of method
 
 	public void Solve() {
 
 		long n = 5;
 		long k = 3;
 
-		long nck = nCk(n, k);
-		Console.WriteLine(nck);
-		Console.WriteLine(nPk(n, k));
-		Console.WriteLine(ModDiv(11, 7));
+		var inv = EnumInv(5, 7);
+		for (int i = 1; i < inv.Length; ++i) Console.Write(inv[i] + " ");
+		Console.WriteLine();
+		for (int i = 1; i <= 5; ++i) {
+			Console.Write(ModDiv(1, i) + " ");
+		}
+		Console.WriteLine();
+		var fact = EnumFact(7);
+		for (int i = 1; i < fact.Length; ++i) Console.Write(fact[i] + (i == fact.Length - 1 ? "\n" : " "));
 
 	} // end of method
 } // end of class
