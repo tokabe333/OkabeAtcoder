@@ -423,128 +423,39 @@ class SortedMap<K, V> : SortedDictionary<K, V> {
 	}
 } // end of class
 
-
-class MyPriorityQueue<T> {
-	/// 内部で持つヒープ配列
-	public List<T> heap = new List<T>();
-
-	/// 現在の要素数
-	public int Count { get { return heap.Count; } }
-
-	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
-	private Func<T, T, bool> Compare;
-
-	public MyPriorityQueue(Func<T, T, bool> compare) {
-		this.Compare = compare;
-	}  // end of constructor
-
-	/// 新規の値を追加する
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Enqueue(T num) {
-		// 追加する要素のノード番号　
-		int node = this.heap.Count;
-		this.heap.Add(num);
-
-		// 可能な限り親と交換
-		while (node > 0) {
-			// 親ノード
-			int p = (node - 1) / 2;
-
-			// 交換条件を満たさなくなったら終わり
-			if (this.Compare(num, heap[p]) == false) break;
-
-			// 親ノードの値を子に降ろす
-			heap[node] = heap[p];
-			node = p;
-		} // end of while
-
-		// 新規の値を下ろす場所を見つけたので終わり
-		heap[node] = num;
-	} // end of method
-
-	/// 一番優先度の高い値を返す
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public T Peek() => this.heap[0];
-
-	/// 一番優先度の高い値を返して削除する
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public T Dequeue() {
-		// return用の優先度が一番高い値
-		T ret = this.heap[0];
-
-		// 先頭を削除
-		this.Pop();
-
-		return ret;
-	} // end of method
-
-	/// 一番優先度の高い値を削除する
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Pop() {
-		// 根に持ってくる値
-		T last = heap[this.heap.Count - 1];
-
-		// 最後尾を削除 O(1)
-		this.heap.RemoveAt(this.heap.Count - 1);
-
-		// 要素がなくなったら終了
-		if (this.heap.Count == 0) return;
-
-		// 先頭を置き換えて降ろしていく
-		int node = 0;
-		while (node * 2 + 1 < this.heap.Count) {
-			int a = node * 2 + 1;
-			int b = node * 2 + 2;
-
-			// 右の子が存在して、なおかつ優先度が高いならば
-			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
-
-			// 交換条件を満たさなくなったら終わり
-			if (this.Compare(last, this.heap[a])) break;
-
-			// 優先度の高い子を上げる
-			this.heap[node] = this.heap[a];
-			node = a;
-		} // end of while
-
-		// 先頭に持ってきた値の置き場所が決まったので更新
-		this.heap[node] = last;
-	} // end of method
-
-} // end of class
-
-
-
-class Ball : IComparable<Ball> {
-	public int x;
+/// 座標に便利(値型だけど16byteまではstructが速い)
+struct YX {
 	public int y;
-	public int z;
-	public int p;
-	public int no;
-	public Ball(int x, int y, int z, int p) {
-		this.x = x;
+	public int x;
+	public YX(int y, int x) {
 		this.y = y;
-		this.z = z;
-		this.p = p;
-	}
-	public Ball(int[] arr, int no) {
-		this.x = arr[0];
-		this.y = arr[1];
-		this.z = arr[2];
-		this.p = arr[3];
-		this.no = no;
+		this.x = x;
 	}
 
 	// デバッグ出力
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public override string ToString() => $"{x} {y} {z} {p}";
-
-
-	/// y順にソートできるように
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int CompareTo(Ball opp) => this.y.CompareTo(opp.y);
+	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
+/// グラフをするときに(値型だけど16byteまではstructが速い)
+struct Edge : IComparable<Edge> {
+	public int from;
+	public int to;
+	public long cost;
+	public Edge(int from, int to, long cost) {
+		this.from = from;
+		this.to = to;
+		this.cost = cost;
+	}
+
+	/// コスト順にソートできるように
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
+
+	/// デバッグ出力用
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
+} // end of class
 
 class Kyopuro {
 	public static void Main() {
@@ -554,49 +465,48 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public int UpperBound(Ball[] a, int v) {
-		return UpperBound(a, v, Comparer<int>.Default);
-	}
-
-	public int UpperBound(Ball[] a, int v, Comparer<int> cmp) {
-		var l = 0;
-		var r = a.Length - 1;
-		while (l <= r) {
-			var mid = l + (r - l) / 2;
-			var res = cmp.Compare(a[mid].y, v);
-			if (res <= 0) l = mid + 1;
-			else r = mid - 1;
-		}
-		return l;
-	}
-
-	public void Solve2() {
-		int n = readint();
-		var balls = new Ball[n];
-		for (int i = 0; i < n; ++i) {
-			balls[i] = new Ball(readints(), i + 1);
-			balls[i].z /= 30;
-		}
-		Array.Sort(balls);
-
-
-	}
-
 
 	public void Solve() {
-		int n = readint();
-		var balls = new SortedDictionary<int, List<Ball>>();
-		for (int i = 0; i < n; ++i) {
-			var ball = new Ball(readints(), i + 1);
-			ball.z /= 30;
-			if (balls.ContainsKey(ball.z) == false) balls[ball.z] = new List<Ball>();
-			balls[ball.z].Add(ball);
-		}
-		foreach (int key in balls.Keys) balls[key].Sort((a, b) => a.y.CompareTo(b.y));
+		int n, m, g;
+		readt3(out n, out m, out g);
+		g -= 1;
 
-		var pq = new MyPriorityQueue<Ball>((a, b) => a.p > b.p);
 		var graph = new List<int>[n];
+		for (int i = 0; i < n; ++i) graph[i] = new List<int>();
 
+		for (int i = 0; i < m; ++i) {
+			int a, b;
+			readt2(out a, out b);
+			a -= 1;
+			b -= 1;
+			graph[b].Add(a);
+		}
+
+		// ゴールがループに含まれる
+		// ゴールから全てにたどり着ける
+		var flag = new bool[n];
+		var queue = new Queue<int>();
+		queue.Enqueue(g);
+		while (queue.Count > 0) {
+			int node = queue.Dequeue();
+
+			if (flag[node]) continue;
+			flag[node] = true;
+			for (int i = 0; i < graph[node].Count; ++i) {
+				if (flag[graph[node][i]] == false) queue.Enqueue(graph[node][i]);
+			}
+		}
+
+		// writeline("flag");
+		// printlist(flag);
+
+		for (int i = 0; i < n; ++i) {
+			if (flag[i] == false) {
+				writeline("NG");
+				return;
+			}
+		}
+		writeline("OK");
 
 
 	} // end of method
