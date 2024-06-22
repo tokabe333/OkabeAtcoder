@@ -564,39 +564,29 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		long n = readlong();
-		var arr = new long[n + 1];
-		arr[0] = a10_9;
-		var hrr = readlongs();
-		for (int i = 0; i < n; ++i) arr[i + 1] = hrr[i];
+		var (n, k) = readintt2();
+		string s = read();
 
-
-		// height, index
-		var stack = new Stack<(long, long)>();
-		stack.Push((arr[0], 0));
-		stack.Push((0, 0));
-		long count = 0;
-		long height = 0;
-		for (int i = 1; i <= n; ++i) {
-			// 同じか下がるなら1を足す
-			if (height <= arr[i]) {
-				count += 1;
-				height = 1;
-				write(count + " ");
-				stack.Push((height, i));
-			}
-			// 上に上がるなら
-			else {
-				while (stack.Peek().Item1 <= arr[i]) {
-					count = count + (arr[i] - stack.Peek().Item1) * stack.Peek().Item2;
+		long ans = 0;
+		int l, r;
+		for (int i = 0; i <= n - k; ++i) {
+			long count = 1;
+			for (int j = 0; j < k / 2; ++j) {
+				l = i + j;
+				r = i + k - j - 1;
+				if (s[l] == s[r]) {
+					count = 0;
+					break;
 				}
-				height = arr[i];
-				stack.Push((height, i));
-				write(count + 1);
-				height = 1;
-				stack.Push((height, i + 1));
+				if (s[l] == '?' && s[r] == '?') count = count * 2 % m998;
 			}
+			if (count > 0) {
+				writeline($"i:{i} count:{count}");
+			}
+			ans = (ans + count) % m998;
 		}
+
+		writeline(ans);
 
 
 	} // end of method

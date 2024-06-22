@@ -564,38 +564,46 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		long n = readlong();
-		var arr = new long[n + 1];
-		arr[0] = a10_9;
-		var hrr = readlongs();
-		for (int i = 0; i < n; ++i) arr[i + 1] = hrr[i];
+		var (sx, sy) = readlongt2();
+		var (tx, ty) = readlongt2();
+
+		sx += (long)(Pow(10, 17));
+		tx += (long)(Pow(10, 17));
+		sy += (long)(Pow(10, 17));
+		ty += (long)(Pow(10, 17));
 
 
-		// height, index
-		var stack = new Stack<(long, long)>();
-		stack.Push((arr[0], 0));
-		stack.Push((0, 0));
-		long count = 0;
-		long height = 0;
-		for (int i = 1; i <= n; ++i) {
-			// 同じか下がるなら1を足す
-			if (height <= arr[i]) {
-				count += 1;
-				height = 1;
-				write(count + " ");
-				stack.Push((height, i));
+		long dx = Abs(sx - tx);
+		long dy = Abs(sy - ty);
+		// 縦成分が大きい
+		if (dx < dy) {
+			long ans = dx;
+			ans += (dy - dx);
+			writeline(ans);
+		}
+		// 横成分が大きい
+		else if (dx > dy) {
+			long ans = dy;
+			// 奇数行目ならxを引いて揃える
+			if (ty % 2 == 1) {
+				sx -= 1;
+				tx -= 1;
 			}
-			// 上に上がるなら
-			else {
-				while (stack.Peek().Item1 <= arr[i]) {
-					count = count + (arr[i] - stack.Peek().Item1) * stack.Peek().Item2;
-				}
-				height = arr[i];
-				stack.Push((height, i));
-				write(count + 1);
-				height = 1;
-				stack.Push((height, i + 1));
+
+
+			if (sx < tx) {
+				long cx = sx + dy;
+				ans += Abs(cx - tx) / 2;
+				if (cx % 2 == 1 && tx % 2 == 0) ans += 1;
+			} else {
+				// 左に進む
+				long cx = sx - dy;
+				ans += Abs(cx - tx) / 2;
+				if (cx % 2 == 0 && tx % 2 == 1) ans += 1;
 			}
+			writeline(ans);
+		} else {
+			writeline(dx);
 		}
 
 

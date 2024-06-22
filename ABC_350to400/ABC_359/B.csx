@@ -564,39 +564,15 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		long n = readlong();
-		var arr = new long[n + 1];
-		arr[0] = a10_9;
-		var hrr = readlongs();
-		for (int i = 0; i < n; ++i) arr[i + 1] = hrr[i];
+		int n = readint();
+		var arr = readints();
 
-
-		// height, index
-		var stack = new Stack<(long, long)>();
-		stack.Push((arr[0], 0));
-		stack.Push((0, 0));
-		long count = 0;
-		long height = 0;
-		for (int i = 1; i <= n; ++i) {
-			// 同じか下がるなら1を足す
-			if (height <= arr[i]) {
-				count += 1;
-				height = 1;
-				write(count + " ");
-				stack.Push((height, i));
-			}
-			// 上に上がるなら
-			else {
-				while (stack.Peek().Item1 <= arr[i]) {
-					count = count + (arr[i] - stack.Peek().Item1) * stack.Peek().Item2;
-				}
-				height = arr[i];
-				stack.Push((height, i));
-				write(count + 1);
-				height = 1;
-				stack.Push((height, i + 1));
-			}
+		int ans = 0;
+		for (int i = 0; i < arr.Length - 2; ++i) {
+			if (arr[i] == arr[i + 2]) ans += 1;
 		}
+
+		writeline(ans);
 
 
 	} // end of method
