@@ -563,76 +563,49 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	// https://drken1215.hatenablog.com/entry/2018/06/08/210000
-
-	/// 拡張ユークリッド互除法 
-	/// ax + by = gcd(a, b) となる(x, y)を求める
-	/// a^(-1) mod p を求めることは、 ax + py = 1 となるxを求めることに等しい
-	long ExtendGCD(long a, long b, ref long x, ref long y) {
-		if (b == 0) {
-			x = 1l;
-			y = 0l;
-			return a;
-		}
-		long d = ExtendGCD(b, a % b, ref y, ref x);
-		y -= a / b * x;
-		return d;
-	} // end of method
-
-	/// 負のmodに対応
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	long Mod(long a, long mod) => (a % mod + mod) % mod;
-
-	/// 逆元を計算 (a, mod が互いに素である)
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	long ModInv(long a, long mod) {
-		long x = 0, y = 0;
-		ExtendGCD(a, mod, ref x, ref y);
-		return Mod(x, mod);
-	} // end of method
-
-	/// a^nを繰り返し二乗法
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
-		if (n == 0) return 1;
-		if (n == 1) return a % mod;
-
-		long ret = 1;
-		while (n > 0) {
-			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
-			if ((n & 1) == 1) ret = (ret * a) % mod;
-			n >>= 1;
-			a = (a * a) % mod;
-		}
-
-		return ret;
-	} // end of method
-
-	/// (nume / deno) % mod を計算
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	long ModDiv(long nume, long deno, long mod) {
-		return nume * KurikaeshiPow(deno, mod - 2, mod) % mod;
-	} // end of method
-
-
-
 	public void Solve() {
-		var (nn, k) = readlongt2();
-		Int128 n = nn;
-		Int128 ninv = ModInv(nn, m998);
-		Int128 n2inv = ModInv(nn * nn, m998);
-		Int128 inv2 = ModInv(2, m998);
-		Int128 exp = (1 - ((n - 1) * ninv) % m998 * ((n - 1) * ninv) % m998) % m998;
-		Int128 ans = 1;
+		var (sx, sy) = readlongt2();
+		var (tx, ty) = readlongt2();
+
+		sx += (long)(Pow(10, 17));
+		tx += (long)(Pow(10, 17));
+		sy += (long)(Pow(10, 17));
+		ty += (long)(Pow(10, 17));
 
 
-		for (long i = 0; i < k; ++i) {
-			ans = ((n - 1) * (n - 1)) % m998 * n2inv % m998 * ans % m998;
-			ans = ans + (1 - (n - 1) * (n - 1) % m998 * n2inv % m998) * (n + 1) * inv2 % m998;
+		long dx = Abs(sx - tx);
+		long dy = Abs(sy - ty);
+		// 縦成分が大きい
+		if (dx < dy) {
+			long ans = dx;
+			ans += (dy - dx);
+			writeline(ans);
+		}
+		// 横成分が大きい
+		else if (dx > dy) {
+			long ans = dy;
+			// 奇数行目ならxを引いて揃える
+			if (ty % 2 == 1) {
+				sx -= 1;
+				tx -= 1;
+			}
+
+
+			if (sx < tx) {
+				long cx = sx + dy;
+				ans += Abs(cx - tx) / 2;
+				if (cx % 2 == 1 && tx % 2 == 0) ans += 1;
+			} else {
+				// 左に進む
+				long cx = sx - dy;
+				ans += Abs(cx - tx) / 2;
+				if (cx % 2 == 0 && tx % 2 == 1) ans += 1;
+			}
+			writeline(ans);
+		} else {
+			writeline(dx);
 		}
 
-
-		writeline(ans % m998);
 
 	} // end of method
 } // end of class

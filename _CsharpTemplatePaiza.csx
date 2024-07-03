@@ -23,60 +23,34 @@ class Util {
 	/// 1行読みこみ
 	[MethodImpl(256)]
 	public static string read() => ReadLine();
-
-	/// 1行読みこみ
 	[MethodImpl(256)]
 	public static string readln() => ReadLine();
-
-	/// 1行読みこみ
 	[MethodImpl(256)]
 	public static string readline() => ReadLine();
 
-	/// 改行なし出力
+	/// 出力
 	[MethodImpl(256)]
 	public static void write() => Write("");
-
-	/// 改行なし出力
 	[MethodImpl(256)]
 	public static void write<T>(T value) => Write(value);
-
-	/// 改行あり出力
 	[MethodImpl(256)]
 	public static void writeln() => WriteLine("");
-
-	/// 改行あり出力
 	[MethodImpl(256)]
 	public static void writeln<T>(T value) => WriteLine(value);
-
-	/// 改行あり出力
 	[MethodImpl(256)]
 	public static void writeline() => WriteLine("");
-
-	/// 改行あり出力
 	[MethodImpl(256)]
 	public static void writeline<T>(T value) => WriteLine(value);
-
-	/// 改行なし出力
 	[MethodImpl(256)]
 	public static void print() => Write("");
-
-	/// 改行なし出力
 	[MethodImpl(256)]
 	public static void print<T>(T value) => Write(value);
-
-	/// 改行あり出力
 	[MethodImpl(256)]
 	public static void println() => WriteLine("");
-
-	/// 改行あり出力
 	[MethodImpl(256)]
 	public static void println<T>(T value) => WriteLine(value);
-
-	/// 改行あり出力
 	[MethodImpl(256)]
 	public static void printline() => WriteLine("");
-
-	/// 改行あり出力
 	[MethodImpl(256)]
 	public static void printline<T>(T value) => WriteLine(value);
 
@@ -146,7 +120,7 @@ class Util {
 		return arr;
 	} // end of func
 
-	/// 1次元配列のディープコピーを行う
+	/// 1次元配列のディープコピー
 	[MethodImpl(256)]
 	public static T[] copyarr<T>(T[] arr) {
 		T[] brr = new T[arr.Length];
@@ -154,7 +128,7 @@ class Util {
 		return brr;
 	} // end of func 
 
-	/// 2次元配列のディープコピーを行う
+	/// 2次元配列のディープコピー
 	[MethodImpl(256)]
 	public static T[][] copyarr2<T>(T[][] arr) {
 		T[][] brr = new T[arr.Length][];
@@ -165,7 +139,7 @@ class Util {
 		return brr;
 	} // end of func
 
-	/// 3次元配列のディープコピーを行う
+	/// 3次元配列のディープコピー
 	[MethodImpl(256)]
 	public static T[][][] copyarr3<T>(T[][][] arr) {
 		T[][][] brr = new T[arr.Length][][];
@@ -179,13 +153,13 @@ class Util {
 		return brr;
 	} // end of func
 
-	/// 1次元Listのディープコピーを行う
+	/// 1次元Listのディープコピー
 	[MethodImpl(256)]
 	public static List<T> copylist<T>(List<T> list) {
 		return new List<T>(list);
 	} // end of func
 
-	/// 2次元Listのディープコピーを行う
+	/// 2次元Listのディープコピー
 	[MethodImpl(256)]
 	public static List<List<T>> copylist2<T>(List<List<T>> list) {
 		List<List<T>> list2 = new List<List<T>>();
@@ -195,7 +169,7 @@ class Util {
 		return list2;
 	} // end of func
 
-	/// 3次元Listのディープコピーを行う
+	/// 3次元Listのディープコピー
 	[MethodImpl(256)]
 	public static List<List<List<T>>> copylist3<T>(List<List<List<T>>> list) {
 		List<List<List<T>>> list2 = new List<List<List<T>>>();
@@ -268,18 +242,14 @@ class Util {
 	/// ジェネリックを出力
 	[MethodImpl(256)]
 	public static void printiter<T>(IEnumerable<T> generic) {
-		foreach (var it in generic) {
-			Write(it + " ");
-		}
+		foreach (var it in generic) Write(it + " ");
 		WriteLine();
 	} // end of func
 
 	/// ジェネリックを出力
 	[MethodImpl(256)]
 	public static void printlineiter<T>(IEnumerable<T> generic) {
-		foreach (var it in generic) {
-			WriteLine(it + " ");
-		}
+		foreach (var it in generic) WriteLine(it + " ");
 	} // end of func
 
 	/// 数字を1つint型で読み込み

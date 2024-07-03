@@ -563,76 +563,41 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	// https://drken1215.hatenablog.com/entry/2018/06/08/210000
-
-	/// 拡張ユークリッド互除法 
-	/// ax + by = gcd(a, b) となる(x, y)を求める
-	/// a^(-1) mod p を求めることは、 ax + py = 1 となるxを求めることに等しい
-	long ExtendGCD(long a, long b, ref long x, ref long y) {
-		if (b == 0) {
-			x = 1l;
-			y = 0l;
-			return a;
-		}
-		long d = ExtendGCD(b, a % b, ref y, ref x);
-		y -= a / b * x;
-		return d;
-	} // end of method
-
-	/// 負のmodに対応
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	long Mod(long a, long mod) => (a % mod + mod) % mod;
-
-	/// 逆元を計算 (a, mod が互いに素である)
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	long ModInv(long a, long mod) {
-		long x = 0, y = 0;
-		ExtendGCD(a, mod, ref x, ref y);
-		return Mod(x, mod);
-	} // end of method
-
-	/// a^nを繰り返し二乗法
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public long KurikaeshiPow(long a, long n, long mod = long.MaxValue) {
-		if (n == 0) return 1;
-		if (n == 1) return a % mod;
-
-		long ret = 1;
-		while (n > 0) {
-			// a^(2^k) をかけていく k = nを二進数表現したときに1が立っているbit
-			if ((n & 1) == 1) ret = (ret * a) % mod;
-			n >>= 1;
-			a = (a * a) % mod;
-		}
-
-		return ret;
-	} // end of method
-
-	/// (nume / deno) % mod を計算
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	long ModDiv(long nume, long deno, long mod) {
-		return nume * KurikaeshiPow(deno, mod - 2, mod) % mod;
-	} // end of method
-
-
-
 	public void Solve() {
-		var (nn, k) = readlongt2();
-		Int128 n = nn;
-		Int128 ninv = ModInv(nn, m998);
-		Int128 n2inv = ModInv(nn * nn, m998);
-		Int128 inv2 = ModInv(2, m998);
-		Int128 exp = (1 - ((n - 1) * ninv) % m998 * ((n - 1) * ninv) % m998) % m998;
-		Int128 ans = 1;
+		long n = readlong();
+		var arr = new long[n + 1];
+		arr[0] = a10_9;
+		var hrr = readlongs();
+		for (int i = 0; i < n; ++i) arr[i + 1] = hrr[i];
 
 
-		for (long i = 0; i < k; ++i) {
-			ans = ((n - 1) * (n - 1)) % m998 * n2inv % m998 * ans % m998;
-			ans = ans + (1 - (n - 1) * (n - 1) % m998 * n2inv % m998) * (n + 1) * inv2 % m998;
+		// height, index
+		var stack = new Stack<(long, long)>();
+		stack.Push((arr[0], 0));
+		stack.Push((0, 0));
+		long count = 0;
+		long height = 0;
+		for (int i = 1; i <= n; ++i) {
+			// 同じか下がるなら1を足す
+			if (height <= arr[i]) {
+				count += 1;
+				height = 1;
+				write(count + " ");
+				stack.Push((height, i));
+			}
+			// 上に上がるなら
+			else {
+				while (stack.Peek().Item1 <= arr[i]) {
+					count = count + (arr[i] - stack.Peek().Item1) * stack.Peek().Item2;
+				}
+				height = arr[i];
+				stack.Push((height, i));
+				write(count + 1);
+				height = 1;
+				stack.Push((height, i + 1));
+			}
 		}
 
-
-		writeline(ans % m998);
 
 	} // end of method
 } // end of class
