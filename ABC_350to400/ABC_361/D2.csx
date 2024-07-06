@@ -10,7 +10,8 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Diagnostics.Metrics;
+using System.Net.Http.Headers;
+using System.Runtime.InteropServices.Marshalling;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -564,9 +565,10 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public bool check(int[] a, int[] b) {
-		for (int i = 0; i < a.Length; ++i) {
+	public bool check(int[] a, int[] b, int s, int g) {
+		for (int i = s; i <= g; ++i) {
 			if (a[i] != b[i]) return false;
 		}
 		return true;
@@ -574,81 +576,114 @@ class Kyopuro {
 
 	public void Solve() {
 		int n = readint();
-		string ss = read();
-		string tt = read();
+		string s = read();
+		string t = read();
 
+		var srr = new int[n + 3];
+		var trr = new int[n + 3];
+		srr[n + 2] = n;
+		trr[n + 2] = n;
 		int ws = 0, wt = 0;
 		for (int i = 0; i < n; ++i) {
-			if (ss[i] == 'W') ws += 1;
-			if (tt[i] == 'W') wt += 1;
+			srr[i] = s[i] == 'B' ? 1 : 2;
+			trr[i] = t[i] == 'B' ? 1 : 2;
+			if (s[i] == 'W') ws += 1;
+			if (t[i] == 'W') wt += 1;
 		}
+
 		if (ws != wt) {
 			writeline(-1);
 			return;
 		}
 
-		// ss = new string(ss.Reverse().ToArray());
-		// tt = new string(ss.Reverse().ToArray());
+		// bfs (前半)
+		(int, int[]) func(int[] srr2, int start, int goal) {
+			var queue = new Queue<(int, int[])>();
+			queue.Enqueue((0, srr2));
+			var set = new HashSet<int[]>();
+			int space = 0;
+			while (queue.Count > 0) {
+				var (depth, crr) = queue.Dequeue();
+				if (set.Contains(crr)) continue;
+				set.Add(crr);
+				space = crr[n + 2];
+				for (int i = 0; i < n + 1; ++i) {
+					if (crr[i] == 0) continue;
 
-		int s = 1 << (n + 2);
-		int t = s;
-		for (int i = 0; i < n; ++i) {
-			if (ss[i] == 'W') s = s + (1 << (n + 1 - i));
-			if (tt[i] == 'W') t = t + (1 << (n + 1 - i));
-		}
-
-		writeline();
-		writeline(ss);
-		writeline(tt);
-		WriteLine2bit(s);
-		WriteLine2bit(t);
-
-		// if (s == t) {
-		// 	writeline(0);
-		// 	return;
-		// }
-
-		// bfs (value, space_index, depth)
-		var queue = new Queue<(int, int, int)>();
-		var set = new HashSet<int>();
-		queue.Enqueue((s, 1, 0));
-		while (queue.Count > 0) {
-			var (v, space, depth) = queue.Dequeue();
-			if (set.Contains(v)) continue;
-			set.Add(v);
-
-			int s1 = v >> space & 1;
-			int s2 = v >> (space - 1) & 1;
-			if (!(s1 == 0 && s2 == 0)) {
-				// writeline($"return s1:{s1} s2:{s2} space:{space}");
-				// WriteLine2bit(v);
-				// writeline();
-				continue;
-			}
-
-			for (int i = 0; i < n + 1; ++i) {
-				int next = v;
-				int c1 = v >> (n + 1 - i) & 1;
-				int c2 = v >> (n - i) & 1;
-				if (c1 == 0 && c2 == 0) continue;
-				next -= c1 << (n + 1 - i);
-				next -= c2 << (n - i);
-				next += c1 << space;
-				next += c2 << (space - 1);
-
-
-				WriteLine2bit(v);
-				WriteLine2bit(next);
-				writeline($"next:{next}c1:{c1} c2:{c2} depth:${depth}");
-				writeline();
-				if (next == t) {
-					writeline(depth + 1);
-					return;
+					var drr = copyarr(crr);
+					drr[space] = drr[i];
+					drr[space + 1] = drr[i + 1];
+					drr[i] = 0;
+					drr[i + 1] = 0;
+					drr[n + 2] = i;
+					if (set.Contains(drr)) continue;
+					if (check(drr, trr, start, goal)) {
+						return (depth + 1, drr);
+					}
+					// write($"d:{depth} ");
+					// printlist(drr);
+					queue.Enqueue((depth + 1, drr));
 				}
-
-				queue.Enqueue((next, n + 1 - i, depth + 1));
 			}
+			return (-1, srr2);
 		}
+
+		if (n % 2 == 0) {
+			if (n <= 6) {
+				var (n6, _) = func(srr, 0, n - 1);
+				if (n6 == -1) {
+					writeline(-1); return;
+				}
+				writeline(n6);
+				return;
+			}
+
+
+			int half = n / 2;
+			if (half % 2 == 1) half -= 2;
+			var (ret, srr2) = func(srr, 0, half);
+			if (ret == -1) {
+				writeline(-1); return;
+			}
+
+			var (ret2, srr3) = func(srr2, half, n - 1);
+			if (ret2 == -1) {
+				writeline(-1); return;
+			}
+
+			// writeline($"ret1:{ret} ret2:{ret2}");
+
+			writeline(ret + ret2);
+		} else {
+			int ans1 = 0;
+			int half = n / 2;
+			var (ret, srr2) = func(srr, 0, half);
+			if (ret == -1) {
+				writeline(-1); return;
+			}
+
+			var (ret2, srr3) = func(srr2, half, n - 1);
+			if (ret2 == -1) {
+				writeline(-1); return;
+			}
+			ans1 = (ret + ret2);
+
+			int ans2 = 0;
+			half = n / 2 + 1;
+			var (ret3, srr4) = func(srr, 0, half);
+			if (ret3 == -1) {
+				writeline(-1); return;
+			}
+
+			var (ret4, srr5) = func(srr4, half, n - 1);
+			if (ret4 == -1) {
+				writeline(-1); return;
+			}
+			ans2 = (ret3 + ret4);
+			writeline(Min(ans1, ans2));
+
+		}
+
 
 	} // end of method
 } // end of class

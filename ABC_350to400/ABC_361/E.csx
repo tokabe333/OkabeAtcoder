@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Diagnostics.Metrics;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -564,89 +563,53 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public bool check(int[] a, int[] b) {
-		for (int i = 0; i < a.Length; ++i) {
-			if (a[i] != b[i]) return false;
-		}
-		return true;
-	}
 
 	public void Solve() {
 		int n = readint();
-		string ss = read();
-		string tt = read();
+		// to, cost
+		var graph = makelist2(n, 0, (0, 0l));
+		long sum = 0;
 
-		int ws = 0, wt = 0;
-		for (int i = 0; i < n; ++i) {
-			if (ss[i] == 'W') ws += 1;
-			if (tt[i] == 'W') wt += 1;
+		for (int i = 0; i < n - 1; ++i) {
+			var abc = readlongs();
+			int a = (int)abc[0] - 1;
+			int b = (int)abc[1] - 1;
+			graph[a].Add((b, abc[2]));
+			graph[b].Add((a, abc[2]));
+			sum += abc[2];
 		}
-		if (ws != wt) {
-			writeline(-1);
+
+		bool flag = false;
+		int node = 0;
+		for (int i = 0; i < n; ++i) {
+			if (graph[i].Count == 1) {
+				node = i;
+				flag = true;
+				break;
+			}
+		}
+
+		if (flag == false) {
+			writeline(sum);
 			return;
 		}
 
-		// ss = new string(ss.Reverse().ToArray());
-		// tt = new string(ss.Reverse().ToArray());
 
-		int s = 1 << (n + 2);
-		int t = s;
-		for (int i = 0; i < n; ++i) {
-			if (ss[i] == 'W') s = s + (1 << (n + 1 - i));
-			if (tt[i] == 'W') t = t + (1 << (n + 1 - i));
-		}
-
-		writeline();
-		writeline(ss);
-		writeline(tt);
-		WriteLine2bit(s);
-		WriteLine2bit(t);
-
-		// if (s == t) {
-		// 	writeline(0);
-		// 	return;
-		// }
-
-		// bfs (value, space_index, depth)
-		var queue = new Queue<(int, int, int)>();
+		long ans = 0;
 		var set = new HashSet<int>();
-		queue.Enqueue((s, 1, 0));
-		while (queue.Count > 0) {
-			var (v, space, depth) = queue.Dequeue();
-			if (set.Contains(v)) continue;
-			set.Add(v);
+		while (true) {
+			// 1個ならひた走る
+			if (graph[node].Count == 1) {
+				if (set.Contains(graph[node][0].Item1)) break;
+				ans += graph[node][0].Item2;
+				node = graph[node][0].Item1;
+			} else {
+				bool nextflag = false;
+				foreach (var next in graph[node]) {
+					if (set.Contains(next.Item1)) continue;
+					nextflag = true;
 
-			int s1 = v >> space & 1;
-			int s2 = v >> (space - 1) & 1;
-			if (!(s1 == 0 && s2 == 0)) {
-				// writeline($"return s1:{s1} s2:{s2} space:{space}");
-				// WriteLine2bit(v);
-				// writeline();
-				continue;
-			}
-
-			for (int i = 0; i < n + 1; ++i) {
-				int next = v;
-				int c1 = v >> (n + 1 - i) & 1;
-				int c2 = v >> (n - i) & 1;
-				if (c1 == 0 && c2 == 0) continue;
-				next -= c1 << (n + 1 - i);
-				next -= c2 << (n - i);
-				next += c1 << space;
-				next += c2 << (space - 1);
-
-
-				WriteLine2bit(v);
-				WriteLine2bit(next);
-				writeline($"next:{next}c1:{c1} c2:{c2} depth:${depth}");
-				writeline();
-				if (next == t) {
-					writeline(depth + 1);
-					return;
 				}
-
-				queue.Enqueue((next, n + 1 - i, depth + 1));
 			}
 		}
 
