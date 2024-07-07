@@ -9,10 +9,10 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
-using Microsoft.Win32;
+
 
 /// <summary>AVL木</summary>
-public class AVLTree<T> : IEnumerable<T> {
+public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	/// <summary>AVL木を構成するノード1個分</summary>
 	public class Node {
 		public T key { get; set; }
