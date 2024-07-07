@@ -572,6 +572,7 @@ class Kyopuro {
 		return true;
 	}
 
+
 	public void Solve() {
 		int n = readint();
 		string ss = read();
@@ -587,68 +588,66 @@ class Kyopuro {
 			return;
 		}
 
-		// ss = new string(ss.Reverse().ToArray());
-		// tt = new string(ss.Reverse().ToArray());
-
-		int s = 1 << (n + 2);
-		int t = s;
-		for (int i = 0; i < n; ++i) {
-			if (ss[i] == 'W') s = s + (1 << (n + 1 - i));
-			if (tt[i] == 'W') t = t + (1 << (n + 1 - i));
+		var powers = new Int128[20];
+		Int128 power = 1;
+		powers[0] = 1;
+		for (int i = 1; i < 20; ++i) {
+			power *= 10;
+			powers[i] = power;
 		}
 
-		writeline();
-		writeline(ss);
-		writeline(tt);
-		WriteLine2bit(s);
-		WriteLine2bit(t);
+		Int128 s = powers[n + 2] * 9;
+		Int128 t = s;
+		for (int i = 0; i < n; ++i) {
+			s += powers[n + 1 - i] * (ss[i] == 'B' ? 1 : 2);
+			t += powers[n + 1 - i] * (tt[i] == 'B' ? 1 : 2);
+		}
 
-		// if (s == t) {
-		// 	writeline(0);
-		// 	return;
-		// }
+		// writeline(s);
+		// writeline(t);
 
-		// bfs (value, space_index, depth)
-		var queue = new Queue<(int, int, int)>();
-		var set = new HashSet<int>();
-		queue.Enqueue((s, 1, 0));
+		if (s == t) {
+			writeline(0);
+			return;
+		}
+		var queue = new Queue<(Int128 value, int space, int depth)>();
+		var set = new HashSet<Int128>();
+		queue.Enqueue((s, 1, 1));
 		while (queue.Count > 0) {
-			var (v, space, depth) = queue.Dequeue();
-			if (set.Contains(v)) continue;
-			set.Add(v);
+			var (value, space, depth) = queue.Dequeue();
+			if (set.Contains(value)) continue;
+			set.Add(value);
 
-			int s1 = v >> space & 1;
-			int s2 = v >> (space - 1) & 1;
+			Int128 s1 = value / powers[space] % 10;
+			Int128 s2 = value / powers[space - 1] % 10;
 			if (!(s1 == 0 && s2 == 0)) {
-				// writeline($"return s1:{s1} s2:{s2} space:{space}");
-				// WriteLine2bit(v);
-				// writeline();
+				// writeline($"continue value:{value} s1:{s1} s2:{s2}");
 				continue;
 			}
 
 			for (int i = 0; i < n + 1; ++i) {
-				int next = v;
-				int c1 = v >> (n + 1 - i) & 1;
-				int c2 = v >> (n - i) & 1;
-				if (c1 == 0 && c2 == 0) continue;
-				next -= c1 << (n + 1 - i);
-				next -= c2 << (n - i);
-				next += c1 << space;
-				next += c2 << (space - 1);
+				Int128 next = value;
+				Int128 c1 = next / powers[n + 1 - i] % 10;
+				Int128 c2 = next / powers[n - i] % 10;
+				if (c1 == 0 || c2 == 0) continue;
+				next += powers[space] * c1;
+				next += powers[space - 1] * c2;
+				next -= powers[n + 1 - i] * c1;
+				next -= powers[n - i] * c2;
 
-
-				WriteLine2bit(v);
-				WriteLine2bit(next);
-				writeline($"next:{next}c1:{c1} c2:{c2} depth:${depth}");
-				writeline();
 				if (next == t) {
-					writeline(depth + 1);
+					writeline(depth);
 					return;
 				}
-
 				queue.Enqueue((next, n + 1 - i, depth + 1));
+				// writeline(next);
+				// writeline($"c1:{c1} c2:{c2} depth:{depth}");
+				// writeline();
+
 			}
 		}
+
+		writeline(-1);
 
 	} // end of method
 } // end of class

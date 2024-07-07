@@ -9,7 +9,11 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
+<<<<<<< HEAD
 using Microsoft.Win32;
+=======
+using static Util;
+>>>>>>> 9fcc5c34a6de5ba7e3a65101af6b0a68c299600a
 
 /// <summary>AVL木</summary>
 public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
@@ -628,6 +632,7 @@ class Kyopuro {
 		kyopuro.Solve2();
 	} // end of func
 
+<<<<<<< HEAD
 	public void Solve() {
 		// https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=ALDS1_8_D&lang=jp
 
@@ -740,5 +745,51 @@ class Kyopuro {
 			last.Prev();
 		}
 		Console.WriteLine();
+=======
+
+	public void Solve() {
+		int n = readint();
+		// to, cost
+		var graph = makelist2(n, 0, new Edge(0, 0, 0l));
+		long sum = 0;
+
+		for (int i = 0; i < n - 1; ++i) {
+			var (a, b, c) = readintt3();
+			--a; --b;
+			graph[a].Add(new Edge(a, b, c));
+			graph[b].Add(new Edge(b, a, c));
+			sum += c;
+		}
+
+		// 一番遠いのd-土
+		(int, long) farthest(int current) {
+			var farthestSet = new HashSet<int>();
+			int farthestNode = -1;
+			long farthestDist = -1;
+			void farthestDfs(int node, long dist) {
+				// writeline($"node:{node} dist:{dist}");
+				if (farthestSet.Contains(node)) return;
+				farthestSet.Add(node);
+				if (dist > farthestDist) {
+					farthestDist = dist;
+					farthestNode = node;
+				}
+
+				foreach (var next in graph[node]) {
+					if (farthestSet.Contains(next.to)) continue;
+					farthestDfs(next.to, dist + next.cost);
+				}
+			}
+			farthestDfs(current, 0);
+			return (farthestNode, farthestDist);
+		}
+
+		var (start, _) = farthest(0);
+		var (goal, dist) = farthest(start);
+
+		writeline(sum * 2 - dist);
+
+
+>>>>>>> 9fcc5c34a6de5ba7e3a65101af6b0a68c299600a
 	} // end of method
 } // end of class
