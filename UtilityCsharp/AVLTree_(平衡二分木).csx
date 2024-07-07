@@ -28,86 +28,22 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		} // end of constructor
 	} // end of class
 
-
-	/// <summary>イテレータを実装するためのクラス</suumary>
-	public class AVLIterator {
-		/// <summary>現在のイテレータ</summary>
-		public Node value { get; private set; }
-
-		public AVLIterator(Node node) => this.value = node;
-
-		/// <summary>次のイテレータを持つか</summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public bool HasNext() => GetNextNode(this.value) != null;
-
-		/// <summary>前のイテレータを持つか</summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public bool HasPrev() => GetPrevNode(this.value) != null;
-
-		/// <summary>次のイテレータを返す</summary>
-		public AVLIterator Next() {
-			this.value = GetNextNode(this.value);
-			return this;
-		} // end of method
-
-		/// <summary>前のイテレータを返す</summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public AVLIterator Prev() {
-			this.value = GetPrevNode(this.value);
-			return this;
-		} // end of method
-
-		/// <summary>次のイテレータを取得する</summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private Node GetNextNode(Node node) {
-			if (node == null) return null;
-			if (node.right != null) {
-				node = node.right;
-				while (node.left != null) node = node.left;
-				return node;
-			}
-			while (node.parent != null && node == node.parent.right) {
-				node = node.parent;
-			}
-			return node.parent;
-		} // end of method
-
-		/// <summary>前のイテレータを取得する</summary>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private Node GetPrevNode(Node node) {
-			if (node == null) return null;
-			if (node.left != null) {
-				node = node.left;
-				while (node.right != null) node = node.right;
-				return node;
-			}
-			while (node.parent != null && node == node.parent.left) {
-				node = node.parent;
-			}
-			return node.parent;
-		} // end of method
-	} // end of class
-
-
-
 	/// <symmary>木の根、ここから全ノードを辿っていく</summary>
 	public Node root;
 
 	/// <summary>比較関数、デフォルトでは小さい順</summary>
 	private readonly IComparer<T> comparer;
 
-	public AVLTree(IComparer<T> comparer = null) {
-		this.comparer = comparer ?? Comparer<T>.Default;
-	}
+	public AVLTree(IComparer<T> comparer = null) => this.comparer = comparer ?? Comparer<T>.Default;
 
 	public AVLTree(T[] array, IComparer<T> comparer = null) {
-		for (int i = 0; i < array.Length; ++i) this.Insert(array[i]);
 		this.comparer = comparer ?? Comparer<T>.Default;
+		for (int i = 0; i < array.Length; ++i) this.Insert(array[i]);
 	} // end of constructor
 
 	public AVLTree(List<T> list, IComparer<T> comparer = null) {
-		foreach (T value in list) this.Insert(value);
 		this.comparer = comparer ?? Comparer<T>.Default;
+		foreach (T value in list) this.Insert(value);
 	} // end of constructor
 
 	// -------------------------------- 挿入 --------------------------------
@@ -604,6 +540,66 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		// right
 		foreach (var num in this.InOrderTraversal(node.right)) yield return num;
 	} // end of method
+
+
+	/// <summary>イテレータを実装するためのクラス</suumary>
+	public class AVLIterator {
+		/// <summary>現在のイテレータ</summary>
+		public Node value { get; private set; }
+
+		public AVLIterator(Node node) => this.value = node;
+
+		/// <summary>次のイテレータを持つか</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool HasNext() => GetNextNode(this.value) != null;
+
+		/// <summary>前のイテレータを持つか</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool HasPrev() => GetPrevNode(this.value) != null;
+
+		/// <summary>次のイテレータを返す</summary>
+		public AVLIterator Next() {
+			this.value = GetNextNode(this.value);
+			return this;
+		} // end of method
+
+		/// <summary>前のイテレータを返す</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public AVLIterator Prev() {
+			this.value = GetPrevNode(this.value);
+			return this;
+		} // end of method
+
+		/// <summary>次のイテレータを取得する</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private Node GetNextNode(Node node) {
+			if (node == null) return null;
+			if (node.right != null) {
+				node = node.right;
+				while (node.left != null) node = node.left;
+				return node;
+			}
+			while (node.parent != null && node == node.parent.right) {
+				node = node.parent;
+			}
+			return node.parent;
+		} // end of method
+
+		/// <summary>前のイテレータを取得する</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private Node GetPrevNode(Node node) {
+			if (node == null) return null;
+			if (node.left != null) {
+				node = node.left;
+				while (node.right != null) node = node.right;
+				return node;
+			}
+			while (node.parent != null && node == node.parent.left) {
+				node = node.parent;
+			}
+			return node.parent;
+		} // end of method
+	} // end of class
 } // end of class
 
 
@@ -653,7 +649,11 @@ class Kyopuro {
 		// var comp = new DescendingComparer<int>();
 		// AVLTree<int> tree = new AVLTree<int>(comp);
 
+		// 小さい順
 		AVLTree<int> tree = new AVLTree<int>();
+
+		// 配列初期化テスト
+		// AVLTree<int> tree = new AVLTree<int>(new int[] { 5, 15, 20, 10, 30 });
 
 		tree.Insert(10);
 		tree.PrintTree(); Console.WriteLine();
