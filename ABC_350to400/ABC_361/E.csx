@@ -567,51 +567,45 @@ class Kyopuro {
 	public void Solve() {
 		int n = readint();
 		// to, cost
-		var graph = makelist2(n, 0, (0, 0l));
+		var graph = makelist2(n, 0, new Edge(0, 0, 0l));
 		long sum = 0;
 
 		for (int i = 0; i < n - 1; ++i) {
-			var abc = readlongs();
-			int a = (int)abc[0] - 1;
-			int b = (int)abc[1] - 1;
-			graph[a].Add((b, abc[2]));
-			graph[b].Add((a, abc[2]));
-			sum += abc[2];
+			var (a, b, c) = readintt3();
+			--a; --b;
+			graph[a].Add(new Edge(a, b, c));
+			graph[b].Add(new Edge(b, a, c));
+			sum += c;
 		}
 
-		bool flag = false;
-		int node = 0;
-		for (int i = 0; i < n; ++i) {
-			if (graph[i].Count == 1) {
-				node = i;
-				flag = true;
-				break;
-			}
-		}
+		// 一番遠いのd-土
+		(int, long) farthest(int current) {
+			var farthestSet = new HashSet<int>();
+			int farthestNode = -1;
+			long farthestDist = -1;
+			void farthestDfs(int node, long dist) {
+				// writeline($"node:{node} dist:{dist}");
+				if (farthestSet.Contains(node)) return;
+				farthestSet.Add(node);
+				if (dist > farthestDist) {
+					farthestDist = dist;
+					farthestNode = node;
+				}
 
-		if (flag == false) {
-			writeline(sum);
-			return;
-		}
-
-
-		long ans = 0;
-		var set = new HashSet<int>();
-		while (true) {
-			// 1個ならひた走る
-			if (graph[node].Count == 1) {
-				if (set.Contains(graph[node][0].Item1)) break;
-				ans += graph[node][0].Item2;
-				node = graph[node][0].Item1;
-			} else {
-				bool nextflag = false;
 				foreach (var next in graph[node]) {
-					if (set.Contains(next.Item1)) continue;
-					nextflag = true;
-
+					if (farthestSet.Contains(next.to)) continue;
+					farthestDfs(next.to, dist + next.cost);
 				}
 			}
+			farthestDfs(current, 0);
+			return (farthestNode, farthestDist);
 		}
+
+		var (start, _) = farthest(0);
+		var (goal, dist) = farthest(start);
+
+		writeline(sum * 2 - dist);
+
 
 	} // end of method
 } // end of class
