@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 
-
 /// <summary>AVL木</summary>
 public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	/// <summary>AVL木を構成するノード1個分</summary>
