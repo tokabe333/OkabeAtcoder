@@ -607,21 +607,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 } // end of class
 
 
-
-
-
 class Kyopuro {
-	/// <summary>出力のflush削除</summary>
-	public static void preprocess() {
-		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
-		System.Console.SetOut(sw);
-	} // end of func
-
-	/// <summary>出力をflush</summary>
-	public static void finalprocess() {
-		System.Console.Out.Flush();
-	} // end of func
-
 	public static void Main() {
 		var kyopuro = new Kyopuro();
 		kyopuro.Solve2();
