@@ -611,8 +611,6 @@ class Kyopuro {
 } // end of class
 
 
-
-
 /// <summary>AVL木</summary>
 public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	/// <summary>AVL木を構成するノード1個分</summary>
@@ -620,6 +618,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		public T key { get; set; }
 		public Node left { get; set; }
 		public Node right { get; set; }
+		public Node parent { get; set; }
 		public int height { get; set; }
 		public int count { get; set; }
 
@@ -630,22 +629,84 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		} // end of constructor
 	} // end of class
 
+
+	/// <summary>イテレータを実装するためのクラス</suumary>
+	public class AVLIterator {
+		/// <summary>現在のイテレータ</summary>
+		public Node value { get; private set; }
+
+		public AVLIterator(Node node) => this.value = node;
+
+		/// <summary>次のイテレータを持つか</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool HasNext() => GetNextNode(this.value) != null;
+
+		/// <summary>前のイテレータを持つか</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool HasPrev() => GetPrevNode(this.value) != null;
+
+		/// <summary>次のイテレータを返す</summary>
+		public AVLIterator Next() {
+			this.value = GetNextNode(this.value);
+			return this;
+		} // end of method
+
+		/// <summary>前のイテレータを返す</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public AVLIterator Prev() {
+			this.value = GetPrevNode(this.value);
+			return this;
+		} // end of method
+
+		/// <summary>次のイテレータを取得する</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private Node GetNextNode(Node node) {
+			if (node == null) return null;
+			if (node.right != null) {
+				node = node.right;
+				while (node.left != null) node = node.left;
+				return node;
+			}
+			while (node.parent != null && node == node.parent.right) {
+				node = node.parent;
+			}
+			return node.parent;
+		} // end of method
+
+		/// <summary>前のイテレータを取得する</summary>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private Node GetPrevNode(Node node) {
+			if (node == null) return null;
+			if (node.left != null) {
+				node = node.left;
+				while (node.right != null) node = node.right;
+				return node;
+			}
+			while (node.parent != null && node == node.parent.left) {
+				node = node.parent;
+			}
+			return node.parent;
+		} // end of method
+	} // end of class
+
+
+
 	/// <symmary>木の根、ここから全ノードを辿っていく</summary>
 	public Node root;
 
 	/// <summary>比較関数、デフォルトでは小さい順</summary>
 	private readonly IComparer<T> comparer;
 
-	public AVLTree(Comparer<T> comparer = null) {
+	public AVLTree(IComparer<T> comparer = null) {
 		this.comparer = comparer ?? Comparer<T>.Default;
 	}
 
-	public AVLTree(T[] array, Comparer<T> comparer = null) {
+	public AVLTree(T[] array, IComparer<T> comparer = null) {
 		for (int i = 0; i < array.Length; ++i) this.Insert(array[i]);
 		this.comparer = comparer ?? Comparer<T>.Default;
 	} // end of constructor
 
-	public AVLTree(List<T> list, Comparer<T> comparer = null) {
+	public AVLTree(List<T> list, IComparer<T> comparer = null) {
 		foreach (T value in list) this.Insert(value);
 		this.comparer = comparer ?? Comparer<T>.Default;
 	} // end of constructor
@@ -657,15 +718,15 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	public void Insert(T key) => root = this.Insert(root, key);
 
 	/// <summary>ノード挿入処理、回転した結果を今の注目ノードに置き換える</summary>
-	private Node Insert(Node node, T key) {
-		if (node == null) return new Node(key);
+	private Node Insert(Node node, T key, Node parent = null) {
+		if (node == null) return new Node(key) { parent = parent };
 
 		int compare = this.comparer.Compare(key, node.key);
 		// 注目ノードより小さいので左の子に挿入
-		if (compare < 0) node.left = this.Insert(node.left, key);
+		if (compare < 0) node.left = this.Insert(node.left, key, node);
 
 		// 注目ノードより大きいので右の子に挿入
-		else if (compare > 0) node.right = this.Insert(node.right, key);
+		else if (compare > 0) node.right = this.Insert(node.right, key, node);
 
 		// 注目ノードと同じ(すでにkeyが含まれている)ので個数をカウント
 		else node.count += 1;
@@ -689,11 +750,13 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 		int compare = this.comparer.Compare(key, node.key);
 		// 注目ノードより小さいので削除は左に流す
-		if (compare < 0) node.left = this.Remove(node.left, key);
-
+		if (compare < 0) {
+			node.left = this.Remove(node.left, key);
+		}
 		// 注目ノードより大きいので削除は右に流す
-		else if (compare > 0) node.right = this.Remove(node.right, key);
-
+		else if (compare > 0) {
+			node.right = this.Remove(node.right, key);
+		}
 		// 注目ノードが削除対象
 		else {
 			// 値が重複しているので個数を減らして終わり
@@ -705,6 +768,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 			// 片方または両方の子がない場合は、子で置き換える(子ノードが高々1子なので)
 			if (node.left == null || node.right == null) {
 				var tmp = node.left != null ? node.left : node.right;
+				if (tmp != null) tmp.parent = node.parent;
 				// 両方なければ自身を削除、片方あればそれで置き換える
 				return tmp;
 			}
@@ -714,6 +778,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 				node.key = minRight.key;
 				node.count = minRight.count;
 				node.right = this.Remove(node.right, minRight.key);
+				if (node.right != null) node.right = node;
 			}
 		}
 
@@ -775,6 +840,36 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		}
 	} // end of method
 
+	/// <summary>LowerBoundで検索してIteratorを返す</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public AVLIterator LowerBoundIterator(T key) {
+		Node result = null;
+		bool found = this.LowerBoundIterator(this.root, key, ref result);
+		if (found) return new AVLIterator(result);
+		else throw new InvalidOperationException($"{key}以上の値が存在しません");
+	} // end of method
+
+	/// <summary>LowerBoundで検索してIteratorを返す</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public AVLIterator LowerBoundIterator(T key, out bool found) {
+		Node result = null;
+		found = this.LowerBoundIterator(this.root, key, ref result);
+		return new AVLIterator(result);
+	} // end of method
+
+	/// <summary>LowerBoundでイテレータを返す実装(値の代わりにNodeを返している)</summary>
+	private bool LowerBoundIterator(Node node, T key, ref Node result) {
+		if (node == null) return false;
+		int compare = this.comparer.Compare(node.key, key);
+		if (0 <= compare) {
+			result = node;
+			bool foundInLeft = this.LowerBoundIterator(node.left, key, ref result);
+			return true;
+		} else {
+			return this.LowerBoundIterator(node.right, key, ref result);
+		}
+	} // end of method
+
 	// -------------------------------- UpperBound --------------------------------
 
 	/// <summary>key超過の最小値を探す(存在しなければエラー)</summary>
@@ -810,6 +905,36 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		else {
 			// 右を見ると存在するかもしれない
 			return this.UpperBound(node.right, key, ref result);
+		}
+	} // end of method
+
+	/// <summary>key超過の最小値を探してIteratorを返す(存在しなければエラー)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public AVLIterator UpperBoundIterator(T key) {
+		Node result = null;
+		bool found = this.UpperBoundIterator(this.root, key, ref result);
+		if (found) return new AVLIterator(result);
+		else throw new InvalidOperationException($"{key}超過の値が存在しません");
+	} // end of method
+
+	/// <summary>key超過の最小値を探してIteratorを返す(存在しなければdefault)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public AVLIterator UpperBoundIterator(T key, out bool found) {
+		Node result = null;
+		found = this.UpperBoundIterator(this.root, key, ref result);
+		return new AVLIterator(result);
+	} // end of method
+
+	/// <summary>UpperBoundでイテレータを返す実装(値の代わりにNodeを返している)</summary>
+	private bool UpperBoundIterator(Node node, T key, ref Node result) {
+		if (node == null) return false;
+		int compare = this.comparer.Compare(node.key, key);
+		if (0 < compare) {
+			result = node;
+			bool foundInLeft = this.UpperBoundIterator(node.left, key, ref result);
+			return true;
+		} else {
+			return this.UpperBoundIterator(node.right, key, ref result);
 		}
 	} // end of method
 
@@ -849,6 +974,78 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		}
 	} // end of method
 
+	/// <summary>key未満の最大要素を探してIteratorを返す(存在しなければエラー)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public AVLIterator FindLessThanMaxIterator(T key) {
+		Node result = null;
+		bool found = this.FindLessThanMaxIterator(this.root, key, ref result);
+		if (found) return new AVLIterator(result);
+		else throw new InvalidOperationException($"{key}より小さい要素が存在しません");
+	} // end of method
+
+	/// <summary>key未満の最大要素を探してIteratorを返す(存在しなければdefault)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public AVLIterator FindLessThanMaxIterator(T key, out bool found) {
+		Node result = null;
+		found = this.FindLessThanMaxIterator(this.root, key, ref result);
+		return new AVLIterator(result);
+	} // end of method
+
+	/// <summary>FindLessThanMaxイテレータを返す実装(値の代わりにNodeを返している)</summary>
+	private bool FindLessThanMaxIterator(Node node, T key, ref Node result) {
+		if (node == null) return false;
+		int compare = this.comparer.Compare(node.key, key);
+		if (0 <= compare) return this.FindLessThanMaxIterator(node.left, key, ref result);
+		else {
+			result = node;
+			bool foundInRight = this.FindLessThanMaxIterator(node.right, key, ref result);
+			return true;
+		}
+	} // end of method
+
+	// -------------------------------- 最小値最大値 --------------------------------
+
+	/// <summary>最初の値を返す(基本は最小値)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T MinValue() => this.FirstValue();
+
+	/// <summary>最初の値を返す(基本は最小値)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T FirstValue() {
+		Node node = this.root;
+		while (node.left != null) node = node.left;
+		return node.key;
+	} // end of method
+
+	/// <summary>最初のノードのイテレータ返す</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public AVLIterator First() {
+		Node node = this.root;
+		while (node.left != null) node = node.left;
+		return new AVLIterator(node);
+	} // end of method
+
+
+	/// <summary>最後の値を返す(基本は最大値)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T MaxValue() => this.LastValue();
+
+	/// <summary>最後の値を返す(基本は最大値)</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T LastValue() {
+		Node node = this.root;
+		while (node.right != null) node = node.right;
+		return node.key;
+	} // end of method
+
+	/// <summary>最後のノードのイテレータを返す</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public AVLIterator Last() {
+		Node node = this.root;
+		while (node.right != null) node = node.right;
+		return new AVLIterator(node);
+	} // end of method
+
 	// -------------------------------- 表示 --------------------------------
 
 	/// <summary>中身表示用(公開用、外部からはこれを呼ぶ)</summary>
@@ -858,7 +1055,9 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	/// <summary>整形して中身を表示する</summary>
 	private void PrintTree(Node node, String indent, bool last) {
 		if (node == null) return;
-		Console.WriteLine($"{indent}+- {node.key} (Count: {node.count})");
+		string parentKey = node.parent != null ? node.parent.key.ToString() : "null";
+		// Console.WriteLine($"{indent}+- {node.key} (Count: {node.count})");
+		Console.WriteLine($"{indent}+- {node.key} (Count: {node.count}, Parent: {parentKey})");
 		indent += last ? "   " : "|  ";
 
 		this.PrintTree(node.left, indent, false);
@@ -923,9 +1122,14 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		// < この形になる (上がy, 左がx, 下がt2)
 		Node y = x.right;
 		Node t2 = y.left;
+		Node xparent = x.parent;
 
 		y.left = x;
+		y.parent = xparent;
+		if (x != null) x.parent = y;
+
 		x.right = t2;
+		if (t2 != null) t2.parent = x;
 
 		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
 		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
@@ -940,9 +1144,14 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		// > この形になる (上がx, 右がy, 下がt2)
 		Node x = y.left;
 		Node t2 = x.right;
+		Node yparent = y.parent;
 
 		x.right = y;
+		x.parent = yparent;
+		if (y != null) y.parent = x;
+
 		y.left = t2;
+		if (t2 != null) t2.parent = y;
 
 		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
 		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
@@ -997,6 +1206,5 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		foreach (var num in this.InOrderTraversal(node.right)) yield return num;
 	} // end of method
 } // end of class
-
 
 
