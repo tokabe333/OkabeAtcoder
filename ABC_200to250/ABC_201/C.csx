@@ -571,7 +571,15 @@ class Kyopuro {
 			if (s[9 - i] == 'o') num += 1 << i;
 		}
 
-		WriteLine2bit(num);
+		for (int i = 0; i < 10000; ++i) {
+			int c = i;
+			for (int j = 0; j < 4; ++j) {
+				int now = c % 10;
+
+
+				c /= 10;
+			}
+		}
 
 	} // end of method
 } // end of class
