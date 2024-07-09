@@ -568,18 +568,29 @@ class Kyopuro {
 
 		int num = 0;
 		for (int i = 0; i < 10; ++i) {
-			if (s[9 - i] == 'o') num += 1 << i;
+			if (s[i] == 'o') num += 1;
 		}
 
+
+		long ans = 0;
 		for (int i = 0; i < 10000; ++i) {
 			int c = i;
+			long flag = 1l;
+			var set = new HashSet<int>();
 			for (int j = 0; j < 4; ++j) {
 				int now = c % 10;
-
+				if (s[now] == 'x') {
+					flag = 0l;
+					break;
+				} else if (s[now] == 'o') {
+					set.Add(now);
+				}
 
 				c /= 10;
 			}
+			if (set.Count == num) ans += flag;
 		}
+		writeline(ans);
 
 	} // end of method
 } // end of class
