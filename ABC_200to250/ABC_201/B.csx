@@ -564,14 +564,16 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var s = read();
-
-		int num = 0;
-		for (int i = 0; i < 10; ++i) {
-			if (s[9 - i] == 'o') num += 1 << i;
+		int n = readint();
+		var list = new List<(string, int)>();
+		for (int i = 0; i < n; ++i) {
+			var (s, t) = readstringt2();
+			int tt = int.Parse(t);
+			list.Add((s, tt));
 		}
 
-		WriteLine2bit(num);
+		list.Sort((a, b) => b.Item2.CompareTo(a.Item2));
+		writeline(list[1].Item1);
 
 	} // end of method
 } // end of class
