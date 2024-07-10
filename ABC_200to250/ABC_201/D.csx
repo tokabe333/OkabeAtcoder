@@ -570,80 +570,39 @@ class Kyopuro {
 			string s = read();
 			for (int j = 0; j < w; ++j) {
 				masu[i][j] = s[j] == '+' ? 1 : -1;
-				if ((i + j) % 2 == 0) masu[i][j] *= -1;
 			}
 		}
 
-		// printlist2(masu);
+		printlist2(masu);
 
-		var dp = makearr2(h, w, iinf);
-		var queue = new Queue<int>();
-		if (w > 1) queue.Enqueue(1);
-		if (h > 1) queue.Enqueue(w);
+		var dp = makearr2(h, w, -iinf);
 		dp[0][0] = 0;
-		// queue.Enqueue((h - 1) * w + (w - 1));
-		// dp[h - 1][w - 1] = 0;
 		var set = new HashSet<int>();
+		var queue = new Queue<int>();
+		if (1 < w) queue.Enqueue(1);
+		if (1 < h) queue.Enqueue(w);
 		while (queue.Count > 0) {
-			var yx = queue.Dequeue();
+			int yx = queue.Dequeue();
 			if (set.Contains(yx)) continue;
 			set.Add(yx);
 			int y = yx / w;
 			int x = yx % w;
-			// 先手は高くする
-			if (yx % 2 == 1) {
-				int ue = iinf, hidari = iinf;
-				if (0 < y) ue = dp[y - 1][x] + masu[y][x];
-				if (0 < x) hidari = dp[y][x - 1] + masu[y][x];
-				dp[y][x] = Min(ue, hidari);
-			}
-			// 後手は低くする
-			else {
-				int ue = -iinf, hidari = -iinf;
-				if (0 < y) ue = dp[y - 1][x] + masu[y][x];
-				if (0 < x) hidari = dp[y][x - 1] + masu[y][x];
-				dp[y][x] = Max(ue, hidari);
-			}
 
+			int res = -iinf;
+			if (0 < y) res = Max(res, -1 * dp[y - 1][x] + masu[y][x]);
+			if (0 < w) res = Max(res, -1 * dp[y][x - 1] + masu[y][x]);
 
+			dp[y][x] = res;
 
-			// 追加
-			if (set.Contains(yx + 1) == false && x < w - 1) queue.Enqueue(yx + 1);
-			if (set.Contains(yx + w) == false && y < h - 1) queue.Enqueue(yx + w);
+			if (x < w - 1) queue.Enqueue(yx + 1);
+			if (y < h - 1) queue.Enqueue(yx + w);
 		}
 
-		// if ((h + w) % 2 == 1) {
-		// 	for (int i = 0; i < h; ++i) {
-		// 		for (int j = 0; j < w; ++j) {
-		// 			dp[i][j] *= -1;
-		// 		}
-		// 	}
-		// }
-		// printlist2(masu);
-		// writeline();
-		// printlist2(dp);
+		printlist2(dp);
 
 		int ans = dp[h - 1][w - 1];
 		writeline(ans);
-		if (ans == 0) {
-			writeline("Draw");
-		} else if (ans < 0) {
-			writeline("Aoki");
-		} else {
-			writeline("Takahashi");
-		}
-		// if ((h + w) % 2 == 0) {
-		// 	if (ans < 0) {
-		// 		writeline("Aoki");
-		// 	} else {
-		// 		writeline("Takahashi");
-		// 	}
-		// } else {
-		// 	if (ans < 0) {
-		// 		writeline("Takahashi");
-		// 	} else {
-		// 		writeline("Aoki");
-		// 	}
-		// }
+
+
 	} // end of method
 } // end of class
