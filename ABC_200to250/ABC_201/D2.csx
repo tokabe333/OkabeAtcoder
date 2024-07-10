@@ -588,7 +588,7 @@ class Kyopuro {
 		}
 
 		int res = dfs(0, 0);
-		printlist2(dp);
+		// printlist2(dp);
 		var ans = new string[] { "Aoki", "Draw", "Takahashi" };
 		writeline(ans[res.CompareTo(0) + 1]);
 
