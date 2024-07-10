@@ -11,6 +11,7 @@ using static System.Console;
 using static System.Math;
 using static System.ComponentModel.TypeDescriptor;
 using static Util;
+using System.Globalization;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -22,13 +23,13 @@ class Util {
 
 	/// 入出力
 	[MethodImpl(256)]
-	public static string read() => ReadLine();
+	public static string read() => Console.ReadLine();
 	[MethodImpl(256)]
-	public static void write(dynamic d) => Write(d);
+	public static void write(dynamic d) => Console.Write(d);
 	[MethodImpl(256)]
-	public static void writeline(dynamic d) => WriteLine(d);
+	public static void writeline(dynamic d) => Console.WriteLine(d);
 	[MethodImpl(256)]
-	public static void writeline() => WriteLine();
+	public static void writeline() => Console.WriteLine();
 
 	/// 任意の要素数・初期値の配列を作って初期化する
 	[MethodImpl(256)]
@@ -49,7 +50,7 @@ class Util {
 			}
 		}
 		return arr;
-	} // end of func
+	}
 
 	/// 任意の要素数・初期値の3次元配列を作って初期化する
 	[MethodImpl(256)]
@@ -65,13 +66,13 @@ class Util {
 			}
 		}
 		return arr;
-	} // end of func
+	}
 
 	/// 任意の要素数・初期値のListを作って初期化する
 	[MethodImpl(256)]
 	public static List<T> makelist<T>(int num, T value) {
 		return new List<T>(makearr(num, value));
-	} // end of func
+	}
 
 	/// 任意の要素数・初期値の2次元Listを作って初期化する
 	[MethodImpl(256)]
@@ -81,7 +82,7 @@ class Util {
 			arr.Add(makelist(width, value));
 		}
 		return arr;
-	} // end of func
+	}
 
 	/// 任意の要素数・初期値の3次元Listを作って初期化する
 	[MethodImpl(256)]
@@ -94,7 +95,7 @@ class Util {
 			}
 		}
 		return arr;
-	} // end of func
+	}
 
 	/// 1次元配列のディープコピー
 	[MethodImpl(256)]
@@ -102,7 +103,7 @@ class Util {
 		T[] brr = new T[arr.Length];
 		Array.Copy(arr, brr, arr.Length);
 		return brr;
-	} // end of func 
+	}
 
 	/// 2次元配列のディープコピー
 	[MethodImpl(256)]
@@ -113,7 +114,7 @@ class Util {
 			Array.Copy(arr[i], brr[i], arr[i].Length);
 		}
 		return brr;
-	} // end of func
+	}
 
 	/// 3次元配列のディープコピー
 	[MethodImpl(256)]
@@ -127,13 +128,13 @@ class Util {
 			}
 		}
 		return brr;
-	} // end of func
+	}
 
 	/// 1次元Listのディープコピー
 	[MethodImpl(256)]
 	public static List<T> copylist<T>(List<T> list) {
 		return new List<T>(list);
-	} // end of func
+	}
 
 	/// 2次元Listのディープコピー
 	[MethodImpl(256)]
@@ -143,7 +144,7 @@ class Util {
 			list2.Add(new List<T>(list[i]));
 		}
 		return list2;
-	} // end of func
+	}
 
 	/// 3次元Listのディープコピー
 	[MethodImpl(256)]
@@ -157,19 +158,15 @@ class Util {
 			list2.Add(tmplist);
 		}
 		return list2;
-	} // end of func
+	}
 
 	/// 1次元Listを出力
 	[MethodImpl(256)]
-	public static void printlist<T>(List<T> list) {
-		WriteLine(string.Join(" ", list));
-	} // end of func
+	public static void printlist<T>(List<T> list) => WriteLine(string.Join(" ", list));
 
 	/// 1次元配列を出力
 	[MethodImpl(256)]
-	public static void printlist<T>(T[] list) {
-		WriteLine(string.Join(" ", list));
-	} // end of func
+	public static void printlist<T>(T[] list) => WriteLine(string.Join(" ", list));
 
 	/// 2次元リストを出力
 	[MethodImpl(256)]
@@ -177,7 +174,7 @@ class Util {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
-	} // end of func
+	}
 
 	/// 2次元配列を出力
 	[MethodImpl(256)]
@@ -185,19 +182,15 @@ class Util {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
-	} // end of func	
+	}
 
 	/// 1次元Listを出力
 	[MethodImpl(256)]
-	public static void printarr<T>(List<T> list) {
-		WriteLine(string.Join(" ", list));
-	} // end of func
+	public static void printarr<T>(List<T> list) => WriteLine(string.Join(" ", list));
 
 	/// 1次元配列を出力
 	[MethodImpl(256)]
-	public static void printarr<T>(T[] list) {
-		WriteLine(string.Join(" ", list));
-	} // end of func
+	public static void printarr<T>(T[] list) => WriteLine(string.Join(" ", list));
 
 	/// 2次元リストを出力
 	[MethodImpl(256)]
@@ -205,7 +198,7 @@ class Util {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
-	} // end of func
+	}
 
 	/// 2次元配列を出力
 	[MethodImpl(256)]
@@ -213,68 +206,53 @@ class Util {
 		foreach (var l in list) {
 			WriteLine(string.Join(" ", l));
 		}
-	} // end of func
+	}
 
 	/// ジェネリックを出力
 	[MethodImpl(256)]
 	public static void printiter<T>(IEnumerable<T> generic) {
 		foreach (var it in generic) Write(it + " ");
-		WriteLine();
-	} // end of func
-
+		writeline();
+	}
 	/// ジェネリックを出力
 	[MethodImpl(256)]
 	public static void printlineiter<T>(IEnumerable<T> generic) {
-		foreach (var it in generic) WriteLine(it + " ");
-	} // end of func
+		foreach (var it in generic) {
+			WriteLine(it + " ");
+		}
+	}
 
 	/// 数字を1つint型で読み込み
 	[MethodImpl(256)]
-	public static int readint() {
-		return int.Parse(ReadLine());
-	} // end of func
+	public static int readint() => int.Parse(read());
 
 	/// 数字を1つlong型で読み込み
 	[MethodImpl(256)]
-	public static long readlong() {
-		return long.Parse(ReadLine());
-	} // end of func
+	public static long readlong() => long.Parse(ReadLine());
 
 	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
 	[MethodImpl(256)]
-	public static string[] readsplit() {
-		return ReadLine().Split(' ');
-	} // end of func
+	public static string[] readsplit() => ReadLine().Split(' ');
 
 	/// 数字をスペース区切りでint型で入力
 	[MethodImpl(256)]
-	public static int[] readints() {
-		return ReadLine().Split(' ').Select(_ => int.Parse(_)).ToArray();
-	} // end of func
+	public static int[] readints() => readsplit().Select(_ => int.Parse(_)).ToArray();
 
 	/// 数字をスペース区切りでlong型で入力
 	[MethodImpl(256)]
-	public static long[] readlongs() {
-		return ReadLine().Split(' ').Select(_ => long.Parse(_)).ToArray();
-	} // end of func
+	public static long[] readlongs() => readsplit().Select(_ => long.Parse(_)).ToArray();
 
 	/// 数字をスペース区切りでfloat型で入力
 	[MethodImpl(256)]
-	public static float[] readfloats() {
-		return ReadLine().Split(' ').Select(_ => float.Parse(_)).ToArray();
-	} // end of func
+	public static float[] readfloats() => readsplit().Select(_ => float.Parse(_)).ToArray();
 
 	/// 数字をスペース区切りでdouble型で入力
 	[MethodImpl(256)]
-	public static double[] readdoubles() {
-		return ReadLine().Split(' ').Select(_ => double.Parse(_)).ToArray();
-	} // end of func
+	public static double[] readdoubles() => readsplit().Select(_ => double.Parse(_)).ToArray();
 
 	/// 文字列をスペース区切りで入力
 	[MethodImpl(256)]
-	public static string[] readstrings() {
-		return ReadLine().Split(' ');
-	} // end of func
+	public static string[] readstrings() => readsplit();
 
 	/// 自由な型で2変数を入力
 	[MethodImpl(256)]
@@ -282,7 +260,7 @@ class Util {
 		string[] s = ReadLine().Split(' ');
 		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
-	} // end of func
+	}
 
 	/// 自由な型で3変数を入力
 	[MethodImpl(256)]
@@ -291,7 +269,7 @@ class Util {
 		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
 		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
-	} // end of func
+	}
 
 	/// 自由な型で4変数を入力
 	[MethodImpl(256)]
@@ -301,71 +279,56 @@ class Util {
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
 		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
 		d = (T4)GetConverter(typeof(T4)).ConvertFromString(s[3]);
-	} // end of func
+	}
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
 	[MethodImpl(256)]
-	public static void WriteLine16<T>(T num) {
-		WriteLine(string.Format("{0:0.################}", num));
-	} // end of func
+	public static void WriteLine16<T>(T num) => WriteLine(string.Format("{0:0.################}", num));
 
 	/// 整数を二進数で表示
 	[MethodImpl(256)]
-	public static void WriteLine2bit(int num) {
-		WriteLine(Convert.ToString(num, 2));
-	} // end of func
+	public static void writeline2bit(int num) => WriteLine(Convert.ToString(num, 2));
 
 	/// 整数を二進数で表示
 	[MethodImpl(256)]
-	public static void WriteLine2bit(long num) {
-		WriteLine(Convert.ToString(num, 2));
-	} // end of func
+	public static void writeline2bit(long num) => WriteLine(Convert.ToString(num, 2));
+
 
 	/// 整数を2進数表現した文字列に
 	[MethodImpl(256)]
-	public static string IntToString2bit(int num) {
-		return Convert.ToString(num, 2);
-	} // end of func
+	public static string int2bit(int num) => Convert.ToString(num, 2);
 
 	/// 整数を2進数表現した文字列に
 	[MethodImpl(256)]
-	public static string LongToString2bit(long num) {
-		return Convert.ToString(num, 2);
-	} // end of func
+	public static string long2bit(long num) => Convert.ToString(num, 2);
 
 	/// 出力のflush削除
 	[MethodImpl(256)]
-	public static void preprocess() {
-		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
-		System.Console.SetOut(sw);
-	} // end of func
+	public static void preprocess() => System.Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+
 
 	/// 出力をflush
 	[MethodImpl(256)]
-	public static void finalprocess() {
-		System.Console.Out.Flush();
-	} // end of func
+	public static void finalprocess() => System.Console.Out.Flush();
 } // end of class
 
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class HashMap<K, V> : Dictionary<K, V> {
 	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
+		[MethodImpl(256)]
+		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
+		[MethodImpl(256)]
+		set => base[i] = value;
 	}
 } // end of class
 
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class SortedMap<K, V> : SortedDictionary<K, V> {
 	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
+		[MethodImpl(256)]
+		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
+		[MethodImpl(256)]
+		set => base[i] = value;
 	}
 } // end of class
 
@@ -378,8 +341,6 @@ struct YX {
 		this.x = x;
 	}
 
-	// デバッグ出力
-	[MethodImpl(256)]
 	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
@@ -388,7 +349,7 @@ struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
-	public Edge(int from, int to, long cost) {
+	public Edge(int from, int to, long cost = 0) {
 		this.from = from;
 		this.to = to;
 		this.cost = cost;
@@ -413,25 +374,50 @@ class Kyopuro {
 
 
 	public void Solve() {
+		int h, w, y, x;
+		readt2(out h, out w);
+		readt2(out y, out x);
 
-		var list = makelist3(4, 3, 2, 0);
-		list[0][2][1] = 334;
-		for (int i = 0; i < 4; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				write(list[i][j][0] + "_" + list[i][j][1] + " ");
-			}
-			writeline();
+		var masu = makearr2(h, w, 0);
+		for (int i = 0; i < h; ++i) {
+			var s = read();
+			for (int j = 0; j < w; ++j) masu[i][j] = s[j] != '#' ? int.Parse(s[j] + "") : 0;
 		}
 
-		writeline();
-		var list2 = copylist3(list);
-		list2[0][0][0] = 114514;
-		for (int i = 0; i < 4; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				write(list2[i][j][0] + "_" + list2[i][j][1] + " ");
+		int u = 0, d = 0, l = 0, r = 0;
+		for (int i = 0; i < y - 1; ++i) {
+			for (int j = 0; j < w; ++j) {
+				u += masu[i][j];
 			}
-			writeline();
 		}
 
+		for (int i = y; i < h; ++i) {
+			for (int j = 0; j < w; ++j) {
+				d += masu[i][j];
+			}
+		}
+
+		for (int j = 0; j < x - 1; ++j) {
+			for (int i = 0; i < h; ++i) {
+				l += masu[i][j];
+			}
+		}
+
+
+		for (int j = x; j < w; ++j) {
+			for (int i = 0; i < h; ++i) {
+				r += masu[i][j];
+			}
+		}
+
+		if (u >= d && u >= l && u >= r) {
+			writeline("N " + u);
+		} else if (r >= d && r >= u && r >= l) {
+			writeline("E " + r);
+		} else if (d >= u && d >= r && d >= l) {
+			writeline("S " + d);
+		} else {
+			writeline("W " + l);
+		}
 	} // end of method
 } // end of class

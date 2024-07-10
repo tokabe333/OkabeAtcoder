@@ -22,13 +22,13 @@ class Util {
 
 	/// 入出力
 	[MethodImpl(256)]
-	public static string read() => ReadLine();
+	public static string read() => Console.ReadLine();
 	[MethodImpl(256)]
-	public static void write(dynamic d) => Write(d);
+	public static void write(dynamic d) => Console.Write(d);
 	[MethodImpl(256)]
-	public static void writeline(dynamic d) => WriteLine(d);
+	public static void writeline(dynamic d) => Console.WriteLine(d);
 	[MethodImpl(256)]
-	public static void writeline() => WriteLine();
+	public static void writeline() => Console.WriteLine();
 
 	/// 任意の要素数・初期値の配列を作って初期化する
 	[MethodImpl(256)]
