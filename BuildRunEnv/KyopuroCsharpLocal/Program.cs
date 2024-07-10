@@ -239,27 +239,19 @@ class Util {
 
 	/// 数字をスペース区切りでlong型で入力
 	[MethodImpl(256)]
-	public static long[] readlongs() {
-		return ReadLine().Split(' ').Select(_ => long.Parse(_)).ToArray();
-	} // end of func
+	public static long[] readlongs() => readsplit().Select(_ => long.Parse(_)).ToArray();
 
 	/// 数字をスペース区切りでfloat型で入力
 	[MethodImpl(256)]
-	public static float[] readfloats() {
-		return ReadLine().Split(' ').Select(_ => float.Parse(_)).ToArray();
-	} // end of func
+	public static float[] readfloats() => readsplit().Select(_ => float.Parse(_)).ToArray();
 
 	/// 数字をスペース区切りでdouble型で入力
 	[MethodImpl(256)]
-	public static double[] readdoubles() {
-		return ReadLine().Split(' ').Select(_ => double.Parse(_)).ToArray();
-	} // end of func
+	public static double[] readdoubles() => readsplit().Select(_ => double.Parse(_)).ToArray();
 
 	/// 文字列をスペース区切りで入力
 	[MethodImpl(256)]
-	public static string[] readstrings() {
-		return ReadLine().Split(' ');
-	} // end of func
+	public static string[] readstrings() => readsplit();
 
 	/// 自由な型で2変数を入力
 	[MethodImpl(256)]
@@ -267,7 +259,7 @@ class Util {
 		string[] s = ReadLine().Split(' ');
 		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
-	} // end of func
+	}
 
 	/// 自由な型で3変数を入力
 	[MethodImpl(256)]
@@ -276,7 +268,7 @@ class Util {
 		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
 		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
-	} // end of func
+	}
 
 	/// 自由な型で4変数を入力
 	[MethodImpl(256)]
@@ -286,71 +278,56 @@ class Util {
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
 		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
 		d = (T4)GetConverter(typeof(T4)).ConvertFromString(s[3]);
-	} // end of func
+	}
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
 	[MethodImpl(256)]
-	public static void WriteLine16<T>(T num) {
-		WriteLine(string.Format("{0:0.################}", num));
-	} // end of func
+	public static void WriteLine16<T>(T num) => WriteLine(string.Format("{0:0.################}", num));
 
 	/// 整数を二進数で表示
 	[MethodImpl(256)]
-	public static void WriteLine2bit(int num) {
-		WriteLine(Convert.ToString(num, 2));
-	} // end of func
+	public static void writeline2bit(int num) => WriteLine(Convert.ToString(num, 2));
 
 	/// 整数を二進数で表示
 	[MethodImpl(256)]
-	public static void WriteLine2bit(long num) {
-		WriteLine(Convert.ToString(num, 2));
-	} // end of func
+	public static void writeline2bit(long num) => WriteLine(Convert.ToString(num, 2));
+
 
 	/// 整数を2進数表現した文字列に
 	[MethodImpl(256)]
-	public static string IntToString2bit(int num) {
-		return Convert.ToString(num, 2);
-	} // end of func
+	public static string int2bit(int num) => Convert.ToString(num, 2);
 
 	/// 整数を2進数表現した文字列に
 	[MethodImpl(256)]
-	public static string LongToString2bit(long num) {
-		return Convert.ToString(num, 2);
-	} // end of func
+	public static string long2bit(long num) => Convert.ToString(num, 2);
 
 	/// 出力のflush削除
 	[MethodImpl(256)]
-	public static void preprocess() {
-		var sw = new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false };
-		System.Console.SetOut(sw);
-	} // end of func
+	public static void preprocess() => System.Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
+
 
 	/// 出力をflush
 	[MethodImpl(256)]
-	public static void finalprocess() {
-		System.Console.Out.Flush();
-	} // end of func
+	public static void finalprocess() => System.Console.Out.Flush();
 } // end of class
 
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class HashMap<K, V> : Dictionary<K, V> {
 	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
+		[MethodImpl(256)]
+		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
+		[MethodImpl(256)]
+		set => base[i] = value;
 	}
 } // end of class
 
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class SortedMap<K, V> : SortedDictionary<K, V> {
 	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
+		[MethodImpl(256)]
+		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
+		[MethodImpl(256)]
+		set => base[i] = value;
 	}
 } // end of class
 
@@ -363,8 +340,6 @@ struct YX {
 		this.x = x;
 	}
 
-	// デバッグ出力
-	[MethodImpl(256)]
 	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
@@ -383,7 +358,6 @@ struct Edge : IComparable<Edge> {
 	[MethodImpl(256)]
 	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
 
-	/// デバッグ出力用
 	[MethodImpl(256)]
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class

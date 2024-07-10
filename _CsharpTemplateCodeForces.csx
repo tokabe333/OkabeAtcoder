@@ -502,22 +502,20 @@ class Util {
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class HashMap<K, V> : Dictionary<K, V> {
 	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
+		[MethodImpl(256)]
+		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
+		[MethodImpl(256)]
+		set => base[i] = value;
 	}
 } // end of class
 
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class SortedMap<K, V> : SortedDictionary<K, V> {
 	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
+		[MethodImpl(256)]
+		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
+		[MethodImpl(256)]
+		set => base[i] = value;
 	}
 } // end of class
 
