@@ -463,25 +463,25 @@ class Util {
 
 	/// <summary>整数を二進数で表示</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void WriteLine2bit(int num) {
+	public static void writeline2bit(int num) {
 		WriteLine(Convert.ToString(num, 2));
 	} // end of func
 
 	/// <summary>整数を二進数で表示</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void WriteLine2bit(long num) {
+	public static void writeline2bit(long num) {
 		WriteLine(Convert.ToString(num, 2));
 	} // end of func
 
 	/// <summary>整数を2進数表現した文字列に</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string IntToString2bit(int num) {
+	public static string i2s2bit(int num) {
 		return Convert.ToString(num, 2);
 	} // end of func
 
 	/// <summary>整数を2進数表現した文字列に</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string LongToString2bit(long num) {
+	public static string l2s2bit(long num) {
 		return Convert.ToString(num, 2);
 	} // end of func
 
