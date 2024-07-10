@@ -132,12 +132,12 @@ class Util {
 		return arr;
 	} // end of func
 
-	/// <summary>任意の要素数・初期値の3次元Listを作って初期化する</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	/// 任意の要素数・初期値の3次元Listを作って初期化する
+	[MethodImpl(256)]
 	public static List<List<List<T>>> makelist3<T>(int height, int width, int depth, T value) {
 		var arr = new List<List<List<T>>>();
 		for (int i = 0; i < height; ++i) {
-			arr[i] = new List<List<T>>();
+			arr.Add(new List<List<T>>());
 			for (int j = 0; j < width; ++j) {
 				arr[i].Add(makelist(depth, value));
 			}
@@ -200,7 +200,7 @@ class Util {
 		List<List<List<T>>> list2 = new List<List<List<T>>>();
 		for (int i = 0; i < list.Count; ++i) {
 			List<List<T>> tmplist = new List<List<T>>();
-			for (int j = 0; j < list[i].Count; ++i) {
+			for (int j = 0; j < list[i].Count; ++j) {
 				tmplist.Add(new List<T>(list[i][j]));
 			}
 			list2.Add(tmplist);
