@@ -502,9 +502,10 @@ class Util {
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class HashMap<K, V> : Dictionary<K, V> {
 	new public V this[K i] {
-		[MethodImpl(256)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
-		[MethodImpl(256)]
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		set => base[i] = value;
 	}
 } // end of class
@@ -512,9 +513,10 @@ class HashMap<K, V> : Dictionary<K, V> {
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class SortedMap<K, V> : SortedDictionary<K, V> {
 	new public V this[K i] {
-		[MethodImpl(256)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
-		[MethodImpl(256)]
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		set => base[i] = value;
 	}
 } // end of class
@@ -538,7 +540,7 @@ struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
-	public Edge(int from, int to, long cost) {
+	public Edge(int from, int to, long cost = 0) {
 		this.from = from;
 		this.to = to;
 		this.cost = cost;

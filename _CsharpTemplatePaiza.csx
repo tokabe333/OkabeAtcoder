@@ -348,7 +348,7 @@ struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
-	public Edge(int from, int to, long cost) {
+	public Edge(int from, int to, long cost = 0) {
 		this.from = from;
 		this.to = to;
 		this.cost = cost;
@@ -358,6 +358,7 @@ struct Edge : IComparable<Edge> {
 	[MethodImpl(256)]
 	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
 
+	/// デバッグ出力用
 	[MethodImpl(256)]
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
