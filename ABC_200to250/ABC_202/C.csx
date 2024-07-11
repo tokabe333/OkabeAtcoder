@@ -564,13 +564,29 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var crr = read().ToCharArray();
-		for (int i = 0; i < crr.Length; ++i) {
-			if (crr[i] == '6') crr[i] = '9';
-			else if (crr[i] == '9') crr[i] = '6';
+		int n = readint();
+		var arr = readlongs();
+		var brr = readlongs();
+		var crr = readlongs();
+		var da = new HashMap<long, long>();
+		var db = new HashMap<long, long>();
+
+		foreach (var a in arr) da[a] += 1;
+
+		foreach (var c in crr) {
+			db[brr[c - 1]] += 1;
 		}
 
-		writeline(new string(crr.Reverse().ToArray()));
+		long ans = 0;
+		foreach (var kv in db) {
+			ans += da[kv.Key] * kv.Value;
+		}
+
+		// printiter(da);
+		// printiter(db);
+
+		writeline(ans);
+
 
 
 	} // end of method
