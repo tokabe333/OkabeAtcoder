@@ -132,12 +132,12 @@ class Util {
 		return arr;
 	} // end of func
 
-	/// 任意の要素数・初期値の3次元Listを作って初期化する
-	[MethodImpl(256)]
+	/// <summary>任意の要素数・初期値の3次元Listを作って初期化する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static List<List<List<T>>> makelist3<T>(int height, int width, int depth, T value) {
 		var arr = new List<List<List<T>>>();
 		for (int i = 0; i < height; ++i) {
-			arr.Add(new List<List<T>>());
+			arr[i] = new List<List<T>>();
 			for (int j = 0; j < width; ++j) {
 				arr[i].Add(makelist(depth, value));
 			}
@@ -200,7 +200,7 @@ class Util {
 		List<List<List<T>>> list2 = new List<List<List<T>>>();
 		for (int i = 0; i < list.Count; ++i) {
 			List<List<T>> tmplist = new List<List<T>>();
-			for (int j = 0; j < list[i].Count; ++j) {
+			for (int j = 0; j < list[i].Count; ++i) {
 				tmplist.Add(new List<T>(list[i][j]));
 			}
 			list2.Add(tmplist);
@@ -457,31 +457,31 @@ class Util {
 
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void writeline16<T>(T num) {
+	public static void WriteLine16<T>(T num) {
 		WriteLine(string.Format("{0:0.################}", num));
 	} // end of func
 
 	/// <summary>整数を二進数で表示</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void writeline2bit(int num) {
+	public static void WriteLine2bit(int num) {
 		WriteLine(Convert.ToString(num, 2));
 	} // end of func
 
 	/// <summary>整数を二進数で表示</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void writeline2bit(long num) {
+	public static void WriteLine2bit(long num) {
 		WriteLine(Convert.ToString(num, 2));
 	} // end of func
 
 	/// <summary>整数を2進数表現した文字列に</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string i2s2bit(int num) {
+	public static string IntToString2bit(int num) {
 		return Convert.ToString(num, 2);
 	} // end of func
 
 	/// <summary>整数を2進数表現した文字列に</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string l2s2bit(long num) {
+	public static string LongToString2bit(long num) {
 		return Convert.ToString(num, 2);
 	} // end of func
 
@@ -502,22 +502,22 @@ class Util {
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class HashMap<K, V> : Dictionary<K, V> {
 	new public V this[K i] {
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		set => base[i] = value;
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
 	}
 } // end of class
 
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class SortedMap<K, V> : SortedDictionary<K, V> {
 	new public V this[K i] {
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		set => base[i] = value;
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
 	}
 } // end of class
 
@@ -540,7 +540,7 @@ struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
-	public Edge(int from, int to, long cost = 0) {
+	public Edge(int from, int to, long cost) {
 		this.from = from;
 		this.to = to;
 		this.cost = cost;
@@ -564,7 +564,33 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
+		var (h, w) = readintt2();
+		var masu = makearr2(h, w, 0);
+		for (int i = 0; i < h; ++i) {
+			var s = read();
+			for (int j = 0; j < w; ++j) {
+				masu[i][j] = s[j] == '+' ? 1 : -1;
+			}
+		}
 
+		var dp = makearr2(h, w, -iinf);
+		int dfs(int y, int x) {
+			if (dp[y][x] != -iinf) return dp[y][x];
+
+			if (y == h - 1 && x == w - 1) return 0;
+
+			int res = -iinf;
+			if (y < h - 1) res = Max(res, -dfs(y + 1, x) + masu[y + 1][x]);
+			if (x < w - 1) res = Max(res, -dfs(y, x + 1) + masu[y][x + 1]);
+
+			dp[y][x] = res;
+			return res;
+		}
+
+		int res = dfs(0, 0);
+		// printlist2(dp);
+		var ans = new string[] { "Aoki", "Draw", "Takahashi" };
+		writeline(ans[res.CompareTo(0) + 1]);
 
 
 	} // end of method

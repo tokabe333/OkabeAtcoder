@@ -132,12 +132,12 @@ class Util {
 		return arr;
 	} // end of func
 
-	/// <summary>任意の要素数・初期値の3次元Listを作って初期化する</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	/// 任意の要素数・初期値の3次元Listを作って初期化する
+	[MethodImpl(256)]
 	public static List<List<List<T>>> makelist3<T>(int height, int width, int depth, T value) {
 		var arr = new List<List<List<T>>>();
 		for (int i = 0; i < height; ++i) {
-			arr[i] = new List<List<T>>();
+			arr.Add(new List<List<T>>());
 			for (int j = 0; j < width; ++j) {
 				arr[i].Add(makelist(depth, value));
 			}
@@ -200,7 +200,7 @@ class Util {
 		List<List<List<T>>> list2 = new List<List<List<T>>>();
 		for (int i = 0; i < list.Count; ++i) {
 			List<List<T>> tmplist = new List<List<T>>();
-			for (int j = 0; j < list[i].Count; ++i) {
+			for (int j = 0; j < list[i].Count; ++j) {
 				tmplist.Add(new List<T>(list[i][j]));
 			}
 			list2.Add(tmplist);
@@ -463,25 +463,25 @@ class Util {
 
 	/// <summary>整数を二進数で表示</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void WriteLine2bit(int num) {
+	public static void writeline2bit(int num) {
 		WriteLine(Convert.ToString(num, 2));
 	} // end of func
 
 	/// <summary>整数を二進数で表示</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void WriteLine2bit(long num) {
+	public static void writeline2bit(long num) {
 		WriteLine(Convert.ToString(num, 2));
 	} // end of func
 
 	/// <summary>整数を2進数表現した文字列に</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string IntToString2bit(int num) {
+	public static string i2s2bit(int num) {
 		return Convert.ToString(num, 2);
 	} // end of func
 
 	/// <summary>整数を2進数表現した文字列に</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string LongToString2bit(long num) {
+	public static string l2s2bit(long num) {
 		return Convert.ToString(num, 2);
 	} // end of func
 
@@ -502,22 +502,22 @@ class Util {
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class HashMap<K, V> : Dictionary<K, V> {
 	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		set => base[i] = value;
 	}
 } // end of class
 
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class SortedMap<K, V> : SortedDictionary<K, V> {
 	new public V this[K i] {
-		get {
-			V v;
-			return TryGetValue(i, out v) ? v : base[i] = default(V);
-		}
-		set { base[i] = value; }
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		set => base[i] = value;
 	}
 } // end of class
 
@@ -540,7 +540,7 @@ struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
-	public Edge(int from, int to, long cost) {
+	public Edge(int from, int to, long cost = 0) {
 		this.from = from;
 		this.to = to;
 		this.cost = cost;
@@ -554,4 +554,3 @@ struct Edge : IComparable<Edge> {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
-
