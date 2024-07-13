@@ -564,87 +564,14 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-<<<<<<< HEAD
-		int n = readint();
-		long nn = n;
-		var arr = readlongs();
-
-		// 1, 2は全て
-		long ans = n;
-		ans = (ans + nn * (nn - 1) / 2) % m998;
-
-		/// 現在の数列の個数、現在参照している数列、前の数列からの交差 → 個数
-		// var dp = makearr3(81, n + 1, 81, 0l);
-		var dp = new HashMap<long, long>[n + 1][];
-		for (int i = 0; i <= n; ++i) {
-			dp[i] = new HashMap<long, long>[n + 1];
-			for (int j = 0; j <= n; ++j) { dp[i][j] = new HashMap<long, long>(); }
-		}
-		// for (int j = 0; j <= n; ++j) dp[0][j][0] = 1;
-		dp[0][0][0] = 1;
-
-
-
-		// for (int j = 0; j < n; ++j) {
-		// 	for (int i = 0; i <= n; ++i) {
-		// 		foreach (var k in dp[i][j].Keys) {
-		// 			// 横移動(選ばない)
-		// 			dp[i][j + 1][k] += dp[i][j][k];
-		// 		}
-
-		// 		// 交差
-
-		// 			// 交差
-		// 			if (j == 0) continue;
-		// 			long diff = arr[j] - arr[j - 1];
-		// 			dp[i + 1][j + 1][k] += dp[i][j][k];
-		// 	}
-		// }
-
-		for (int j = 0; j < n; ++j) {
-			for (int i = 0; i <= n; ++i) {
-				foreach (var k in dp[i][j].Keys) {
-					// 選ばずに流す
-					for (int l = j + 1; l <= n; ++l) {
-						dp[i][l][k] = (dp[i][l][k] + dp[i][j][k]) % m998;
-					}
-				}
-
-				// 差分
-				if (i == n) continue;
-				for (int l = j + 1; l < n; ++l) {
-					long diff = arr[l] - arr[j];
-					// if (dp[i][j].ContainsKey(diff) == false) continue;
-					dp[i + 1][l][diff] += Max(1, dp[i][j][diff]);
-				}
-			}
+		var crr = read().ToCharArray();
+		for (int i = 0; i < crr.Length; ++i) {
+			if (crr[i] == '6') crr[i] = '9';
+			else if (crr[i] == '9') crr[i] = '6';
 		}
 
-		for (int i = 0; i <= n; ++i) {
-			write($"i:{i} ");
-			foreach (var k in dp[i][n].Keys) write($"{k}:{dp[i][n][k]} ");
-			writeline();
-		}
+		writeline(new string(crr.Reverse().ToArray()));
 
 
-
-=======
-		var (aa, bb, k) = readlongt3();
-		int a = (int)aa;
-		int b = (int)bb;
-
-		var ab = makearr2(a + 1, b + 1, 0l);
-		ab[a][b] = 1;
-		for (int i = a; i >= 0; --i) {
-			for (int j = b; j >= 0; --j) {
-				if (i > 0) ab[i - 1][j] += ab[i][j];
-				if (j > 0) ab[i][j - 1] += ab[i][j];
-			}
-		}
-
-		printlist2(ab);
-
-
->>>>>>> 23d28a0453d3be46fa6243f1491d2018ef5eff7e
 	} // end of method
 } // end of class

@@ -132,12 +132,12 @@ class Util {
 		return arr;
 	} // end of func
 
-	/// 任意の要素数・初期値の3次元Listを作って初期化する
-	[MethodImpl(256)]
+	/// <summary>任意の要素数・初期値の3次元Listを作って初期化する</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static List<List<List<T>>> makelist3<T>(int height, int width, int depth, T value) {
 		var arr = new List<List<List<T>>>();
 		for (int i = 0; i < height; ++i) {
-			arr.Add(new List<List<T>>());
+			arr[i] = new List<List<T>>();
 			for (int j = 0; j < width; ++j) {
 				arr[i].Add(makelist(depth, value));
 			}
@@ -200,7 +200,7 @@ class Util {
 		List<List<List<T>>> list2 = new List<List<List<T>>>();
 		for (int i = 0; i < list.Count; ++i) {
 			List<List<T>> tmplist = new List<List<T>>();
-			for (int j = 0; j < list[i].Count; ++j) {
+			for (int j = 0; j < list[i].Count; ++i) {
 				tmplist.Add(new List<T>(list[i][j]));
 			}
 			list2.Add(tmplist);
@@ -457,31 +457,31 @@ class Util {
 
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void writeline16<T>(T num) {
+	public static void WriteLine16<T>(T num) {
 		WriteLine(string.Format("{0:0.################}", num));
 	} // end of func
 
 	/// <summary>整数を二進数で表示</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void writeline2bit(int num) {
+	public static void WriteLine2bit(int num) {
 		WriteLine(Convert.ToString(num, 2));
 	} // end of func
 
 	/// <summary>整数を二進数で表示</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static void writeline2bit(long num) {
+	public static void WriteLine2bit(long num) {
 		WriteLine(Convert.ToString(num, 2));
 	} // end of func
 
 	/// <summary>整数を2進数表現した文字列に</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string i2s2bit(int num) {
+	public static string IntToString2bit(int num) {
 		return Convert.ToString(num, 2);
 	} // end of func
 
 	/// <summary>整数を2進数表現した文字列に</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static string l2s2bit(long num) {
+	public static string LongToString2bit(long num) {
 		return Convert.ToString(num, 2);
 	} // end of func
 
@@ -502,22 +502,22 @@ class Util {
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class HashMap<K, V> : Dictionary<K, V> {
 	new public V this[K i] {
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		set => base[i] = value;
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
 	}
 } // end of class
 
 /// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
 class SortedMap<K, V> : SortedDictionary<K, V> {
 	new public V this[K i] {
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		set => base[i] = value;
+		get {
+			V v;
+			return TryGetValue(i, out v) ? v : base[i] = default(V);
+		}
+		set { base[i] = value; }
 	}
 } // end of class
 
@@ -540,7 +540,7 @@ struct Edge : IComparable<Edge> {
 	public int from;
 	public int to;
 	public long cost;
-	public Edge(int from, int to, long cost = 0) {
+	public Edge(int from, int to, long cost) {
 		this.from = from;
 		this.to = to;
 		this.cost = cost;
@@ -564,87 +564,8 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-<<<<<<< HEAD
-		int n = readint();
-		long nn = n;
-		var arr = readlongs();
-
-		// 1, 2は全て
-		long ans = n;
-		ans = (ans + nn * (nn - 1) / 2) % m998;
-
-		/// 現在の数列の個数、現在参照している数列、前の数列からの交差 → 個数
-		// var dp = makearr3(81, n + 1, 81, 0l);
-		var dp = new HashMap<long, long>[n + 1][];
-		for (int i = 0; i <= n; ++i) {
-			dp[i] = new HashMap<long, long>[n + 1];
-			for (int j = 0; j <= n; ++j) { dp[i][j] = new HashMap<long, long>(); }
-		}
-		// for (int j = 0; j <= n; ++j) dp[0][j][0] = 1;
-		dp[0][0][0] = 1;
+		writeline(21 - readints().Sum());
 
 
-
-		// for (int j = 0; j < n; ++j) {
-		// 	for (int i = 0; i <= n; ++i) {
-		// 		foreach (var k in dp[i][j].Keys) {
-		// 			// 横移動(選ばない)
-		// 			dp[i][j + 1][k] += dp[i][j][k];
-		// 		}
-
-		// 		// 交差
-
-		// 			// 交差
-		// 			if (j == 0) continue;
-		// 			long diff = arr[j] - arr[j - 1];
-		// 			dp[i + 1][j + 1][k] += dp[i][j][k];
-		// 	}
-		// }
-
-		for (int j = 0; j < n; ++j) {
-			for (int i = 0; i <= n; ++i) {
-				foreach (var k in dp[i][j].Keys) {
-					// 選ばずに流す
-					for (int l = j + 1; l <= n; ++l) {
-						dp[i][l][k] = (dp[i][l][k] + dp[i][j][k]) % m998;
-					}
-				}
-
-				// 差分
-				if (i == n) continue;
-				for (int l = j + 1; l < n; ++l) {
-					long diff = arr[l] - arr[j];
-					// if (dp[i][j].ContainsKey(diff) == false) continue;
-					dp[i + 1][l][diff] += Max(1, dp[i][j][diff]);
-				}
-			}
-		}
-
-		for (int i = 0; i <= n; ++i) {
-			write($"i:{i} ");
-			foreach (var k in dp[i][n].Keys) write($"{k}:{dp[i][n][k]} ");
-			writeline();
-		}
-
-
-
-=======
-		var (aa, bb, k) = readlongt3();
-		int a = (int)aa;
-		int b = (int)bb;
-
-		var ab = makearr2(a + 1, b + 1, 0l);
-		ab[a][b] = 1;
-		for (int i = a; i >= 0; --i) {
-			for (int j = b; j >= 0; --j) {
-				if (i > 0) ab[i - 1][j] += ab[i][j];
-				if (j > 0) ab[i][j - 1] += ab[i][j];
-			}
-		}
-
-		printlist2(ab);
-
-
->>>>>>> 23d28a0453d3be46fa6243f1491d2018ef5eff7e
 	} // end of method
 } // end of class
