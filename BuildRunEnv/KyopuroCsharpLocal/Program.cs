@@ -564,15 +564,20 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (a, b, k) = readlongt3();
+		var (aa, bb, k) = readlongt3();
+		int a = (int)aa;
+		int b = (int)bb;
 
-		long c = 1;
-		while (c <= k) {
-			if ((k & c) == 0) write("a");
-			else write("b");
-			c <<= 1;
+		var ab = makearr2(a + 1, b + 1, 0l);
+		ab[a][b] = 1;
+		for (int i = a; i >= 0; --i) {
+			for (int j = b; j >= 0; --j) {
+				if (i > 0) ab[i - 1][j] += ab[i][j];
+				if (j > 0) ab[i][j - 1] += ab[i][j];
+			}
 		}
-		writeline();
+
+		printlist2(ab);
 
 
 	} // end of method

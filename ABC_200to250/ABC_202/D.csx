@@ -569,21 +569,21 @@ class Kyopuro {
 		int b = (int)bb;
 
 		var ab = makearr2(a + 1, b + 1, 0l);
+		// ab[a][b] = 1;
+		// for (int i = a; i >= 0; --i) {
+		// 	for (int j = b; j >= 0; --j) {
+		// 		if (i > 0) ab[i - 1][j] += ab[i][j];
+		// 		if (j > 0) ab[i][j - 1] += ab[i][j];
+		// 	}
+		// }
 		ab[0][0] = 1;
-		var queue = new Queue<int>();
-		queue.Enqueue(0);
-		var set = new HashSet<int>();
+		for (int i = 0; i <= a; ++i) {
+			for (int j = 0; j <= b; ++j) {
 
-		while (queue.Count > 0) {
-			int yx = queue.Dequeue();
-			if (set.Contains(yx)) continue;
-			set.Add(yx);
-			int y = yx / (b + 1);
-			int x = yx % (b + 1);
-
-			if (y < a) ab[y + 1][x] += ab[y][b];
-
+			}
 		}
+
+		printlist2(ab);
 
 
 	} // end of method
