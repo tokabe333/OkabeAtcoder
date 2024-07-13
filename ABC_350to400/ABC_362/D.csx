@@ -535,24 +535,106 @@ struct YX {
 	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
-/// グラフをするときに(値型だけど16byteまではstructが速い)
-struct Edge : IComparable<Edge> {
-	public int from;
-	public int to;
+
+/// ノードをつなぐ距離と行き先
+public struct Edge {
 	public long cost;
-	public Edge(int from, int to, long cost = 0) {
-		this.from = from;
-		this.to = to;
-		this.cost = cost;
-	}
+	public int node;
+	public Edge(long c = 0, int n = 0) { this.cost = c; this.node = n; }
 
-	/// コスト順にソートできるように
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
 
-	/// デバッグ出力用
+	public override string ToString() => $"cost:{cost} node:{node}";
+} // end of class
+
+
+
+class MyPriorityQueue<T> {
+	/// 内部で持つヒープ配列
+	public List<T> heap = new List<T>();
+
+	/// 現在の要素数
+	public int Count { get { return heap.Count; } }
+
+	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
+	private Func<T, T, bool> Compare;
+
+	public MyPriorityQueue(Func<T, T, bool> compare) {
+		this.Compare = compare;
+	}  // end of constructor
+
+	/// 新規の値を追加する
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
+	public void Enqueue(T num) {
+		// 追加する要素のノード番号　
+		int node = this.heap.Count;
+		this.heap.Add(num);
+
+		// 可能な限り親と交換
+		while (node > 0) {
+			// 親ノード
+			int p = (node - 1) / 2;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(num, heap[p]) == false) break;
+
+			// 親ノードの値を子に降ろす
+			heap[node] = heap[p];
+			node = p;
+		} // end of while
+
+		// 新規の値を下ろす場所を見つけたので終わり
+		heap[node] = num;
+	} // end of method
+
+	/// 一番優先度の高い値を返す
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T Peek() => this.heap[0];
+
+	/// 一番優先度の高い値を返して削除する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public T Dequeue() {
+		// return用の優先度が一番高い値
+		T ret = this.heap[0];
+
+		// 先頭を削除
+		this.Pop();
+
+		return ret;
+	} // end of method
+
+	/// 一番優先度の高い値を削除する
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public void Pop() {
+		// 根に持ってくる値
+		T last = heap[this.heap.Count - 1];
+
+		// 最後尾を削除 O(1)
+		this.heap.RemoveAt(this.heap.Count - 1);
+
+		// 要素がなくなったら終了
+		if (this.heap.Count == 0) return;
+
+		// 先頭を置き換えて降ろしていく
+		int node = 0;
+		while (node * 2 + 1 < this.heap.Count) {
+			int a = node * 2 + 1;
+			int b = node * 2 + 2;
+
+			// 右の子が存在して、なおかつ優先度が高いならば
+			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(last, this.heap[a])) break;
+
+			// 優先度の高い子を上げる
+			this.heap[node] = this.heap[a];
+			node = a;
+		} // end of while
+
+		// 先頭に持ってきた値の置き場所が決まったので更新
+		this.heap[node] = last;
+	} // end of method
+
 } // end of class
 
 class Kyopuro {
@@ -563,68 +645,83 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public void Solve() {
-		int n = readint();
-		long nn = n;
-		var arr = readlongs();
-
-		// 1, 2は全て
-		long ans = n;
-		ans = (ans + nn * (nn - 1) / 2) % m998;
-
-		/// 現在の数列の個数、現在参照している数列、前の数列からの交差 → 個数
-		// var dp = makearr3(81, n + 1, 81, 0l);
-		var dp = new HashMap<long, long>[n + 1][];
-		for (int i = 0; i <= n; ++i) {
-			dp[i] = new HashMap<long, long>[n + 1];
-			for (int j = 0; j <= n; ++j) { dp[i][j] = new HashMap<long, long>(); }
-		}
-		// for (int j = 0; j <= n; ++j) dp[0][j][0] = 1;
-		dp[0][0][0] = 1;
 
 
 
-		// for (int j = 0; j < n; ++j) {
-		// 	for (int i = 0; i <= n; ++i) {
-		// 		foreach (var k in dp[i][j].Keys) {
-		// 			// 横移動(選ばない)
-		// 			dp[i][j + 1][k] += dp[i][j][k];
-		// 		}
+	public long[] Dijkstra(List<List<Edge>> graph, int start, long[] arr) {
+		// 変数用意
+		int n = graph.Count;
 
-		// 		// 交差
+		// 最大値
+		long inf = System.Int64.MaxValue;
 
-		// 			// 交差
-		// 			if (j == 0) continue;
-		// 			long diff = arr[j] - arr[j - 1];
-		// 			dp[i + 1][j + 1][k] += dp[i][j][k];
-		// 	}
-		// }
+		// <node, cost> cost降順
+		// var pq = new PriorityQueue<int, long>(new ComparerAsc());
+		// var pq = new MyPriorityQueue<Edge>((a, b) => a.cost < b.cost);
+		var pq = new PriorityQueue<int, long>();
 
-		for (int j = 0; j < n; ++j) {
-			for (int i = 0; i <= n; ++i) {
-				foreach (var k in dp[i][j].Keys) {
-					// 選ばずに流す
-					for (int l = j + 1; l <= n; ++l) {
-						dp[i][l][k] = (dp[i][l][k] + dp[i][j][k]) % m998;
-					}
-				}
+		// 確定した距離を保持
+		// var distance = new List<long>(makearr<long>(n, inf));
+		// distance[start] = arr[start];
+		var distance = makearr(n, inf);
+		distance[start] = arr[start];
 
-				// 差分
-				if (i == n) continue;
-				for (int l = j + 1; l < n; ++l) {
-					long diff = arr[l] - arr[j];
-					// if (dp[i][j].ContainsKey(diff) == false) continue;
-					dp[i + 1][l][diff] += Max(1, dp[i][j][diff]);
-				}
+		// pq.Enqueue(new Edge(arr[start], start));
+		pq.Enqueue(start, arr[start]);
+
+		var set = new HashSet<int>();
+
+		while (pq.Count > 0) {
+			// var edge = pq.Dequeue();
+			// int node = edge.node;
+			// long cost = edge.cost;
+			int node;
+			long cost;
+			pq.TryDequeue(out node, out cost);
+
+
+
+			// すでに確定した距離以上なら更新余地は無い
+			if (set.Contains(node)) continue;
+			set.Add(node);
+			if (distance[node] < cost) continue;
+
+			// 各種距離を追加
+			foreach (var next in graph[node]) {
+				// 更新余地がない場合は次
+				long nextcost = cost + next.cost + arr[next.node];
+				if (distance[next.node] < nextcost) continue;
+
+				// writeline($"更新 node:{edge.node} c:{edge.cost} next:{next.node} nc:{next.cost} nc:{nextcost}");
+				distance[next.node] = nextcost;
+				// pq.Enqueue(new Edge(nextcost, next.node));
+				pq.Enqueue(next.node, nextcost);
 			}
+		} // end of while
+
+		return distance;
+	} // end of method
+
+
+
+	public void Solve() {
+		var (n, m) = readintt2();
+
+		var arr = readlongs();
+		var graph = makelist2(n, 0, new Edge(0, 0));
+		for (int i = 0; i < m; ++i) {
+			var (u, v, b) = readintt3();
+			--u; --v;
+			graph[u].Add(new Edge(b, v));
+			graph[v].Add(new Edge(b, u));
 		}
 
-		for (int i = 0; i <= n; ++i) {
-			write($"i:{i} ");
-			foreach (var k in dp[i][n].Keys) write($"{k}:{dp[i][n][k]} ");
-			writeline();
-		}
+		// printlist2(graph);
 
+		var ans = Dijkstra(graph, 0, arr);
+		// printlist(ans);
+		for (int i = 1; i < n; ++i) write($"{ans[i]} ");
+		writeline();
 
 
 	} // end of method

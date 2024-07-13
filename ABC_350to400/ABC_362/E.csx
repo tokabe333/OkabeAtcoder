@@ -579,8 +579,8 @@ class Kyopuro {
 			dp[i] = new HashMap<long, long>[n + 1];
 			for (int j = 0; j <= n; ++j) { dp[i][j] = new HashMap<long, long>(); }
 		}
-		// for (int j = 0; j <= n; ++j) dp[0][j][0] = 1;
-		dp[0][0][0] = 1;
+		for (int j = 0; j <= n; ++j) dp[0][j][0] = 1;
+		// dp[0][0][0] = 1;
 
 
 

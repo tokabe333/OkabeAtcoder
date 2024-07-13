@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Net.Http.Headers;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -564,67 +565,15 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		int n = readint();
-		long nn = n;
-		var arr = readlongs();
-
-		// 1, 2は全て
-		long ans = n;
-		ans = (ans + nn * (nn - 1) / 2) % m998;
-
-		/// 現在の数列の個数、現在参照している数列、前の数列からの交差 → 個数
-		// var dp = makearr3(81, n + 1, 81, 0l);
-		var dp = new HashMap<long, long>[n + 1][];
-		for (int i = 0; i <= n; ++i) {
-			dp[i] = new HashMap<long, long>[n + 1];
-			for (int j = 0; j <= n; ++j) { dp[i][j] = new HashMap<long, long>(); }
+		var (r, g, b) = readlongt3();
+		var s = read();
+		if (s == "Blue") {
+			writeline(Min(r, g));
+		} else if (s == "Green") {
+			writeline(Min(r, b));
+		} else {
+			writeline(Min(g, b));
 		}
-		// for (int j = 0; j <= n; ++j) dp[0][j][0] = 1;
-		dp[0][0][0] = 1;
-
-
-
-		// for (int j = 0; j < n; ++j) {
-		// 	for (int i = 0; i <= n; ++i) {
-		// 		foreach (var k in dp[i][j].Keys) {
-		// 			// 横移動(選ばない)
-		// 			dp[i][j + 1][k] += dp[i][j][k];
-		// 		}
-
-		// 		// 交差
-
-		// 			// 交差
-		// 			if (j == 0) continue;
-		// 			long diff = arr[j] - arr[j - 1];
-		// 			dp[i + 1][j + 1][k] += dp[i][j][k];
-		// 	}
-		// }
-
-		for (int j = 0; j < n; ++j) {
-			for (int i = 0; i <= n; ++i) {
-				foreach (var k in dp[i][j].Keys) {
-					// 選ばずに流す
-					for (int l = j + 1; l <= n; ++l) {
-						dp[i][l][k] = (dp[i][l][k] + dp[i][j][k]) % m998;
-					}
-				}
-
-				// 差分
-				if (i == n) continue;
-				for (int l = j + 1; l < n; ++l) {
-					long diff = arr[l] - arr[j];
-					// if (dp[i][j].ContainsKey(diff) == false) continue;
-					dp[i + 1][l][diff] += Max(1, dp[i][j][diff]);
-				}
-			}
-		}
-
-		for (int i = 0; i <= n; ++i) {
-			write($"i:{i} ");
-			foreach (var k in dp[i][n].Keys) write($"{k}:{dp[i][n][k]} ");
-			writeline();
-		}
-
 
 
 	} // end of method

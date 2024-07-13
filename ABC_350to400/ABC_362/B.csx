@@ -564,65 +564,18 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		int n = readint();
-		long nn = n;
-		var arr = readlongs();
+		var (x1, y1) = readlongt2();
+		var (x2, y2) = readlongt2();
+		var (x3, y3) = readlongt2();
 
-		// 1, 2は全て
-		long ans = n;
-		ans = (ans + nn * (nn - 1) / 2) % m998;
+		long d1 = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+		long d2 = (x2 - x3) * (x2 - x3) + (y2 - y3) * (y2 - y3);
+		long d3 = (x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1);
 
-		/// 現在の数列の個数、現在参照している数列、前の数列からの交差 → 個数
-		// var dp = makearr3(81, n + 1, 81, 0l);
-		var dp = new HashMap<long, long>[n + 1][];
-		for (int i = 0; i <= n; ++i) {
-			dp[i] = new HashMap<long, long>[n + 1];
-			for (int j = 0; j <= n; ++j) { dp[i][j] = new HashMap<long, long>(); }
-		}
-		// for (int j = 0; j <= n; ++j) dp[0][j][0] = 1;
-		dp[0][0][0] = 1;
-
-
-
-		// for (int j = 0; j < n; ++j) {
-		// 	for (int i = 0; i <= n; ++i) {
-		// 		foreach (var k in dp[i][j].Keys) {
-		// 			// 横移動(選ばない)
-		// 			dp[i][j + 1][k] += dp[i][j][k];
-		// 		}
-
-		// 		// 交差
-
-		// 			// 交差
-		// 			if (j == 0) continue;
-		// 			long diff = arr[j] - arr[j - 1];
-		// 			dp[i + 1][j + 1][k] += dp[i][j][k];
-		// 	}
-		// }
-
-		for (int j = 0; j < n; ++j) {
-			for (int i = 0; i <= n; ++i) {
-				foreach (var k in dp[i][j].Keys) {
-					// 選ばずに流す
-					for (int l = j + 1; l <= n; ++l) {
-						dp[i][l][k] = (dp[i][l][k] + dp[i][j][k]) % m998;
-					}
-				}
-
-				// 差分
-				if (i == n) continue;
-				for (int l = j + 1; l < n; ++l) {
-					long diff = arr[l] - arr[j];
-					// if (dp[i][j].ContainsKey(diff) == false) continue;
-					dp[i + 1][l][diff] += Max(1, dp[i][j][diff]);
-				}
-			}
-		}
-
-		for (int i = 0; i <= n; ++i) {
-			write($"i:{i} ");
-			foreach (var k in dp[i][n].Keys) write($"{k}:{dp[i][n][k]} ");
-			writeline();
+		if (d1 + d2 == d3 || d2 + d3 == d1 || d3 + d1 == d2) {
+			writeline("Yes");
+		} else {
+			writeline("No");
 		}
 
 
