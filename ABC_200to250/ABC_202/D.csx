@@ -564,15 +564,26 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (a, b, k) = readlongt3();
+		var (aa, bb, k) = readlongt3();
+		int a = (int)aa;
+		int b = (int)bb;
 
-		long c = 1;
-		while (c <= k) {
-			if ((k & c) == 0) write("a");
-			else write("b");
-			c <<= 1;
+		var ab = makearr2(a + 1, b + 1, 0l);
+		ab[0][0] = 1;
+		var queue = new Queue<int>();
+		queue.Enqueue(0);
+		var set = new HashSet<int>();
+
+		while (queue.Count > 0) {
+			int yx = queue.Dequeue();
+			if (set.Contains(yx)) continue;
+			set.Add(yx);
+			int y = yx / (b + 1);
+			int x = yx % (b + 1);
+
+			if (y < a) ab[y + 1][x] += ab[y][b];
+
 		}
-		writeline();
 
 
 	} // end of method
