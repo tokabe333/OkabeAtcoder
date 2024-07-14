@@ -482,30 +482,28 @@ public class Kyopuro {
 		public Edge(long c = 0, int n = 0) { this.cost = c; this.node = n; }
 	} // end of class
 
-
-	public List<long> Dijkstra(List<List<Edge>> graph, int start) {
-		// 変数用意
-		int n = graph.Count;
-
+	/// ダイクストラ
+	public long[] Dijkstra(List<List<Edge>> graph, int start) {
 		// 最大値
 		long inf = System.Int64.MaxValue;
 
 		// <node, cost> cost降順
-		// var pq = new PriorityQueue<int, long>(new ComparerAsc());
 		var pq = new MyPriorityQueue<Edge>((a, b) => a.cost < b.cost);
 
 		// 確定した距離を保持
-		var distance = new List<long>(makearr<long>(n, inf));
+		var distance = makearr<long>(graph.Count, inf);
 		distance[start] = 0;
 		pq.Enqueue(new Edge(0, start));
+		var set = new HashSet<int>();
 		while (pq.Count > 0) {
 			var edge = pq.Dequeue();
 			int node = edge.node;
 			long cost = edge.cost;
 			// pq.TryDequeue(out node, out cost);
 
-
 			// すでに確定した距離以上なら更新余地は無い
+			if (set.Contains(node)) continue;
+			set.Add(node);
 			if (distance[node] < cost) continue;
 
 			// 各種距離を追加
