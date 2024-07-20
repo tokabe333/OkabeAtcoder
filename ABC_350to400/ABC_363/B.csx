@@ -564,72 +564,13 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (h, w, year) = readintt3();
-		var masu = new int[h][];
-		var flag = makearr2(h, w, 1);
+		var (n, t, p) = readintt3();
+		var arr = readints();
 
-		var pq = new PriorityQueue<(int, int, int), int>();
-		for (int i = 0; i < h; ++i) {
-			masu[i] = readints();
-			for (int j = 0; j < w; ++j) {
-				pq.Enqueue((i, j, masu[i][j]), masu[i][j]);
-			}
-		}
-
-		long ans = h * w;
-		for (int i = 1; i <= year; ++i) {
-			while (pq.Count > 0 && pq.Peek().Item3 <= i) {
-				var (y, x, c) = pq.Dequeue();
-				var queue = new Queue<int>();
-
-				// 司法が囲まれているならBFSにまかせる
-				bool ngo = true;
-				if (y == 0 || flag[y - 1][x] == 0) ngo = false;
-				if (y == h - 1 || flag[y + 1][x] == 0) ngo = false;
-				if (x == 0 || flag[y][x - 1] == 0) ngo = false;
-				if (x == w - 1 || flag[y][x + 1] == 0) ngo = false;
-				if (ngo) continue;
-
-				queue.Enqueue(y * w + x);
-				ans -= flag[y][x];
-				flag[y][x] = 0;
-				while (queue.Count > 0) {
-					int yx = queue.Dequeue();
-					int cy = yx / w;
-					int cx = yx % w;
-
-					// ans -= flag[cy][cx];
-					// flag[cy][cx] = 0;
-
-					// u, d, l, r
-					if (0 < cy && masu[cy - 1][cx] <= i && flag[cy - 1][cx] == 1) {
-						queue.Enqueue(yx - w);
-						ans -= flag[cy - 1][cx];
-						flag[cy - 1][cx] = 0;
-					}
-					if (cy < h - 1 && masu[cy + 1][cx] <= i && flag[cy + 1][cx] == 1) {
-						queue.Enqueue(yx + w);
-						ans -= flag[cy + 1][cx];
-						flag[cy + 1][cx] = 0;
-					}
-					if (0 < cx && masu[cy][cx - 1] <= i && flag[cy][cx - 1] == 1) {
-						queue.Enqueue(yx - 1);
-						ans -= flag[cy][cx - 1];
-						flag[cy][cx - 1] = 0;
-					}
-					if (cx < w - 1 && masu[cy][cx + 1] <= i && masu[cy][cx + 1] == 1) {
-						queue.Enqueue(yx + 1);
-						ans -= flag[cy][cx + 1];
-						flag[cy][cx + 1] = 0;
-					}
-				}
-			}
-			writeline(ans);
-			// printlist2(flag);
-			// writeline();
-		}
-
-
+		Array.Sort(arr);
+		Array.Reverse(arr);
+		int pl = arr[p - 1];
+		writeline(Max(0, t - pl));
 
 	} // end of method
 } // end of class

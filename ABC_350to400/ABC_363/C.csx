@@ -555,6 +555,7 @@ struct Edge : IComparable<Edge> {
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 
+
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -563,73 +564,104 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public void Solve() {
-		var (h, w, year) = readintt3();
-		var masu = new int[h][];
-		var flag = makearr2(h, w, 1);
+	/// <summary> 
+	/// 全ての順列を列挙する
+	/// AllPermutation(0,1,3,6,7) のような呼び方も可能
+	/// </summary>
+	T[][] AllPermutation<T>(params T[] array) where T : IComparable {
+		// return用変数
+		long resnum = 1;
+		for (long i = 2; i <= array.Length; ++i) resnum *= i;
+		var res = new T[resnum][];
+		res[0] = copyarr(array);
 
-		var pq = new PriorityQueue<(int, int, int), int>();
-		for (int i = 0; i < h; ++i) {
-			masu[i] = readints();
-			for (int j = 0; j < w; ++j) {
-				pq.Enqueue((i, j, masu[i][j]), masu[i][j]);
+		var a = copyarr(array);
+		var n = a.Length;
+		var next = true;
+		long resind = 1;
+		while (next) {
+			next = false;
+
+			// 後ろから A_i < A_(i+1) のインデックスを探す
+			int i;
+			for (i = n - 2; i >= 0; i--) {
+				if (a[i].CompareTo(a[i + 1]) < 0) break;
+			}
+			// 全てのiに対して A_i >= A_(i+1) なら終了
+			if (i < 0) break;
+
+			// 置き換える場所(左)が見つかったので置き換える場所(右)を探す
+			// A_i < A_j (i < j)
+			var j = n;
+			do {
+				j--;
+			} while (a[i].CompareTo(a[j]) > 0);
+
+			// まだ更新余地があるなら
+			// A_iとA_jを入れ替えて、A_(i+1)以降を反転
+			if (a[i].CompareTo(a[j]) < 0) {
+				var tmp = a[i];
+				a[i] = a[j];
+				a[j] = tmp;
+				Array.Reverse(a, i + 1, n - i - 1);
+				res[resind++] = copyarr(a);
+				next = true;
 			}
 		}
+		return res;
+	} // end of method
 
-		long ans = h * w;
-		for (int i = 1; i <= year; ++i) {
-			while (pq.Count > 0 && pq.Peek().Item3 <= i) {
-				var (y, x, c) = pq.Dequeue();
-				var queue = new Queue<int>();
+	public void Solve() {
+		var (n, k) = readintt2();
+		var s = read();
+		var arr = new int[n];
+		for (int i = 0; i < arr.Length; ++i) arr[i] = i;
+		// var sw = new Stopwatch();
+		// sw.Start();
+		var res = AllPermutation(arr);
 
-				// 司法が囲まれているならBFSにまかせる
-				bool ngo = true;
-				if (y == 0 || flag[y - 1][x] == 0) ngo = false;
-				if (y == h - 1 || flag[y + 1][x] == 0) ngo = false;
-				if (x == 0 || flag[y][x - 1] == 0) ngo = false;
-				if (x == w - 1 || flag[y][x + 1] == 0) ngo = false;
-				if (ngo) continue;
+		long ans = 0;
+		long flag = 0;
+		int l = 0, r = 0;
+		long inflag = 0;
+		for (int i = 0; i < res.Length; ++i) {
 
-				queue.Enqueue(y * w + x);
-				ans -= flag[y][x];
-				flag[y][x] = 0;
-				while (queue.Count > 0) {
-					int yx = queue.Dequeue();
-					int cy = yx / w;
-					int cx = yx % w;
-
-					// ans -= flag[cy][cx];
-					// flag[cy][cx] = 0;
-
-					// u, d, l, r
-					if (0 < cy && masu[cy - 1][cx] <= i && flag[cy - 1][cx] == 1) {
-						queue.Enqueue(yx - w);
-						ans -= flag[cy - 1][cx];
-						flag[cy - 1][cx] = 0;
-					}
-					if (cy < h - 1 && masu[cy + 1][cx] <= i && flag[cy + 1][cx] == 1) {
-						queue.Enqueue(yx + w);
-						ans -= flag[cy + 1][cx];
-						flag[cy + 1][cx] = 0;
-					}
-					if (0 < cx && masu[cy][cx - 1] <= i && flag[cy][cx - 1] == 1) {
-						queue.Enqueue(yx - 1);
-						ans -= flag[cy][cx - 1];
-						flag[cy][cx - 1] = 0;
-					}
-					if (cx < w - 1 && masu[cy][cx + 1] <= i && masu[cy][cx + 1] == 1) {
-						queue.Enqueue(yx + 1);
-						ans -= flag[cy][cx + 1];
-						flag[cy][cx + 1] = 0;
+			flag = 1l;
+			for (int j = 0; j <= n - k; ++j) {
+				if (flag == 0l) break;
+				inflag = 0l;
+				for (int a = 0; a < k / 2; ++a) {
+					if (s[res[i][j + a]] != s[res[i][j + k - 1 - a]]) {
+						inflag = 1l;
+						// printlist(res[i]);
+						// writeline($"i:{i} j:{j} a:{a}");
+						// writeline();
+						break;
 					}
 				}
+				if (inflag == 0l) {
+					flag = 0l;
+					break;
+				}
+
+
 			}
-			writeline(ans);
-			// printlist2(flag);
-			// writeline();
+			ans += flag;
+		}
+		// sw.Stop();
+		// writeline(sw.ElapsedMilliseconds);
+
+
+		var al = new int[30];
+		foreach (var c in s) al[c - 'a'] += 1;
+		for (int i = 0; i < 30; ++i) {
+			if (al[i] <= 1) continue;
+			for (int j = al[i]; j > 1; --j) {
+				ans /= j;
+			}
 		}
 
-
+		writeline(ans);
 
 	} // end of method
 } // end of class

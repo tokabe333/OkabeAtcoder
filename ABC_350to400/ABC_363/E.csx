@@ -586,42 +586,24 @@ class Kyopuro {
 				bool ngo = true;
 				if (y == 0 || flag[y - 1][x] == 0) ngo = false;
 				if (y == h - 1 || flag[y + 1][x] == 0) ngo = false;
-				if (x == 0 || flag[y][x - 1] == 0) ngo = false;
-				if (x == w - 1 || flag[y][x + 1] == 0) ngo = false;
+				if (y == 0 || flag[y][x - 1] == 0) ngo = false;
+				if (y == w - 1 || flag[y][x + 1] == 0) ngo = false;
 				if (ngo) continue;
 
 				queue.Enqueue(y * w + x);
-				ans -= flag[y][x];
-				flag[y][x] = 0;
 				while (queue.Count > 0) {
 					int yx = queue.Dequeue();
 					int cy = yx / w;
 					int cx = yx % w;
 
-					// ans -= flag[cy][cx];
-					// flag[cy][cx] = 0;
+					ans -= flag[cy][cx];
+					flag[cy][cx] = 0;
 
 					// u, d, l, r
-					if (0 < cy && masu[cy - 1][cx] <= i && flag[cy - 1][cx] == 1) {
-						queue.Enqueue(yx - w);
-						ans -= flag[cy - 1][cx];
-						flag[cy - 1][cx] = 0;
-					}
-					if (cy < h - 1 && masu[cy + 1][cx] <= i && flag[cy + 1][cx] == 1) {
-						queue.Enqueue(yx + w);
-						ans -= flag[cy + 1][cx];
-						flag[cy + 1][cx] = 0;
-					}
-					if (0 < cx && masu[cy][cx - 1] <= i && flag[cy][cx - 1] == 1) {
-						queue.Enqueue(yx - 1);
-						ans -= flag[cy][cx - 1];
-						flag[cy][cx - 1] = 0;
-					}
-					if (cx < w - 1 && masu[cy][cx + 1] <= i && masu[cy][cx + 1] == 1) {
-						queue.Enqueue(yx + 1);
-						ans -= flag[cy][cx + 1];
-						flag[cy][cx + 1] = 0;
-					}
+					if (0 < cy && masu[cy - 1][cx] <= i && flag[cy - 1][cx] == 1) queue.Enqueue(yx - w);
+					if (cy < h - 1 && masu[cy + 1][cx] <= i && flag[cy + 1][cx] == 1) queue.Enqueue(yx + w);
+					if (0 < cx && masu[cy][cx - 1] <= i && flag[cy][cx - 1] == 1) queue.Enqueue(yx - 1);
+					if (cx < w - 1 && masu[cy][cx + 1] <= i && masu[cy][cx + 1] == 1) queue.Enqueue(yx + 1);
 				}
 			}
 			writeline(ans);
