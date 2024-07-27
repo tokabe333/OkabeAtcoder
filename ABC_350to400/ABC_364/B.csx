@@ -563,58 +563,29 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-
 	public void Solve() {
-		var (n, x, y) = readintt3();
-		var xrr = new long[n];
-		var yrr = new long[n];
-		for (int i = 0; i < n; ++i) {
-			var (xxx, yyy) = readlongt2();
-			xrr[i] = xxx;
-			yrr[i] = yyy;
-		}
+		var (h, w) = readintt2();
+		var (sy, sx) = readintt2();
+		--sy; --sx;
 
-		var dp = makearr2(n + 1, n + 1, new Dictionary<long, long>());
-		for (int i = 0; i <= n; ++i) {
-			for (int j = 0; j <= n; ++j) {
-				dp[i][j] = new Dictionary<long, long>();
+		string[] masu = new string[h];
+		for (int i = 0; i < h; ++i) masu[i] = read();
+		string order = read();
+
+		foreach (char c in order) {
+			if (c == 'U') {
+				if (0 < sy && masu[sy - 1][sx] == '.') sy -= 1;
+			} else if (c == 'D') {
+				if (sy < h - 1 && masu[sy + 1][sx] == '.') sy += 1;
+			} else if (c == 'L') {
+				if (0 < sx && masu[sy][sx - 1] == '.') sx -= 1;
+			} else {
+				if (sx < w - 1 && masu[sy][sx + 1] == '.') sx += 1;
 			}
 		}
 
-		dp[0][0][0] = 0;
-		for (int j = 0; j < n; ++j) {
-			for (int i = 0; i <= n; ++i) {
-				// →
-				foreach (var kv in dp[i][j]) {
-					long key = kv.Key;
-					if (dp[i][j + 1].ContainsKey(key) == false) {
-						dp[i][j + 1][key] = kv.Value;
-					} else {
-						dp[i][j + 1][key] = Min(dp[i][j + 1][key], kv.Value);
-					}
-				}
+		writeline($"{sy + 1} {sx + 1}");
 
-				// 追加する場合
-				foreach (var kv in dp[i][j]) {
-					long nextkey = kv.Key + xrr[j];
-					long nextvalue = kv.Value + yrr[j];
-					if (nextkey > x || nextvalue > y) continue;
-					if (dp[i + 1][j + 1].ContainsKey(nextkey) == false) {
-						dp[i + 1][j + 1][nextkey] = nextvalue;
-					} else {
-						dp[i + 1][j + 1][nextkey] = Min(dp[i + 1][j + 1][nextkey], nextvalue);
-					}
-				}
-
-			}
-		}
-
-		for (int i = n; i >= 0; --i) {
-			if (dp[i].Last().Count > 0) {
-				writeline(i == n ? i : i + 1);
-				return;
-			}
-		}
 
 	} // end of method
 } // end of class

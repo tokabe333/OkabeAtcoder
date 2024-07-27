@@ -563,58 +563,38 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-
 	public void Solve() {
-		var (n, x, y) = readintt3();
-		var xrr = new long[n];
-		var yrr = new long[n];
+		var (n, x, y) = readintlongt3();
+		var ab = new List<(long, long)>();
+		var arr = readlongs();
+		var brr = readlongs();
 		for (int i = 0; i < n; ++i) {
-			var (xxx, yyy) = readlongt2();
-			xrr[i] = xxx;
-			yrr[i] = yyy;
+			ab.Add((arr[i], brr[i]));
 		}
 
-		var dp = makearr2(n + 1, n + 1, new Dictionary<long, long>());
-		for (int i = 0; i <= n; ++i) {
-			for (int j = 0; j <= n; ++j) {
-				dp[i][j] = new Dictionary<long, long>();
-			}
+		ab.Sort((a, b) => a.Item1.CompareTo(b.Item1));
+		ab.Reverse();
+		int ans1 = 0;
+		long sum1 = 0;
+		for (int i = 0; i < n; ++i) {
+			sum1 += ab[i].Item1;
+			ans1 = i;
+			if (sum1 > x) break;
 		}
 
-		dp[0][0][0] = 0;
-		for (int j = 0; j < n; ++j) {
-			for (int i = 0; i <= n; ++i) {
-				// →
-				foreach (var kv in dp[i][j]) {
-					long key = kv.Key;
-					if (dp[i][j + 1].ContainsKey(key) == false) {
-						dp[i][j + 1][key] = kv.Value;
-					} else {
-						dp[i][j + 1][key] = Min(dp[i][j + 1][key], kv.Value);
-					}
-				}
-
-				// 追加する場合
-				foreach (var kv in dp[i][j]) {
-					long nextkey = kv.Key + xrr[j];
-					long nextvalue = kv.Value + yrr[j];
-					if (nextkey > x || nextvalue > y) continue;
-					if (dp[i + 1][j + 1].ContainsKey(nextkey) == false) {
-						dp[i + 1][j + 1][nextkey] = nextvalue;
-					} else {
-						dp[i + 1][j + 1][nextkey] = Min(dp[i + 1][j + 1][nextkey], nextvalue);
-					}
-				}
-
-			}
+		ab.Sort((a, b) => a.Item2.CompareTo(b.Item2));
+		ab.Reverse();
+		int ans2 = 0;
+		long sum2 = 0;
+		for (int i = 0; i < n; ++i) {
+			sum2 += ab[i].Item2;
+			ans2 = i;
+			if (sum2 > y) break;
 		}
 
-		for (int i = n; i >= 0; --i) {
-			if (dp[i].Last().Count > 0) {
-				writeline(i == n ? i : i + 1);
-				return;
-			}
-		}
+		writeline(Min(ans1, ans2) + 1);
+
+
 
 	} // end of method
 } // end of class
