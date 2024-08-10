@@ -564,101 +564,58 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		(int n, long d) = readintlongt2();
-		var p = new long[n][];
+		int n = readint();
+		var arr = new long[n][][];
 		for (int i = 0; i < n; ++i) {
-			p[i] = readlongs();
+			arr[i] = new long[n][];
+			var brr = new long[n][];
+			for (int j = 0; j < n; ++j) {
+				brr[j] = readlongs();
+			}
+			arr[i] = brr;
 		}
 
-		long dists(long x, long y) {
-			long totaldist = 0;
+
+		var com = makearr3(n, n + 1, n + 1, 0l);
+		for (int y = 0; y < n; ++y) {
 			for (int i = 0; i < n; ++i) {
-				totaldist += Abs(x - p[i][0]) + Abs(y - p[i][1]);
+				for (int j = 0; j < n; ++j) {
+					com[y][i + 1][j + 1] = arr[y][i][j] + com[y][i + 1][j];
+				}
 			}
 
-			return d - totaldist;
+			for (int j = 0; j <= n; ++j) {
+				for (int i = 0; i < n; ++i) {
+					com[y][i + 1][j] += com[y][i][j];
+				}
+			}
 		}
 
-		// 中心を調べる
-		long sx = 0, sy = 0;
-		for (int i = 0; i < n; ++i) {
-			sx += p[i][0];
-			sy += p[i][1];
-		}
-		long ax = sx / n;
-		long ay = sy / n;
-
-		writeline($"sx:{sx} sy:{sy}");
-		writeline($"ax:{ax} ay:{ay}");
-
-		// 全部ピッタリ
-		long ans = 0;
-		if (sx % n == 0 && sy % n == 0) {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += (j * 2 + 1) * 2;
-			}
-		}
-		// 縦同じ、横ずれてる
-		else if (sx % n != 0 && sy % n == 0) {
-			long dist = dists(ax, ay);
-			writeline("koko");
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
-
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
-		}
-		// 縦ずれてる、横同じ
-		else if (sx % n == 0 && sy % n != 0) {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
-
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
-		}
-		// 全部ずれてる
-		else {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 2;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 2;
-			}
-
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 2;
-			}
-
+		long sum(int y, int a, int b, int c, int d) {
+			long ul = com[y][a][b];
+			long ur = com[y][a][d];
+			long ll = com[y][c][b];
+			long lr = com[y][c][d];
+			return ul + lr - ur - ll;
 		}
 
-		writeline(ans);
+		int q = readint();
+		for (int _ = 0; _ < q; ++_) {
+			var inputs = readints();
+			int ys = inputs[0] - 1;
+			int yg = inputs[1] - 1;
+			int a = inputs[2] - 1;
+			int c = inputs[3];
+			int b = inputs[4] - 1;
+			int d = inputs[5];
+
+			long ans = 0;
+			for (int y = ys; y <= yg; ++y) {
+				ans += sum(y, a, b, c, d);
+			}
+			writeline(ans);
+		}
+
 
 	} // end of method
 } // end of class

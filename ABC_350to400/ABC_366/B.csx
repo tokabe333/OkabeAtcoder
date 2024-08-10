@@ -564,101 +564,44 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		(int n, long d) = readintlongt2();
-		var p = new long[n][];
+		int n = readint();
+		var srr = new string[n];
+		int max = 0;
 		for (int i = 0; i < n; ++i) {
-			p[i] = readlongs();
+			srr[i] = read();
+			max = Max(max, srr[i].Length);
 		}
 
-		long dists(long x, long y) {
-			long totaldist = 0;
-			for (int i = 0; i < n; ++i) {
-				totaldist += Abs(x - p[i][0]) + Abs(y - p[i][1]);
-			}
-
-			return d - totaldist;
-		}
-
-		// 中心を調べる
-		long sx = 0, sy = 0;
+		var ans = makearr2(max, n, '_');
 		for (int i = 0; i < n; ++i) {
-			sx += p[i][0];
-			sy += p[i][1];
-		}
-		long ax = sx / n;
-		long ay = sy / n;
-
-		writeline($"sx:{sx} sy:{sy}");
-		writeline($"ax:{ax} ay:{ay}");
-
-		// 全部ピッタリ
-		long ans = 0;
-		if (sx % n == 0 && sy % n == 0) {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += (j * 2 + 1) * 2;
+			for (int j = 0; j < srr[i].Length; ++j) {
+				ans[j][n - i - 1] = srr[i][j];
 			}
 		}
-		// 縦同じ、横ずれてる
-		else if (sx % n != 0 && sy % n == 0) {
-			long dist = dists(ax, ay);
-			writeline("koko");
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
 
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 1;
+		for (int i = 0; i < max; ++i) {
+			for (int j = 0; j < n - 1; ++j) {
+				if (ans[i][j] != '_') continue;
+				bool flag = false;
+				for (int k = j + 1; k < n; ++k) {
+					if (ans[i][k] != '_') { flag = true; break; }
+				}
+				if (flag == false) continue;
+				ans[i][j] = '*';
 			}
 		}
-		// 縦ずれてる、横同じ
-		else if (sx % n == 0 && sy % n != 0) {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
 
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 1;
+		// printlist2(ans);
+		for (int i = 0; i < max; ++i) {
+			for (int j = 0; j < n; ++j) {
+				if (ans[i][j] == '_') continue;
+				write(ans[i][j]);
 			}
-		}
-		// 全部ずれてる
-		else {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 2;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 2;
-			}
-
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 2;
-			}
-
+			writeline();
 		}
 
-		writeline(ans);
+
+
 
 	} // end of method
 } // end of class

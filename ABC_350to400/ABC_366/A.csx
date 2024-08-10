@@ -564,101 +564,14 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		(int n, long d) = readintlongt2();
-		var p = new long[n][];
-		for (int i = 0; i < n; ++i) {
-			p[i] = readlongs();
+
+		var (n, t, a) = readintt3();
+
+		if (n / 2 < t || n / 2 < a) {
+			writeline("Yes");
+		} else {
+			writeline("No");
 		}
-
-		long dists(long x, long y) {
-			long totaldist = 0;
-			for (int i = 0; i < n; ++i) {
-				totaldist += Abs(x - p[i][0]) + Abs(y - p[i][1]);
-			}
-
-			return d - totaldist;
-		}
-
-		// 中心を調べる
-		long sx = 0, sy = 0;
-		for (int i = 0; i < n; ++i) {
-			sx += p[i][0];
-			sy += p[i][1];
-		}
-		long ax = sx / n;
-		long ay = sy / n;
-
-		writeline($"sx:{sx} sy:{sy}");
-		writeline($"ax:{ax} ay:{ay}");
-
-		// 全部ピッタリ
-		long ans = 0;
-		if (sx % n == 0 && sy % n == 0) {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += (j * 2 + 1) * 2;
-			}
-		}
-		// 縦同じ、横ずれてる
-		else if (sx % n != 0 && sy % n == 0) {
-			long dist = dists(ax, ay);
-			writeline("koko");
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
-
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
-		}
-		// 縦ずれてる、横同じ
-		else if (sx % n == 0 && sy % n != 0) {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 1;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
-
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 1;
-			}
-		}
-		// 全部ずれてる
-		else {
-			long dist = dists(ax, ay);
-			if (dist < 0) {
-				writeline(0);
-				return;
-			}
-			ans = dist * 2 + 2;
-			for (long j = dist - 1; j >= 0; --j) {
-				ans += j * 2 + 2;
-			}
-
-			dist = dists(ax + 1, ay);
-			for (long j = dist; j >= 0; --j) {
-				ans += j * 2 + 2;
-			}
-
-		}
-
-		writeline(ans);
 
 	} // end of method
 } // end of class
