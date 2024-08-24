@@ -584,9 +584,9 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		double d = readdouble();
-		writeline(d);
 
+		var (n, k) = readintt2();
+		var arr = readints();
 
 	} // end of method
 } // end of class

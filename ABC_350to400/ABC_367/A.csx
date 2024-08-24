@@ -568,6 +568,7 @@ class Kyopuro {
 		for (int d = b; d != c; d = (d + 1) % 24) {
 			if (d == a) {
 				WriteLine("No");
+				return;
 			}
 		}
 

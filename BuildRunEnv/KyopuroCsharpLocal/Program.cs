@@ -55,6 +55,14 @@ class Util {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void writeline<T>(T value) => WriteLine(value);
 
+	/// <summary>Yes出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void writeyes() => WriteLine("Yes");
+
+	/// <summary>No出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void writeno() => WriteLine("No");
+
 	/// <summary>改行なし出力</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void print() => Write("");
@@ -78,6 +86,14 @@ class Util {
 	/// <summary>改行あり出力</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static void printline<T>(T value) => WriteLine(value);
+
+	/// <summary>Yes出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printyes() => WriteLine("Yes");
+
+	/// <summary>No出力</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void printno() => WriteLine("No");
 
 	/// <summary>任意の要素数・初期値の配列を作って初期化する</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -283,15 +299,19 @@ class Util {
 
 	/// <summary>数字を1つint型で読み込み</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static int readint() {
-		return int.Parse(ReadLine());
-	} // end of func
+	public static int readint() => int.Parse(ReadLine());
 
 	/// <summary>数字を1つlong型で読み込み</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static long readlong() {
-		return long.Parse(ReadLine());
-	} // end of func
+	public static long readlong() => long.Parse(ReadLine());
+
+	/// <summary>数字を1つfloat型で読み込み</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static float readfloat() => float.Parse(ReadLine());
+
+	/// <summary>数字を1つfloat型で読み込み</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static double readdouble() => double.Parse(ReadLine());
 
 	/// <summary>入力を空白区切りのstringで返す(変則的な入力に対応)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -564,14 +584,8 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (a, b, c) = readintt3();
-		for (int d = b; d != c; d = (d + 1) % 24) {
-			if (d == a) {
-				WriteLine("No");
-			}
-		}
-
-		writeline("Yes");
+		double d = readdouble();
+		writeline(d);
 
 
 	} // end of method
