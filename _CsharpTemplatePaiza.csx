@@ -22,13 +22,19 @@ class Util {
 
 	/// 入出力
 	[MethodImpl(256)]
-	public static string read() => Console.ReadLine();
+	public static string read() => ReadLine();
 	[MethodImpl(256)]
-	public static void write(dynamic d) => Console.Write(d);
+	public static void write(dynamic d) => Write(d);
 	[MethodImpl(256)]
-	public static void writeline(dynamic d) => Console.WriteLine(d);
+	public static void writeline(dynamic d) => WriteLine(d);
 	[MethodImpl(256)]
-	public static void writeline() => Console.WriteLine();
+	public static void writeline() => WriteLine();
+
+	/// 答え出力
+	[MethodImpl(256)]
+	public static void writeyes() => WriteLine("Yes");
+	[MethodImpl(256)]
+	public static void writeno() => WriteLine("No");
 
 	/// 任意の要素数・初期値の配列を作って初期化する
 	[MethodImpl(256)]
@@ -221,13 +227,15 @@ class Util {
 		}
 	}
 
-	/// 数字を1つint型で読み込み
+	/// 数字を1つ各型で読み込み
 	[MethodImpl(256)]
 	public static int readint() => int.Parse(read());
-
-	/// 数字を1つlong型で読み込み
 	[MethodImpl(256)]
-	public static long readlong() => long.Parse(ReadLine());
+	public static long readlong() => long.Parse(read());
+	[MethodImpl(256)]
+	public static float readfloat() => float.Parse(read());
+	[MethodImpl(256)]
+	public static float readdouble() => double.Parse(read());
 
 	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
 	[MethodImpl(256)]
