@@ -564,14 +564,6 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (a, b, c) = readintt3();
-		for (int d = b; d != c; d = (d + 1) % 24) {
-			if (d == a) {
-				WriteLine("No");
-			}
-		}
-
-		writeline("Yes");
 
 
 	} // end of method
