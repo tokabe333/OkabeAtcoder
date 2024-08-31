@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Runtime.InteropServices.Marshalling;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -585,10 +586,61 @@ class Kyopuro {
 
 	public void Solve() {
 
-		var (n, k) = readintt2();
-		var arr = readints();
+		var (h, w, n) = readlongt3();
+		var coins = new HashSet<long>();
+		for (int i = 0; i < n; ++i) {
+			var rc = readlongs();
+			rc[0] -= 1l;
+			rc[1] -= 1l;
+			coins.Add(rc[0] * w + rc[1]);
+		}
 
+		var dp = makearr2((int)h, (int)w, 0l);
 
+		for (long i = 0; i < h; ++i) {
+			for (long j = 0; j < w; ++j) {
+				if (coins.Contains(i * w + j)) dp[i][j] += 1l;
+				// →
+				if (j < w - 1) {
+					dp[i][j + 1] = Max(dp[i][j + 1], dp[i][j]);
+				}
+				// 下
+				if (i < h - 1) {
+					dp[i + 1][j] = Max(dp[i + 1][j], dp[i][j]);
+				}
+			}
+		}
+
+		var ans = new List<char>();
+		int y = (int)h - 1;
+		int x = (int)w - 1;
+
+		while (!(y == 0 && x == 0)) {
+			// Console.WriteLine($"y:{y} x:{x}");
+			// 上移動のみ
+			if (x == 0) {
+				y -= 1;
+				ans.Add('D');
+			}
+
+			// 左移動のみ
+			else if (y == 0) {
+				x -= 1;
+				ans.Add('R');
+			} else {
+				if (dp[y - 1][x] > dp[y][x - 1]) {
+					y -= 1;
+					ans.Add('D');
+				} else {
+					x -= 1;
+					ans.Add('R');
+				}
+			}
+		}
+
+		ans.Reverse();
+
+		writeline(new string(ans.ToArray()));
 
 	} // end of method
 } // end of class

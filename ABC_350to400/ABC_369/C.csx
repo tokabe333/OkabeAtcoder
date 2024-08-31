@@ -584,11 +584,31 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
+		int n = readint();
+		var arr = readlongs();
 
-		var (n, k) = readintt2();
-		var arr = readints();
+		long ans = 0;
+		int l = 0;
 
+		if (n == 1) {
+			writeline(1);
+			return;
+		}
 
+		while (l < n - 1) {
+			int r = l + 1;
+			long d = arr[r] - arr[l];
+			while (r < n && arr[r] - arr[r - 1] == d) {
+				r += 1;
+			}
 
+			long a = r - l - 1;
+			ans += a * (a + 1) / 2;
+
+			// writeline($"l:{l} r:{r} ans:{ans}");
+			l = r - 1;
+		}
+
+		writeline(ans + n);
 	} // end of method
 } // end of class

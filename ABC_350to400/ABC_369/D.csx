@@ -584,11 +584,24 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
+		int n = readint();
+		var arr = readlongs();
 
-		var (n, k) = readintt2();
-		var arr = readints();
+		var dp = makearr2(2, n + 1, 0l);
+		dp[1][1] = arr[0];
+		for (int j = 1; j < n; ++j) {
+			// 逃げる
+			dp[0][j + 1] = Max(dp[0][j + 1], dp[0][j]);
+			dp[1][j + 1] = Max(dp[1][j + 1], dp[1][j]);
 
+			// 倒す
+			dp[0][j + 1] = Max(dp[0][j + 1], dp[1][j] + arr[j] * 2);
+			dp[1][j + 1] = Max(dp[1][j + 1], dp[0][j] + arr[j]);
+		}
 
+		// printlist2(dp);
+
+		writeline(Max(dp[0][n], dp[1][n]));
 
 	} // end of method
 } // end of class

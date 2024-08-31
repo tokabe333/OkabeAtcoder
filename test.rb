@@ -1,4 +1,5 @@
-require "prime"
+a = 4
+l = 1
+n = 4
 
-a = Prime.prime_division(4294967298)
-p a
+puts n * (a + l) / 2
