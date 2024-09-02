@@ -602,12 +602,31 @@ class Kyopuro {
 
 	public void Solve() {
 		var (n, m) = readintt2();
-		var matrix = makearr2(n, n, 0l);
+		var matrix = makearr2(n, n, linf);
 
-		for (int i = 0; i < n; ++i) {
+		for (int i = 0; i < m; ++i) {
 			var (u, v, t) = readlongt3();
 			matrix[u - 1][v - 1] = t;
+			matrix[v - 1][u - 1] = t;
 		}
+		for (int i = 0; i < n; ++i) {
+			matrix[i][i] = 0;
+		}
+
+		var dists = WarshallFloyd(matrix);
+
+
+		int q = readint();
+		for (int _ = 0; _ < q; ++_) {
+			int k = readint();
+			var arr = read().Split(' ').Select(int.Parse).ToArray();
+
+
+
+		}
+
+
+		printlist2(dists);
 
 
 
