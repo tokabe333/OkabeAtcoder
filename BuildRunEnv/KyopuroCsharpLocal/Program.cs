@@ -583,6 +583,24 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	long[][] WarshallFloyd(long[][] mat) {
+		int n = mat.Length;
+		var dists = copyarr2(mat);
+
+		// n回 i→jの更新を繰り返す
+		for (int k = 0; k < n; ++k) {
+			for (int i = 0; i < n; ++i) {
+				for (int j = 0; j < n; ++j) {
+					if (dists[i][k] == linf || dists[k][j] == linf) continue;
+					dists[i][j] = Min(dists[i][j], dists[i][k] + dists[k][j]);
+				}
+			}
+		}
+
+		return dists;
+	}
+
+
 
 	/// <summary> 
 	/// 全ての順列を列挙する
@@ -623,15 +641,78 @@ class Kyopuro {
 				next = true;
 			}
 		}
-	}
+	} // end of method
+
+
 
 	public void Solve() {
+		var (n, m) = readintt2();
+		var matrix = makearr2(n, n, linf);
+		var edges = new Edge[m];
 
-		var arr = new int[] { 1, 2, 3, 4, 5 };
-
-		foreach (var next in NextPermutation(arr)) {
-			printlist(next);
+		for (int i = 0; i < m; ++i) {
+			var (u, v, t) = readlongt3();
+			int uu = (int)u - 1;
+			int vv = (int)v - 1;
+			matrix[uu][vv] = Min(matrix[uu][vv], t);
+			matrix[vv][uu] = Min(matrix[vv][uu], t);
+			edges[i] = new Edge((int)u - 1, (int)v - 1, t);
 		}
+		for (int i = 0; i < n; ++i) {
+			matrix[i][i] = 0;
+		}
+
+		var dists = WarshallFloyd(matrix);
+
+
+		int q = readint();
+		for (int _ = 0; _ < q; ++_) {
+			int k = readint();
+			var arr = read().Split(' ').Select(x => int.Parse(x) - 1).ToArray();
+
+			long ans = linf;
+			int bekijo = (int)Pow(2, k);
+			// 橋を渡る順番
+			foreach (var next in NextPermutation(arr)) {
+				// 橋を渡る向き
+				for (int muki = 0; muki < bekijo; ++muki) {
+					long sum = 0;
+					// 計算 
+					int prev = 0;
+					// 指定された橋
+					for (int i = 0; i < k; ++i) {
+						var edge = edges[arr[i]];
+						if (((muki >> i) & 1) == 0) {
+							// 前の橋のゴールから今の橋のスタートに
+							sum += dists[prev][edge.from];
+							// 橋を渡る
+							sum += edge.cost;
+							prev = edge.to;
+						} else {
+							// 前の端のゴールから今の橋のスタートに
+							sum += dists[prev][edge.to];
+							// 橋を渡る
+							sum += edge.cost;
+							prev = edge.from;
+						}
+					}
+					// 橋の最後からgoal
+					sum += dists[prev][n - 1];
+
+					// 最適解
+					writeline($"sum:{sum}");
+					ans = Min(ans, sum);
+				}
+			}
+
+			writeline(ans);
+			writeline();
+		}
+
+
+		printlist2(dists);
+
+
 
 	} // end of method
 } // end of class
