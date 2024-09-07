@@ -687,7 +687,7 @@ class Kyopuro {
 		Console.WriteLine();
 
 		bool found;
-		int minmax = tree.FindLessThanMax(20, out found);
+		int minmax = tree.FindLessThanMax(0, out found);
 		Console.WriteLine(found + " find less than :" + minmax);
 
 		int lb = tree.LowerBound(20, out found);
@@ -725,5 +725,13 @@ class Kyopuro {
 			last.Prev();
 		}
 		Console.WriteLine();
+
+
+		Console.WriteLine();
+		tree.PrintTree();
+		Console.WriteLine("Remove Test");
+		tree.Remove(30);
+		tree.PrintTree();
+		Console.WriteLine("tree has 30 ? " + tree.Contains(30));
 	} // end of method
 } // end of class
