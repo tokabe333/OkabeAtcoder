@@ -235,7 +235,7 @@ class Util {
 	[MethodImpl(256)]
 	public static float readfloat() => float.Parse(read());
 	[MethodImpl(256)]
-	public static float readdouble() => double.Parse(read());
+	public static double readdouble() => double.Parse(read());
 
 	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
 	[MethodImpl(256)]

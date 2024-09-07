@@ -1,4 +1,4 @@
-require "prime"
+
 
 def main()
 
