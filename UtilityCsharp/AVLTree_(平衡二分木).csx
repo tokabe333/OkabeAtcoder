@@ -113,7 +113,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 				node.key = minRight.key;
 				node.count = minRight.count;
 				node.right = this.Remove(node.right, minRight.key);
-				if (node.right != null) node.right = node;
+				// if (node.right != null) node.right = node;
 			}
 		}
 
