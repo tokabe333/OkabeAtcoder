@@ -591,17 +591,19 @@ class Kyopuro {
 		for (int i = 0; i < n; ++i) {
 			long a = arr[i];
 			if (t % 3 == 1) {
-				if (a > 1) {
-					a -= 2;
-					t += 2;
-				} else {
+				if (a == 1) {
 					a -= 1;
 					t += 1;
+					continue;
+				} else {
+					a -= 4;
+					t += 2;
 				}
 			} else if (t % 3 == 2) {
-				a -= 1;
+				a -= 3;
 				t += 1;
 			}
+			if (a <= 0) continue;
 
 			t += a / 5 * 3;
 			long mod = a % 5;

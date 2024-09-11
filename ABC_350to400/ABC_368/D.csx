@@ -575,6 +575,151 @@ struct Edge : IComparable<Edge> {
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 
+
+
+class MyPriorityQueue<T> {
+	/// 内部で持つヒープ配列
+	public List<T> heap = new List<T>();
+
+	/// 現在の要素数
+	public int Count { get { return heap.Count; } }
+
+	/// 比較用関数 (第1引数の方が優先度が高いときにtrue)
+	private Func<T, T, bool> Compare;
+
+	public MyPriorityQueue(Func<T, T, bool> compare) {
+		this.Compare = compare;
+	}  // end of constructor
+
+	/// 新規の値を追加する
+	public void Enqueue(T num) {
+		// 追加する要素のノード番号　
+		int node = this.heap.Count;
+		this.heap.Add(num);
+
+		// 可能な限り親と交換
+		while (node > 0) {
+			// 親ノード
+			int p = (node - 1) / 2;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(num, heap[p]) == false) break;
+
+			// 親ノードの値を子に降ろす
+			heap[node] = heap[p];
+			node = p;
+		} // end of while
+
+		// 新規の値を下ろす場所を見つけたので終わり
+		heap[node] = num;
+	} // end of method
+
+	/// 一番優先度の高い値を返す
+	public T Peek() => this.heap[0];
+
+	/// 一番優先度の高い値を返して削除する
+	public T Dequeue() {
+		// return用の優先度が一番高い値
+		T ret = this.heap[0];
+
+		// 先頭を削除
+		this.Pop();
+
+		return ret;
+	} // end of method
+
+	/// 一番優先度の高い値を削除する
+	public void Pop() {
+		// 根に持ってくる値
+		T last = heap[this.heap.Count - 1];
+
+		// 最後尾を削除 O(1)
+		this.heap.RemoveAt(this.heap.Count - 1);
+
+		// 要素がなくなったら終了
+		if (this.heap.Count == 0) return;
+
+		// 先頭を置き換えて降ろしていく
+		int node = 0;
+		while (node * 2 + 1 < this.heap.Count) {
+			int a = node * 2 + 1;
+			int b = node * 2 + 2;
+
+			// 右の子が存在して、なおかつ優先度が高いならば
+			if (b < this.heap.Count && this.Compare(this.heap[b], this.heap[a])) a = b;
+
+			// 交換条件を満たさなくなったら終わり
+			if (this.Compare(last, this.heap[a])) break;
+
+			// 優先度の高い子を上げる
+			this.heap[node] = this.heap[a];
+			node = a;
+		} // end of while
+
+		// 先頭に持ってきた値の置き場所が決まったので更新
+		this.heap[node] = last;
+	} // end of method
+
+} // end of class
+
+/// union by rankと経路圧縮をする
+/// O(a(N)) 
+class UnionFind {
+	/// 親のノード番号
+	public int[] parents;
+
+	/// 属する集合の要素数　
+	public int[] sizes;
+
+	/// ノード数NのUnionFindを作成
+	public UnionFind(int n) {
+		this.parents = new int[n];
+		this.sizes = new int[n];
+		for (int i = 0; i < n; ++i) {
+			// 初期状態では親を持たない
+			this.parents[i] = -1;
+			// 集合サイズは1
+			this.sizes[i] = 1;
+		}
+	} // end of constructor
+
+	/// ノードiの親を返す
+	public int Root(int node) {
+		// 根を見つけたらノード番号を変えす
+		if (this.parents[node] == -1) return node;
+
+		// 根までの経路を全て根に直接つなぐ
+		else {
+			int parent = this.Root(this.parents[node]);
+			this.parents[node] = parent;
+			return parent;
+		}
+	} // end of method
+
+	/// ノードuとvの属する集合を結合する
+	public void Unite(int u, int v) {
+		int ru = this.Root(u);
+		int rv = this.Root(v);
+		if (ru == rv) return;
+		// 大きい集合の根に結合(union by rank)
+		// 高さが高々log2になる
+		if (ru > rv) {
+			int tmp = ru;
+			ru = rv;
+			rv = tmp;
+		}
+		this.parents[ru] = rv;
+		this.sizes[rv] = this.sizes[ru] + this.sizes[rv];
+		this.sizes[ru] = this.sizes[rv];
+	} // end of method
+
+	/// ノードuとvが同じ集合に属しているか
+	public bool Connected(int u, int v) {
+		return this.Root(u) == this.Root(v);
+	} // end of method
+} // end of class
+
+
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -584,36 +729,49 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		int n = readint();
-		var arr = readlongs();
-		long t = 0;
 
-		for (int i = 0; i < n; ++i) {
-			long a = arr[i];
-			if (t % 3 == 1) {
-				if (a == 1) {
-					a -= 1;
-					t += 1;
-					continue;
-				} else {
-					a -= 4;
-					t += 2;
-				}
-			} else if (t % 3 == 2) {
-				a -= 3;
-				t += 1;
-			}
-			if (a <= 0) continue;
+		var (n, k) = readintt2();
+		var nodes = new HashSet<int>[n];
+		for (int i = 0; i < n; ++i) nodes[i] = new HashSet<int>();
 
-			t += a / 5 * 3;
-			long mod = a % 5;
-			if (mod == 0) continue;
-			else if (mod == 1) t += 1;
-			else if (mod == 2) t += 2;
-			else t += 3;
+		for (int i = 0; i < n - 1; ++i) {
+			var (a, b) = readintt2();
+			--a; --b;
+			nodes[a].Add(b);
+			nodes[b].Add(a);
 		}
-		writeline(t);
 
+		var arr = read().Split(' ').Select(x => int.Parse(x) - 1).ToArray();
+		var set = new HashSet<int>(arr);
+		if (k == 1) {
+			writeline(1);
+			return;
+		}
+
+		while (true) {
+			bool flag = false;
+
+			for (int i = 0; i < n; ++i) {
+				// write($"i:{i + 1} node:");
+				// foreach (var s in nodes[i]) write((s + 1) + " ");
+				// writeline();
+
+				var node = nodes[i];
+				if (node.Count != 1) continue;
+				if (set.Contains(i)) continue;
+				nodes[node.First()].Remove(i);
+				nodes[i] = new HashSet<int>();
+				flag = true;
+			}
+
+			if (flag == false) break;
+		}
+
+		int ans = 0;
+		foreach (var node in nodes) {
+			if (node.Count > 0) ans += 1;
+		}
+		writeline(ans);
 
 	} // end of method
 } // end of class
