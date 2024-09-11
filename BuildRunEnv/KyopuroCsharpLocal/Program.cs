@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
+using System.Diagnostics.Metrics;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -584,36 +585,29 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		int n = readint();
-		var arr = readlongs();
-		long t = 0;
 
-		for (int i = 0; i < n; ++i) {
-			long a = arr[i];
-			if (t % 3 == 1) {
-				if (a == 1) {
-					a -= 1;
-					t += 1;
-					continue;
-				} else {
-					a -= 4;
-					t += 2;
+		var (n, k) = readintt2();
+		var arr = readints();
+
+		void func(int d, List<int> list, int sum) {
+			if (d == n - 1) {
+				for (int i = 1; i <= arr[d]; ++i) {
+					if ((sum + i) % k != 0) continue;
+					for (int j = 0; j < list.Count; ++j) write(list[j] + " ");
+					writeline(i);
 				}
-			} else if (t % 3 == 2) {
-				a -= 3;
-				t += 1;
+			} else {
+				for (int i = 1; i <= arr[d]; ++i) {
+					list.Add(i);
+					sum += i;
+					func(d + 1, list, sum);
+					list.RemoveAt(list.Count - 1);
+					sum -= i;
+				}
 			}
-			if (a <= 0) continue;
-
-			t += a / 5 * 3;
-			long mod = a % 5;
-			if (mod == 0) continue;
-			else if (mod == 1) t += 1;
-			else if (mod == 2) t += 2;
-			else t += 3;
 		}
-		writeline(t);
 
+		func(0, new List<int>(), 0);
 
 	} // end of method
 } // end of class

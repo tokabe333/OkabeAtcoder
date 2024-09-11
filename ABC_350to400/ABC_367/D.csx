@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
 using static Util;
-using System.Diagnostics.Metrics;
 
 class Util {
 	public const long m107 = 1000000007;
@@ -586,28 +585,7 @@ class Kyopuro {
 
 	public void Solve() {
 
-		var (n, k) = readintt2();
-		var arr = readints();
 
-		void func(int d, List<int> list, int sum) {
-			if (d == n - 1) {
-				for (int i = 1; i <= arr[d]; ++i) {
-					if ((sum + i) % k != 0) continue;
-					for (int j = 0; j < list.Count; ++j) write(list[j] + " ");
-					writeline(i);
-				}
-			} else {
-				for (int i = 1; i <= arr[d]; ++i) {
-					list.Add(i);
-					sum += i;
-					func(d + 1, list, sum);
-					list.RemoveAt(list.Count - 1);
-					sum -= i;
-				}
-			}
-		}
-
-		func(0, new List<int>(), 0);
 
 	} // end of method
 } // end of class
