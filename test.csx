@@ -346,45 +346,16 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public bool[][] rotate90(bool[][] block) {
-		var ret = makearr2(3, 3, false);
-
-		for (int i = 0; i < 3; ++i) {
-			for (int j = 0; j < 3; ++j) {
-				ret[j][3 - i] = block[i][j];
-			}
-		}
-
-		return ret;
-	}
 
 	public void Solve() {
 		int n, m;
 		readt2(out n, out m);
 
-		var masu = new bool[n][];
-		for (int i = 0; i < n; ++i) {
-			string line = read();
-			for (int j = 0; j < m; ++j) {
-				masu[i][j] = line[j] == '#';
-			}
-		}
+		var points = new List<int[]>();
+		for (int i = 0; i < n; ++i) points.Add(readints());
 
-		var block = new bool[3][];
-		for (int i = 0; i < 3; ++i) {
-			string line = read();
-			for (int j = 0; j < 3; ++j) {
-				block[i][j] = line[j] == '#';
-			}
-		}
 
-		printlist2(masu);
-		writeline();
-		printlist2(block);
 
-		var r90 = rotate90(block);
-		writeline();
-		printlist2(r90);
 
 
 	} // end of method
