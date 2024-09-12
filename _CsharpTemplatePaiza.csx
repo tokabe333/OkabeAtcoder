@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using static System.Console;
 using static System.Math;
 using static System.ComponentModel.TypeDescriptor;
 using static Util;
@@ -22,19 +21,19 @@ class Util {
 
 	/// 入出力
 	[MethodImpl(256)]
-	public static string read() => ReadLine();
+	public static string read() => Console.ReadLine();
 	[MethodImpl(256)]
-	public static void write(dynamic d) => Write(d);
+	public static void write(dynamic d) => Console.Write(d);
 	[MethodImpl(256)]
-	public static void writeline(dynamic d) => WriteLine(d);
+	public static void writeline(dynamic d) => Console.WriteLine(d);
 	[MethodImpl(256)]
-	public static void writeline() => WriteLine();
+	public static void writeline() => Console.WriteLine();
 
 	/// 答え出力
 	[MethodImpl(256)]
-	public static void writeyes() => WriteLine("Yes");
+	public static void writeyes() => Console.WriteLine("Yes");
 	[MethodImpl(256)]
-	public static void writeno() => WriteLine("No");
+	public static void writeno() => Console.WriteLine("No");
 
 	/// 任意の要素数・初期値の配列を作って初期化する
 	[MethodImpl(256)]
@@ -167,17 +166,17 @@ class Util {
 
 	/// 1次元Listを出力
 	[MethodImpl(256)]
-	public static void printlist<T>(List<T> list) => WriteLine(string.Join(" ", list));
+	public static void printlist<T>(List<T> list) => writeline(string.Join(" ", list));
 
 	/// 1次元配列を出力
 	[MethodImpl(256)]
-	public static void printlist<T>(T[] list) => WriteLine(string.Join(" ", list));
+	public static void printlist<T>(T[] list) => writeline(string.Join(" ", list));
 
 	/// 2次元リストを出力
 	[MethodImpl(256)]
 	public static void printlist2<T>(List<List<T>> list) {
 		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+			writeline(string.Join(" ", l));
 		}
 	}
 
@@ -185,23 +184,23 @@ class Util {
 	[MethodImpl(256)]
 	public static void printlist2<T>(T[][] list) {
 		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+			writeline(string.Join(" ", l));
 		}
 	}
 
 	/// 1次元Listを出力
 	[MethodImpl(256)]
-	public static void printarr<T>(List<T> list) => WriteLine(string.Join(" ", list));
+	public static void printarr<T>(List<T> list) => writeline(string.Join(" ", list));
 
 	/// 1次元配列を出力
 	[MethodImpl(256)]
-	public static void printarr<T>(T[] list) => WriteLine(string.Join(" ", list));
+	public static void printarr<T>(T[] list) => writeline(string.Join(" ", list));
 
 	/// 2次元リストを出力
 	[MethodImpl(256)]
 	public static void printarr2<T>(List<List<T>> list) {
 		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+			writeline(string.Join(" ", l));
 		}
 	}
 
@@ -209,21 +208,21 @@ class Util {
 	[MethodImpl(256)]
 	public static void printarr2<T>(T[][] list) {
 		foreach (var l in list) {
-			WriteLine(string.Join(" ", l));
+			writeline(string.Join(" ", l));
 		}
 	}
 
 	/// ジェネリックを出力
 	[MethodImpl(256)]
 	public static void printiter<T>(IEnumerable<T> generic) {
-		foreach (var it in generic) Write(it + " ");
+		foreach (var it in generic) write(it + " ");
 		writeline();
 	}
 	/// ジェネリックを出力
 	[MethodImpl(256)]
 	public static void printlineiter<T>(IEnumerable<T> generic) {
 		foreach (var it in generic) {
-			WriteLine(it + " ");
+			writeline(it + " ");
 		}
 	}
 
@@ -239,7 +238,7 @@ class Util {
 
 	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
 	[MethodImpl(256)]
-	public static string[] readsplit() => ReadLine().Split(' ');
+	public static string[] readsplit() => read().Split(' ');
 
 	/// 数字をスペース区切りでint型で入力
 	[MethodImpl(256)]
@@ -264,7 +263,7 @@ class Util {
 	/// 自由な型で2変数を入力
 	[MethodImpl(256)]
 	public static void readt2<T1, T2>(out T1 a, out T2 b) {
-		string[] s = ReadLine().Split(' ');
+		string[] s = readsplit();
 		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
 	}
@@ -272,7 +271,7 @@ class Util {
 	/// 自由な型で3変数を入力
 	[MethodImpl(256)]
 	public static void readt3<T1, T2, T3>(out T1 a, out T2 b, out T3 c) {
-		string[] s = ReadLine().Split(' ');
+		string[] s = readsplit();
 		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
 		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
@@ -281,7 +280,7 @@ class Util {
 	/// 自由な型で4変数を入力
 	[MethodImpl(256)]
 	public static void readt4<T1, T2, T3, T4>(out T1 a, out T2 b, out T3 c, out T4 d) {
-		string[] s = ReadLine().Split(' ');
+		string[] s = readsplit();
 		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
 		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
 		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
@@ -290,16 +289,11 @@ class Util {
 
 	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
 	[MethodImpl(256)]
-	public static void WriteLine16<T>(T num) => WriteLine(string.Format("{0:0.################}", num));
+	public static void WriteLine16<T>(T num) => writeline(string.Format("{0:0.################}", num));
 
 	/// 整数を二進数で表示
 	[MethodImpl(256)]
-	public static void writeline2bit(int num) => WriteLine(Convert.ToString(num, 2));
-
-	/// 整数を二進数で表示
-	[MethodImpl(256)]
-	public static void writeline2bit(long num) => WriteLine(Convert.ToString(num, 2));
-
+	public static void writeline2bit(int num) => writeline(Convert.ToString(num, 2));
 
 	/// 整数を2進数表現した文字列に
 	[MethodImpl(256)]
@@ -310,44 +304,20 @@ class Util {
 	public static string long2bit(long num) => Convert.ToString(num, 2);
 
 	/// 出力のflush削除
-	[MethodImpl(256)]
 	public static void preprocess() => System.Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
 
-
 	/// 出力をflush
-	[MethodImpl(256)]
 	public static void finalprocess() => System.Console.Out.Flush();
 } // end of class
 
-/// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
-class HashMap<K, V> : Dictionary<K, V> {
-	new public V this[K i] {
-		[MethodImpl(256)]
-		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
-		[MethodImpl(256)]
-		set => base[i] = value;
-	}
-} // end of class
-
-/// Dictionayに初期値を与える(RubyのHash.new(0)みたいに)
-class SortedMap<K, V> : SortedDictionary<K, V> {
-	new public V this[K i] {
-		[MethodImpl(256)]
-		get { V v; return TryGetValue(i, out v) ? v : base[i] = default(V); }
-		[MethodImpl(256)]
-		set => base[i] = value;
-	}
-} // end of class
-
 /// 座標に便利(値型だけど16byteまではstructが速い)
-struct YX {
-	public int y;
-	public int x;
-	public YX(int y, int x) {
+struct YX<T> {
+	public T y;
+	public T x;
+	public YX(T y, T x) {
 		this.y = y;
 		this.x = x;
 	}
-
 	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 
@@ -361,13 +331,10 @@ struct Edge : IComparable<Edge> {
 		this.to = to;
 		this.cost = cost;
 	}
-
 	/// コスト順にソートできるように
 	[MethodImpl(256)]
 	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
 
-	/// デバッグ出力用
-	[MethodImpl(256)]
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 

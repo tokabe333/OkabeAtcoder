@@ -341,9 +341,9 @@ class SortedMap<K, V> : SortedDictionary<K, V> {
 
 /// 座標に便利(値型だけど16byteまではstructが速い)
 struct YX {
-	public long y;
-	public long x;
-	public YX(long y, long x) {
+	public int y;
+	public int x;
+	public YX(int y, int x) {
 		this.y = y;
 		this.x = x;
 	}
@@ -381,50 +381,23 @@ class Kyopuro {
 
 
 	public void Solve() {
-		int h, b;
-		readt2(out h, out b);
+		long s;
+		int p;
+		readt2(out s, out p);
 
-		// x, yの順に指定
-		var halls = new Dictionary<long, HashSet<long>>();
-
-		long x, y;
-		for (int i = 0; i < h; ++i) {
-			readt2(out x, out y);
-			if (halls.ContainsKey(x) == false) halls[x] = new HashSet<long>();
-			halls[x].Add(y);
-		}
-
-		var balls = new YX[b];
-		for (int i = 0; i < b; ++i) {
-			readt2(out x, out y);
-			balls[i] = new YX(y, x);
-		}
-
-		string s = read();
-
-		int drop = 0;
-		for (int i = 0; i < b; ++i) {
-			long by = balls[i].y;
-			long bx = balls[i].x;
-
-			for (int j = 0; j < s.Length; ++j) {
-				if (s[j] == 'R') {
-					bx += 1;
-				} else if (s[j] == 'L') {
-					bx -= 1;
-				} else if (s[j] == 'U') {
-					by += 1;
-				} else {
-					by -= 1;
-				}
-				if (halls.ContainsKey(bx) == false) continue;
-				if (halls[bx].Contains(by) == false) continue;
-				drop += 1;
-				break;
+		var dp = new long[p + 1];
+		dp[0] = s;
+		long power;
+		for (int i = 0; i < p; ++i) {
+			for (int j = 0; i + j <= p; ++j) {
+				power = dp[i] * (100 + j) / 100;
+				dp[i + j] = Max(dp[i + j], power);
 			}
 		}
 
-		writeline(drop);
+		writeline(dp.Last());
+		// printlist(dp);
+
 
 	} // end of method
 } // end of class
