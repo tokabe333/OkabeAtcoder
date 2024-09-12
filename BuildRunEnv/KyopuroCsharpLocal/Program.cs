@@ -346,10 +346,74 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+	public int[][] rotate90(int[][] block) {
+		var ret = makearr2(3, 3, 0);
+
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				ret[j][2 - i] = block[i][j];
+			}
+		}
+
+		return ret;
+	}
+
+	private bool fit(int[][] masu, int[][] block, int y, int x) {
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				if (y + i >= masu.Length) return false;
+				if (x + j >= masu[i].Length) return false;
+				if (block[i][j] == 1 && masu[y + i][x + j] == 1) return false;
+			}
+		}
+		return true;
+	}
 
 	public void Solve() {
+		int n, m;
+		readt2(out n, out m);
 
+		var masu = makearr2(n + 6, m + 6, 1);
+		for (int i = 0; i < n; ++i) {
+			string line = read();
+			for (int j = 0; j < m; ++j) {
+				if (line[j] == '.') masu[i + 3][j + 3] = 0;
+			}
+		}
 
+		var block = makearr2(3, 3, 0);
+		for (int i = 0; i < 3; ++i) {
+			string line = read();
+			for (int j = 0; j < 3; ++j) {
+				if (line[j] == '#') block[i][j] = 1;
+			}
+		}
+		var r90 = rotate90(block);
+		var r180 = rotate90(r90);
+		var r270 = rotate90(r180);
 
+		for (int y = 0; y <= n + 3; ++y) {
+			for (int x = 0; x <= m + 3; ++x) {
+				if (fit(masu, block, y, x) ||
+				 fit(masu, r90, y, x) ||
+				 fit(masu, r180, y, x) ||
+				 fit(masu, r270, y, x)) {
+					writeline("Yes");
+					return;
+				}
+			}
+		}
+
+		writeline("No");
+
+		// printlist2(masu);
+		// writeline();
+		// printlist2(block);
+		// writeline();
+		// printlist2(r90);
+		// writeline();
+		// printlist2(r180);
+		// writeline();
+		// printlist2(r270);
 	} // end of method
 } // end of class
