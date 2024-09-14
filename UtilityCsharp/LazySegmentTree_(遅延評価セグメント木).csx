@@ -721,6 +721,9 @@ class Kyopuro {
 		var (n, q) = readintt2();
 		var segtree = new LazySegmentTree<long, long, op_min>(makearr(n, linf));
 
+		// sumの方法
+		// var segtree = new LazySegmentTree<(long, int), long, op_sum>(makearr(n, 1));
+
 		for (int i = 0; i < q; ++i) {
 			var s = readsplit();
 			if (s[0] == "0") {
