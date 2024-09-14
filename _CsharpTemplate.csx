@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Console;
 using static System.Math;
+using static System.ComponentModel.TypeDescriptor;
 using static Util;
 
 class Util {
@@ -452,6 +453,34 @@ class Util {
 	public static (string, string, string, string) readstringt4() {
 		var arr = ReadLine().Split(' ');
 		return (arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+
+	/// 自由な型で2変数を入力
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void readt2<T1, T2>(out T1 a, out T2 b) {
+		string[] s = readsplit();
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+	} // end of func
+
+	/// 自由な型で3変数を入力
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void readt3<T1, T2, T3>(out T1 a, out T2 b, out T3 c) {
+		string[] s = readsplit();
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
+	} // end of func
+
+	/// 自由な型で4変数を入力
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void readt4<T1, T2, T3, T4>(out T1 a, out T2 b, out T3 c, out T4 d) {
+		string[] s = readsplit();
+		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
+		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
+		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
+		d = (T4)GetConverter(typeof(T4)).ConvertFromString(s[3]);
 	} // end of func
 
 	/// <summary>先頭に要素数(int)と次にでかい数字1つ</summary>

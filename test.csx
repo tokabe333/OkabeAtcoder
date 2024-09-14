@@ -354,7 +354,7 @@ class Kyopuro {
 		var points = new List<int[]>();
 		for (int i = 0; i < n; ++i) points.Add(readints());
 
-
+	
 
 
 

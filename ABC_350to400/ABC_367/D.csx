@@ -584,7 +584,8 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-
+		var (n, m) = readintlongt2();
+		var arr = readlongs();
 
 
 	} // end of method
