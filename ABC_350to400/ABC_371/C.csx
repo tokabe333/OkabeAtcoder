@@ -11,7 +11,6 @@ using static System.Console;
 using static System.Math;
 using static System.ComponentModel.TypeDescriptor;
 using static Util;
-
 class Util {
 	public const long m107 = 1000000007;
 	public const long m998 = 998244353;
@@ -604,8 +603,6 @@ struct Edge : IComparable<Edge> {
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 
-
-
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -613,6 +610,9 @@ class Kyopuro {
 		kyopuro.Solve();
 		finalprocess();
 	} // end of func
+
+
+
 
 	/// <summary> 
 	/// 全ての順列を列挙する
@@ -656,11 +656,73 @@ class Kyopuro {
 	} // end of method
 
 
-	public void Solve() {
-		var arr = new int[] { 0, 1, 2, 3 };
-		foreach (var next in NextPermutation(arr)) {
-			printlist(next);
+	bool check(int[][] g1, int[][] g2, int[] numberArr) {
+		int n = g1.Length;
+		foreach (var perm in NextPermutation(numberArr)) {
+			bool flag = true;
+			for (int i = 0; i < n - 1; ++i) {
+				for (int j = i + 1; j < n; ++j) {
+					if (g1[perm[i]][perm[j]] != g2[i][j]) {
+						flag = false;
+						break;
+					}
+				}
+				if (flag == false) break;
+			}
+			if (flag == true) return true;
 		}
+		return false;
+	}
+
+	public void Solve() {
+		int n = readint();
+		var numberArr = new int[n];
+		for (int i = 0; i < n; ++i) numberArr[i] = i;
+		var g1 = makearr2(n, n, 0);
+		var g2 = makearr2(n, n, 0);
+		int m1 = readint();
+		for (int i = 0; i < m1; ++i) {
+			var (u, v) = readintt2();
+			--u; --v;
+			g1[u][v] = 1;
+			g1[v][u] = 1;
+		}
+		int m2 = readint();
+		for (int i = 0; i < m2; ++i) {
+			var (u, v) = readintt2();
+			--u; --v;
+			g2[u][v] = 1;
+			g2[v][u] = 1;
+		}
+
+		var arr = makearr2(n, n, 0l);
+		for (int i = 0; i < n - 1; ++i) {
+			var a = readlongs();
+			for (int j = 0; j < a.Length; ++j) {
+				arr[i][i + j + 1] = a[j];
+				arr[i + j + 1][i] = a[j];
+			}
+		}
+
+		// printlist2(arr);
+		// writeline();
+		// printlist2(g1);
+		// writeline();
+		// printlist2(g2);
+
+		long ans = linf;
+		foreach (var perm in NextPermutation(numberArr)) {
+			long sum = 0;
+			for (int i = 0; i < n - 1; ++i) {
+				for (int j = i + 1; j < n; ++j) {
+					if (g1[i][j] == g2[perm[i]][perm[j]]) continue;
+					sum += arr[perm[i]][perm[j]];
+				}
+			}
+			ans = Min(ans, sum);
+		}
+
+		writeline(ans);
 
 
 	} // end of method

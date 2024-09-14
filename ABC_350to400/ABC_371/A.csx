@@ -604,8 +604,6 @@ struct Edge : IComparable<Edge> {
 	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
 } // end of class
 
-
-
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -614,53 +612,8 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	/// <summary> 
-	/// 全ての順列を列挙する
-	/// AllPermutation(0,1,3,6,7) のような呼び方も可能
-	/// </summary>
-	IEnumerable<T[]> NextPermutation<T>(params T[] array) where T : IComparable {
-		var a = copyarr(array);
-		var n = a.Length;
-		yield return copyarr(a);
-
-		var next = true;
-		while (next) {
-			next = false;
-
-			// 後ろから A_i < A_(i+1) のインデックスを探す
-			int i;
-			for (i = n - 2; i >= 0; i--) {
-				if (a[i].CompareTo(a[i + 1]) < 0) break;
-			}
-			// 全てのiに対して A_i >= A_(i+1) なら終了
-			if (i < 0) break;
-
-			// 置き換える場所(左)が見つかったので置き換える場所(右)を探す
-			// A_i < A_j (i < j)
-			var j = n;
-			do {
-				j--;
-			} while (a[i].CompareTo(a[j]) > 0);
-
-			// まだ更新余地があるなら
-			// A_iとA_jを入れ替えて、A_(i+1)以降を反転
-			if (a[i].CompareTo(a[j]) < 0) {
-				var tmp = a[i];
-				a[i] = a[j];
-				a[j] = tmp;
-				Array.Reverse(a, i + 1, n - i - 1);
-				yield return copyarr(a);
-				next = true;
-			}
-		}
-	} // end of method
-
-
 	public void Solve() {
-		var arr = new int[] { 0, 1, 2, 3 };
-		foreach (var next in NextPermutation(arr)) {
-			printlist(next);
-		}
+
 
 
 	} // end of method

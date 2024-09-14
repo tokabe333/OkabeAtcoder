@@ -613,36 +613,49 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (n, m) = readintlongt2();
-		var arr = readlongs();
-		if (arr.Sum() <= m) {
-			writeline("infinite");
-			return;
-		}
 
-		bool bin(long x) {
-			long sum = 0;
-			for (int i = 0; i < n; ++i) {
-				sum += Min(arr[i], x);
+		int N = readint();
+		var A = readlongs();
+
+		// 出現回数を管理する辞書
+		var freq = new Dictionary<long, long>();
+		long totalUniqueCountSum = 0;
+		int uniqueCount = 0;
+
+		int left = 0;
+
+		// スライディングウィンドウで右端 j を増やしながら計算
+		for (int right = 0; right < N; right++) {
+			// 新しい要素 A[right] をウィンドウに追加
+			if (!freq.ContainsKey(A[right])) {
+				freq[A[right]] = 0;
+			}
+			freq[A[right]]++;
+
+			// 初めて出現したならユニークカウントを増加
+			if (freq[A[right]] == 1) {
+				uniqueCount++;
 			}
 
-			return sum <= m;
-		}
+			// 左端を固定しながら右端を増加
+			for (int i = left; i <= right; i++) {
+				totalUniqueCountSum += uniqueCount;
 
-		long l = 0, r = arr.Sum() + 1;
-		long mid;
-		while (Abs(l - r) > 1) {
-			mid = (l + r) / 2;
-
-			writeline($"l:{l} r:{r} mid:{mid} bin:{bin(mid)}");
-			if (bin(mid)) {
-				l = mid;
-			} else {
-				r = mid;
+				// 左端をウィンドウから取り除く準備
+				freq[A[i]]--;
+				if (freq[A[i]] == 0) {
+					uniqueCount--;
+				}
 			}
+
+			// すべての区間に対して結果を計算したら、左端をリセット
+			left = right + 1;
+
+			// 再度辞書をクリアして新たな区間を計算
+			freq.Clear();
+			uniqueCount = 0;
 		}
 
-		writeline(l);
-
+		Console.WriteLine($"総和: {totalUniqueCountSum}");
 	} // end of method
 } // end of class
