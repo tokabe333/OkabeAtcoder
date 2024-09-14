@@ -804,26 +804,26 @@ class Kyopuro {
 	} // end of func
 
 
-	// モノイドを定義 区間合計、範囲加算
-	struct op_sum : ILazySegmentTreeOperator<HashSet<long>> {
-		public HashSet<long> Identity { get => new HashSet<long>(); }
-		public HashSet<long> FIdentity { get => new HashSet<long>(); }
-		public HashSet<long> Operate(HashSet<long> a, HashSet<long> b) {
-			var tmp = new HashSet<long>(a);
-			tmp.UnionWith(b);
-			return tmp;
-		}
-		public HashSet<long> Mapping(HashSet<long> f, HashSet<long> x) {
-			var tmp = new HashSet<long>(f);
-			tmp.UnionWith(x);
-			return tmp;
-		}
-		public HashSet<long> Composition(HashSet<long> f, HashSet<long> g) {
-			var tmp = new HashSet<long>(f);
-			tmp.UnionWith(g);
-			return tmp;
-		}
-	}
+	// // モノイドを定義 区間合計、範囲加算
+	// struct op_sum : ILazySegmentTreeOperator<HashSet<long>> {
+	// 	public HashSet<long> Identity { get => new HashSet<long>(); }
+	// 	public HashSet<long> FIdentity { get => new HashSet<long>(); }
+	// 	public HashSet<long> Operate(HashSet<long> a, HashSet<long> b) {
+	// 		var tmp = new HashSet<long>(a);
+	// 		tmp.UnionWith(b);
+	// 		return tmp;
+	// 	}
+	// 	public HashSet<long> Mapping(HashSet<long> f, HashSet<long> x) {
+	// 		var tmp = new HashSet<long>(f);
+	// 		tmp.UnionWith(x);
+	// 		return tmp;
+	// 	}
+	// 	public HashSet<long> Composition(HashSet<long> f, HashSet<long> g) {
+	// 		var tmp = new HashSet<long>(f);
+	// 		tmp.UnionWith(g);
+	// 		return tmp;
+	// 	}
+	// }
 
 
 	public void Solve() {
