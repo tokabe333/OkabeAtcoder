@@ -613,36 +613,13 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (n, m) = readintlongt2();
-		var arr = readlongs();
-		if (arr.Sum() <= m) {
-			writeline("infinite");
-			return;
-		}
 
-		bool bin(long x) {
-			long sum = 0;
-			for (int i = 0; i < n; ++i) {
-				sum += Min(arr[i], x);
-			}
+		int y = readint();
 
-			return sum <= m;
-		}
-
-		long l = 0, r = arr.Sum() + 1;
-		long mid;
-		while (Abs(l - r) > 1) {
-			mid = (l + r) / 2;
-
-			writeline($"l:{l} r:{r} mid:{mid} bin:{bin(mid)}");
-			if (bin(mid)) {
-				l = mid;
-			} else {
-				r = mid;
-			}
-		}
-
-		writeline(l);
+		if (y % 4 != 0) writeline(365);
+		else if (y % 100 != 0) writeline(366);
+		else if (y % 400 != 0) writeline(365);
+		else writeline(366);
 
 	} // end of method
 } // end of class

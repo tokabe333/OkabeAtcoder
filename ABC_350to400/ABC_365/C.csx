@@ -634,7 +634,7 @@ class Kyopuro {
 		while (Abs(l - r) > 1) {
 			mid = (l + r) / 2;
 
-			writeline($"l:{l} r:{r} mid:{mid} bin:{bin(mid)}");
+			// writeline($"l:{l} r:{r} mid:{mid} bin:{bin(mid)}");
 			if (bin(mid)) {
 				l = mid;
 			} else {
