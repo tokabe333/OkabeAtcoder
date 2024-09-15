@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpDocker/KyopuroCsharp.csproj": {}
+    "C:\\Users\\tokab\\Desktop\\Programming\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroCsharp.csproj": {}
   },
   "projects": {
-    "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpDocker/KyopuroCsharp.csproj": {
+    "C:\\Users\\tokab\\Desktop\\Programming\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroCsharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpDocker/KyopuroCsharp.csproj",
+        "projectUniqueName": "C:\\Users\\tokab\\Desktop\\Programming\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroCsharp.csproj",
         "projectName": "KyopuroCsharp",
-        "projectPath": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpDocker/KyopuroCsharp.csproj",
-        "packagesPath": "/Users/okabesouta/.nuget/packages/",
-        "outputPath": "/Users/okabesouta/Programming/OkabeAtcoder/BuildRunEnv/KyopuroCsharpDocker/obj/",
+        "projectPath": "C:\\Users\\tokab\\Desktop\\Programming\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\KyopuroCsharp.csproj",
+        "packagesPath": "C:\\Users\\tokab\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\tokab\\Desktop\\Programming\\OkabeAtcoder\\BuildRunEnv\\KyopuroCsharpDocker\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/okabesouta/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\tokab\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -58,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.202/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
