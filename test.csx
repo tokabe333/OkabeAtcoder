@@ -614,7 +614,6 @@ class Kyopuro {
 
 	public void Solve() {
 
-
-
+		writeline("hoge");
 	} // end of method
 } // end of class
