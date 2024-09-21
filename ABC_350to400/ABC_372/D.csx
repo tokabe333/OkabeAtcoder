@@ -1520,66 +1520,6 @@ class Kyopuro {
 
 		}
 
-		for (int i = 0; i < n; ++i) leftarr[i] = -1 * leftarr[i];
-		int[] bit;
-		List<int> compressedValues;  // 圧縮後の値リスト
-		Dictionary<int, int> compressMap;  // 座標圧縮用マップ
-
-		// フェニック木で値xの出現回数を更新
-		void Update(int index, int delta) {
-			while (index < bit.Length) {
-				bit[index] += delta;
-				index += index & -index;
-			}
-		}
-
-		// フェニック木で1からxまでの和を求める
-		int Query(int index) {
-			int sum = 0;
-			while (index > 0) {
-				sum += bit[index];
-				index -= index & -index;
-			}
-			return sum;
-		}
-
-		// a以上の要素の個数を数える
-		int CountGreaterThanOrEqual(int a) {
-			if (!compressMap.ContainsKey(a)) return 0;
-			int compressedA = compressMap[a];
-			return Query(bit.Length - 1) - Query(compressedA - 1);
-		}
-
-		// 座標圧縮の準備
-		compressedValues = new List<int>(leftarr);
-		compressedValues.Sort();
-		compressMap = new Dictionary<int, int>();
-
-		for (int i = 0; i < compressedValues.Count; i++) {
-			compressMap[compressedValues[i]] = i + 1;
-		}
-
-		// フェニック木の初期化
-		bit = new int[n + 1];
-
-		// 初期配列の各要素をフェニック木に追加
-		foreach (int x in leftarr) {
-			Update(compressMap[x], 1);
-		}
-
-		// クエリ処理
-
-		for (int i = 0; i < n; i++) {
-			// 現在の値を削除
-			Update(leftarr[i], -1);
-
-
-			// 現在の値以上を検索
-			int count = CountGreaterThanOrEqual(leftarr[i]);
-
-			writeline(count);
-		}
-
 		printlist(leftarr);
 	} // end of method
 } // end of class
