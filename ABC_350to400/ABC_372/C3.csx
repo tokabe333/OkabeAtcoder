@@ -606,279 +606,6 @@ struct Edge : IComparable<Edge> {
 } // end of class
 
 
-
-
-/// <summary>
-/// 遅延評価セグメント木 <br/>
-/// 区間検索、区間更新がO(logN) <br/>
-/// </summary>
-class LazySegmentTree<T, F, T_op>
-								// where T : IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
-								// where F : IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
-								where T_op : struct, ILazySegmentTreeOperator<T, F> {
-	/// <summary>一番下の葉の数 (2のべき乗になってるはず)</summary>
-	public int LeafNum { get; set; }
-
-	/// <summary>ノード全体の要素数</summary>
-	public int Count { get => this.Node.Length; }
-
-	/// <summary実際に木を構築するノード</summary>
-	public T[] Node { get; set; }
-
-	/// <summary>
-	/// 遅延評価をまとめた配列 <br/>
-	/// 更新時はここをいじる <br/>
-	/// </summary>
-	public F[] Lazy { get; set; }
-
-	/// <summary>
-	/// 作用素 (TとTに対する演算結果Tを返す min, max, sumなど) <br/>
-	/// 単位元、恒等写像、mapping, compositionがまとまっている <br/>
-	/// </summary>
-	private readonly T_op Operator = default(T_op);
-
-	/// <summary>
-	/// 元配列を渡してセグメントツリーの作成 <br/>
-	/// それ以外はOperatorに定義  <br/>
-	/// </summary>
-	public LazySegmentTree(T[] arr) {
-		// ノード数を　2^⌈log2(N)⌉　にする
-		this.LeafNum = 1;
-		while (this.LeafNum < arr.Length) this.LeafNum <<= 1;
-
-		// 葉の初期化
-		this.Node = new T[this.LeafNum * 2 - 1];
-		for (int i = 0; i < this.Count; ++i) this.Node[i] = this.Operator.Identity;
-		for (int i = 0; i < arr.Length; ++i) this.Node[this.LeafNum - 1 + i] = arr[i];
-
-		// 遅延配列の初期化
-		this.Lazy = new F[this.LeafNum * 2 - 1];
-		for (int i = 0; i < this.Count; ++i) this.Lazy[i] = this.Operator.FIdentity;
-
-		// 親ノードの値を決めていく
-		for (int i = this.LeafNum - 2; i >= 0; --i) {
-			// 左右と比較
-			this.Node[i] = this.Operator.Operate(this.Node[2 * i + 1], this.Node[2 * i + 2]);
-		}
-
-	} // end of constructor
-
-	/// <summary>
-	/// k番目のノードを遅延評価する(ACLではApply) <br/>
-	/// 着目ノードkに対して Node[k] = f(Node[k]) <br/>
-	/// 着目ノードを更新したら、1つしたの子に伝播 <br/>
-	/// </summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Evaluate(int k, int l, int r) {
-		// 遅延配列が恒等写像の時は更新内容がない
-		if (EqualityComparer<F>.Default.Equals(this.Lazy[k], this.Operator.FIdentity)) return;
-
-		// 注目ノードに遅延評価の写像を作用させる
-		this.Node[k] = this.Operator.Mapping(this.Lazy[k], this.Node[k]);
-
-		// 子を持っているなら(最下段の葉で無いなら)
-		if (r - l > 1) {
-			// composittionで遅延評価の写像を子に合成する
-			this.Lazy[2 * k + 1] = this.Operator.Composition(this.Lazy[k], this.Lazy[2 * k + 1]);
-			this.Lazy[2 * k + 2] = this.Operator.Composition(this.Lazy[k], this.Lazy[2 * k + 2]);
-		}
-
-		// 伝播が終わったので自ノードの遅延評価を恒等写像に戻す
-		this.Lazy[k] = this.Operator.FIdentity;
-	} // end of method
-
-
-
-	/// <summary>
-	/// [l, r)の範囲を更新する <br/>
-	/// x は更新に使用する写像 min,maxならxと比較、addならxを足す <br/>
-	///</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Update(int l, int r, F x) {
-		this.Update(l, r, 0, 0, this.LeafNum, x);
-	} // end of Method
-
-	/// <summary>
-	/// [l, r)の範囲を更新する
-	/// k は現在のノード番号 <br/>
-	/// [a, b) はkが対応する半開区間 <br/>	
-	/// x は更新に使用する写像 min,maxならxと比較、addならxを足す <br/>
-	///</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Update(int l, int r, int k, int a, int b, F x) {
-		// 着目ノードを評価する
-		this.Evaluate(k, a, b);
-
-		// 現在の対応ノード区間が求めたい区間に含まれないときは更新なし
-		if (r <= a || b <= l) return;
-
-		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
-		// → 遅延配列を評価
-		if (l <= a && b <= r) {
-			this.Lazy[k] = this.Operator.Composition(x, this.Lazy[k]);
-			this.Evaluate(k, a, b);
-		}
-
-		// そうでないなら左右の子のノードを再帰的に計算
-		// → 計算済みの値をもらって自身を更新
-		else {
-			int m = (a + b) / 2;
-			this.Update(l, r, k * 2 + 1, a, m, x);
-			this.Update(l, r, k * 2 + 2, m, b, x);
-			this.Node[k] = this.Operator.Operate(this.Node[2 * k + 1], this.Node[2 * k + 2]);
-		}
-	} // end of method
-
-
-	/// [l, r) の区間◯◯値を求める(求まる値はOperatorで指定されてる)
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public T Query(int l, int r) {
-		return this.Query(l, r, 0, 0, this.LeafNum);
-	} // end of method
-
-	/// [l, r) は求めたい半開区間 <br/>
-	/// k は現在のノード番号 <br/>
-	/// [a, b) はkに対応する半開区間 <br/>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private T Query(int l, int r, int k, int a, int b) {
-		// 現在の対応ノード区間が求めたい区間に含まれないとき
-		// → 単位元を返す
-		if (r <= a || b <= l) return this.Operator.Identity;
-
-		// 着目ノードを評価する
-		this.Evaluate(k, a, b);
-
-		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
-		// → 現在のノードの値を返す
-		if (l <= a && b <= r) return this.Node[k];
-
-		// 左半分と右半分で見る
-		int m = (a + b) / 2;
-		T leftValue = Query(l, r, k * 2 + 1, a, m);
-		T rightValue = Query(l, r, k * 2 + 2, m, b);
-		return this.Operator.Operate(leftValue, rightValue);
-	} // end of method
-} // end of class
-
-/// <summary>
-/// セグメント木の要素となるモノイド <br/>
-/// 結合律 : Tの任意の元 a,b,c に対して (a・b)・c = a・(b・c) <br/>
-/// 単位元 : Tの元 e が存在し、Tの任意の元 a に対して e・a = a・e = a <br/>
-/// T → データの型 <br/>
-/// F → 写像の型 <br/>
-/// </summary>
-/// <typeparam name="T">データの型</typeparam>
-/// <typeparam name="F">写像の型</typeparam>
-interface ILazySegmentTreeOperator<T, F> {
-	/// <summary>
-	/// 単位元 <br />
-	/// minならばinf, maxならば-inf, sumならば0 <br />
-	/// </summary>
-	T Identity { get; }
-
-	/// <summary>
-	/// Mapping(<paramref name="FIdentity"/>, x) = x を満たす恒等写像。
-	/// </summary>
-	F FIdentity { get; }
-
-	/// Tの元 x,y の演算を定義する
-	/// min, max, sum などはモノイド
-	T Operate(T x, T y);
-
-	/// <summary>
-	/// 写像　<paramref name="f"/> を <paramref name="x"/> に作用させる関数。
-	/// </summary>
-	T Mapping(F f, T x);
-
-	/// <summary>
-	/// 写像　<paramref name="nf"/> を既存の写像 <paramref name="cf"/> に対して合成した写像 <paramref name="nf"/>∘<paramref name="cf"/>。
-	/// </summary>
-	F Composition(F nf, F cf);
-} // end of interface
-
-// 通常のセグメント木(範囲検索、1つ更新をlogN)
-/// long版、中身の改造は便利
-public class SegmentTree {
-	/// 一番下の葉の数 (2のべき乗になってるはず)
-	public int LeafNum { get; set; }
-
-	/// ノード全体の要素数
-	public int Count { get => this.Node.Length; }
-
-	/// 実際に木を構築するノード
-	public (long, int)[] Node { get; set; }
-
-	/// 作用素 (TとTに対する演算結果Tを返す min, max, sumなど)
-	private Func<(long, int), (long, int), (long, int)> Operator;
-
-	/// モノイドの単位元 (オペレーターの演算に影響を及ぼさない)
-	private (long, int) Identity = (0l, 0);
-
-	/// 元配列を渡してセグメントツリーの作成
-	/// 初期値はminやmaxなどで変わると思うので与える(デフォルト=0のはず)
-	public SegmentTree(Func<(long, int), (long, int), (long, int)> op, long[] arr) {
-		// 作用素を保存
-		this.Operator = op;
-
-
-		// ノード数を　2^⌈log2(N)⌉　にする
-		this.LeafNum = 1;
-		while (this.LeafNum < arr.Length) this.LeafNum <<= 1;
-
-		// 葉の初期化
-		this.Node = new (long, int)[this.LeafNum * 2 - 1];
-		for (int i = 0; i < this.Count; ++i) this.Node[i] = this.Identity;
-		for (int i = 0; i < arr.Length; ++i) this.Node[this.LeafNum - 1 + i] = (arr[i], i);
-
-		// 親ノードの値を決めていく
-		for (int i = this.LeafNum - 2; i >= 0; --i) {
-			// 左右と比較
-			this.Node[i] = this.Operator(this.Node[2 * i + 1], this.Node[2 * i + 2]);
-		}
-	} // end of constructor
-
-	/// index番目の値をvalueにする
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Update(int index, long value) {
-		// 葉の更新
-		index += this.LeafNum - 1;
-		this.Node[index] = (value, index);
-
-		// 親の更新
-		while (index > 0) {
-			index = (index - 1) / 2;
-			// 左右と比較
-			this.Node[index] = this.Operator(this.Node[2 * index + 1], this.Node[2 * index + 2]);
-		}
-	} // end of update
-
-	/// [l, r) の区間◯◯値を求める(求まる値はOperatorで指定されてる)
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public (long, int) Query(int l, int r) {
-		return this.Query(l, r, 0, 0, this.LeafNum);
-	} // end of method
-
-	/// [l, r) は求めたい半開区間
-	/// k は現在のノード番号
-	/// [a, b) はkに対応する半開区間
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private (long, int) Query(int l, int r, int k, int a, int b) {
-		// 現在の対応ノード区間が求めたい区間に含まれないとき
-		// → 単位元を返す
-		if (r <= a || b <= l) return this.Identity;
-
-		// 現在の対応ノード区間が求めたい区間に完全に含まれるとき
-		// → 現在のノードの値を返す
-		if (l <= a && b <= r) return this.Node[k];
-
-		// 左半分と右半分で見る
-		int m = (a + b) / 2;
-		(long, int) leftValue = Query(l, r, k * 2 + 1, a, m);
-		(long, int) rightValue = Query(l, r, k * 2 + 2, m, b);
-		return this.Operator(leftValue, rightValue);
-	} // end of method
-} // end of class
-
 /// <summary>AVL木</summary>
 public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	/// <summary>AVL木を構成するノード1個分</summary>
@@ -1471,6 +1198,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	} // end of class
 } // end of class
 
+
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -1479,107 +1207,60 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	// モノイドを定義 区間最小、範囲更新
-	struct op_max : ILazySegmentTreeOperator<long, long> {
-		public long Identity { get => linf; }
-		public long FIdentity { get => linf; }
-		public long Operate(long a, long b) => Max(a, b);
-		public long Mapping(long f, long x) => f;
-		public long Composition(long f, long g) => f;
+	public int LowerBound<T>(List<T> a, T v) {
+		return LowerBound(a, v, Comparer<T>.Default);
 	}
 
+	public int LowerBound<T>(List<T> a, T v, Comparer<T> cmp) {
+		var l = 0;
+		var r = a.Count - 1;
+		while (l <= r) {
+			var mid = l + (r - l) / 2;
+			var res = cmp.Compare(a[mid], v);
+			if (res == -1) l = mid + 1;
+			else r = mid - 1;
+		}
+		return l;
+	}
 
 	public void Solve() {
-		int n = readint();
-		var arr = readlongs();
-
-		var stack = new Stack<(long, int)>();
-		var leftarr = new int[n]; // 自分の左側、自分よりも大きくて一番近いやつの場所
-
-		for (int i = 0; i < n; ++i) {
-
-			while (true) {
-				if (stack.Count == 0) {
-					leftarr[i] = -1;
-					stack.Push((arr[i], i));
-					break;
-				}
-
-				// 左に小さいのがあるときは取り出す
-				if (stack.Peek().Item1 <= arr[i]) {
-					stack.Pop();
-				}
-
-				// 左に大きいのがあるときはそこを記憶して自分をいれて次の要素へ
-				else {
-					leftarr[i] = stack.Peek().Item2;
-					stack.Push((arr[i], i));
-					break;
-				}
-			}
-
-		}
-
-		for (int i = 0; i < n; ++i) leftarr[i] = -1 * leftarr[i];
-		int[] bit;
-		List<int> compressedValues;  // 圧縮後の値リスト
-		Dictionary<int, int> compressMap;  // 座標圧縮用マップ
-
-		// フェニック木で値xの出現回数を更新
-		void Update(int index, int delta) {
-			while (index < bit.Length) {
-				bit[index] += delta;
-				index += index & -index;
+		var (n, q) = readintt2();
+		string ss = read();
+		StringBuilder s = new StringBuilder(ss);
+		int num = 0;
+		// 小さい順
+		for (int i = 0; i < n - 2; ++i) {
+			if (s[i] == 'A' && s[i + 1] == 'B' && s[i + 2] == 'C') {
+				num += 1;
 			}
 		}
 
-		// フェニック木で1からxまでの和を求める
-		int Query(int index) {
-			int sum = 0;
-			while (index > 0) {
-				sum += bit[index];
-				index -= index & -index;
+		for (int _ = 0; _ < q; ++_) {
+			var xc = readsplit();
+			int x = int.Parse(xc[0]) - 1;
+			char c = xc[1][0];
+
+
+			if (s[x] == c) {
+				writeline(num);
+				continue;
 			}
-			return sum;
+
+			// 減る場合
+			if (s[x] == 'A' && x < n - 2 && s[x + 1] == 'B' && s[x + 2] == 'C') num -= 1;
+			if (s[x] == 'B' && x != 0 && x < n - 1 && s[x - 1] == 'A' && s[x + 1] == 'C') num -= 1;
+			if (s[x] == 'C' && x >= 2 && s[x - 2] == 'A' && s[x - 1] == 'B') num -= 1;
+
+			// 増える場合
+			if (c == 'A' && x < n - 2 && s[x + 1] == 'B' && s[x + 2] == 'C') num += 1;
+			if (c == 'B' && x != 0 && x < n - 1 && s[x - 1] == 'A' && s[x + 1] == 'C') num += 1;
+			if (c == 'C' && x >= 2 && s[x - 2] == 'A' && s[x - 1] == 'B') num += 1;
+
+			writeline(num);
+			s[x] = c;
 		}
 
-		// a以上の要素の個数を数える
-		int CountGreaterThanOrEqual(int a) {
-			if (!compressMap.ContainsKey(a)) return 0;
-			int compressedA = compressMap[a];
-			return Query(bit.Length - 1) - Query(compressedA - 1);
-		}
-
-		// 座標圧縮の準備
-		compressedValues = new List<int>(leftarr);
-		compressedValues.Sort();
-		compressMap = new Dictionary<int, int>();
-
-		for (int i = 0; i < compressedValues.Count; i++) {
-			compressMap[compressedValues[i]] = i + 1;
-		}
-
-		// フェニック木の初期化
-		bit = new int[n + 1];
-
-		// 初期配列の各要素をフェニック木に追加
-		foreach (int x in leftarr) {
-			Update(compressMap[x], 1);
-		}
-
-		// クエリ処理
-
-		for (int i = 0; i < n; i++) {
-			// 現在の値を削除
-			Update(leftarr[i], -1);
 
 
-			// 現在の値以上を検索
-			int count = CountGreaterThanOrEqual(leftarr[i]);
-
-			writeline(count);
-		}
-
-		printlist(leftarr);
 	} // end of method
 } // end of class

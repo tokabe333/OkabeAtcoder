@@ -1,418 +1,165 @@
-#pragma warning disable
-
 using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using static System.Math;
-using static System.ComponentModel.TypeDescriptor;
-using static Util;
+using System.Linq;
 
-class Util {
-	public const long m107 = 1000000007;
-	public const long m998 = 998244353;
-	public const int a10_9 = 1000000000;
-	public const long a10_18 = 1000000000000000000;
-	public const int iinf = 1 << 30;
-	public const long linf = (1l << 61) - (1l << 31);
+public class SortedMultiset<T> where T : IComparable<T> {
+	private const int BUCKET_RATIO = 50;
+	private const int REBUILD_RATIO = 170;
+	private List<List<T>> buckets;
+	private int size;
 
-	/// 入出力
-	[MethodImpl(256)]
-	public static string read() => Console.ReadLine();
-	[MethodImpl(256)]
-	public static void write(dynamic d) => Console.Write(d);
-	[MethodImpl(256)]
-	public static void writeline(dynamic d) => Console.WriteLine(d);
-	[MethodImpl(256)]
-	public static void writeline() => Console.WriteLine();
+	public SortedMultiset(IEnumerable<T> items = null) {
+		var a = items?.ToList() ?? new List<T>();
+		size = a.Count;
+		if (size > 0 && !a.SequenceEqual(a.OrderBy(x => x))) {
+			a.Sort();
+		}
+		Build(a);
+	}
 
-	/// 答え出力
-	[MethodImpl(256)]
-	public static void writeyes() => Console.WriteLine("Yes");
-	[MethodImpl(256)]
-	public static void writeno() => Console.WriteLine("No");
+	private void Build(List<T> a = null) {
+		if (a == null) a = this.ToList();
+		int bucketSize = (int)Math.Ceiling(Math.Sqrt(a.Count / (double)BUCKET_RATIO));
+		buckets = new List<List<T>>(bucketSize);
 
-	/// 任意の要素数・初期値の配列を作って初期化する
-	[MethodImpl(256)]
-	public static T[] makearr<T>(int num, T value) {
-		var arr = new T[num];
-		for (int i = 0; i < num; ++i) arr[i] = value;
-		return arr;
-	} // end of func
+		for (int i = 0; i < bucketSize; i++) {
+			buckets.Add(a.Skip(a.Count * i / bucketSize).Take(a.Count * (i + 1) / bucketSize - a.Count * i / bucketSize).ToList());
+		}
+	}
 
-	/// 任意の要素数・初期値の２次元配列を作って初期化する
-	[MethodImpl(256)]
-	public static T[][] makearr2<T>(int height, int width, T value) {
-		var arr = new T[height][];
-		for (int i = 0; i < height; ++i) {
-			arr[i] = new T[width];
-			for (int j = 0; j < width; ++j) {
-				arr[i][j] = value;
+	public IEnumerator<T> GetEnumerator() {
+		foreach (var bucket in buckets) {
+			foreach (var item in bucket) {
+				yield return item;
 			}
 		}
-		return arr;
 	}
 
-	/// 任意の要素数・初期値の3次元配列を作って初期化する
-	[MethodImpl(256)]
-	public static T[][][] makearr3<T>(int height, int width, int depth, T value) {
-		var arr = new T[height][][];
-		for (int i = 0; i < height; ++i) {
-			arr[i] = new T[width][];
-			for (int j = 0; j < width; ++j) {
-				arr[i][j] = new T[depth];
-				for (int k = 0; k < depth; ++k) {
-					arr[i][j][k] = value;
-				}
+	public void Add(T x) {
+		if (size == 0) {
+			buckets = new List<List<T>> { new List<T> { x } };
+			size = 1;
+			return;
+		}
+
+		var (bucket, index) = Position(x);
+		bucket.Insert(index, x);
+		size++;
+
+		if (bucket.Count > buckets.Count * REBUILD_RATIO) {
+			Build();
+		}
+	}
+
+	public bool Discard(T x) {
+		if (size == 0) return false;
+
+		var (bucket, index) = Position(x);
+		if (index == bucket.Count || !bucket[index].Equals(x)) return false;
+
+		bucket.RemoveAt(index);
+		size--;
+
+		if (bucket.Count == 0) {
+			Build();
+		}
+
+		return true;
+	}
+
+	public int Count => size;
+
+	public T LT(T x) {
+		for (int i = buckets.Count - 1; i >= 0; i--) {
+			var bucket = buckets[i];
+			if (bucket[0].CompareTo(x) < 0) {
+				return bucket[BinarySearch(bucket, x) - 1];
 			}
 		}
-		return arr;
+		return default;
 	}
 
-	/// 任意の要素数・初期値のListを作って初期化する
-	[MethodImpl(256)]
-	public static List<T> makelist<T>(int num, T value) {
-		return new List<T>(makearr(num, value));
-	}
-
-	/// 任意の要素数・初期値の2次元Listを作って初期化する
-	[MethodImpl(256)]
-	public static List<List<T>> makelist2<T>(int height, int width, T value) {
-		var arr = new List<List<T>>();
-		for (int i = 0; i < height; ++i) {
-			arr.Add(makelist(width, value));
-		}
-		return arr;
-	}
-
-	/// 任意の要素数・初期値の3次元Listを作って初期化する
-	[MethodImpl(256)]
-	public static List<List<List<T>>> makelist3<T>(int height, int width, int depth, T value) {
-		var arr = new List<List<List<T>>>();
-		for (int i = 0; i < height; ++i) {
-			arr.Add(new List<List<T>>());
-			for (int j = 0; j < width; ++j) {
-				arr[i].Add(makelist(depth, value));
+	public T LE(T x) {
+		for (int i = buckets.Count - 1; i >= 0; i--) {
+			var bucket = buckets[i];
+			if (bucket[0].CompareTo(x) <= 0) {
+				return bucket[BinarySearch(bucket, x) - 1];
 			}
 		}
-		return arr;
+		return default;
 	}
 
-	/// 1次元配列のディープコピー
-	[MethodImpl(256)]
-	public static T[] copyarr<T>(T[] arr) {
-		T[] brr = new T[arr.Length];
-		Array.Copy(arr, brr, arr.Length);
-		return brr;
-	}
-
-	/// 2次元配列のディープコピー
-	[MethodImpl(256)]
-	public static T[][] copyarr2<T>(T[][] arr) {
-		T[][] brr = new T[arr.Length][];
-		for (int i = 0; i < arr.Length; ++i) {
-			brr[i] = new T[arr[i].Length];
-			Array.Copy(arr[i], brr[i], arr[i].Length);
-		}
-		return brr;
-	}
-
-	/// 3次元配列のディープコピー
-	[MethodImpl(256)]
-	public static T[][][] copyarr3<T>(T[][][] arr) {
-		T[][][] brr = new T[arr.Length][][];
-		for (int i = 0; i < arr.Length; ++i) {
-			brr[i] = new T[arr[i].Length][];
-			for (int j = 0; j < arr[i].Length; ++j) {
-				brr[i][j] = new T[arr[i][j].Length];
-				Array.Copy(arr[i][j], brr[i][j], arr[i][j].Length);
+	public T GT(T x) {
+		foreach (var bucket in buckets) {
+			if (bucket.Last().CompareTo(x) > 0) {
+				return bucket[BinarySearch(bucket, x)];
 			}
 		}
-		return brr;
+		return default;
 	}
 
-	/// 1次元Listのディープコピー
-	[MethodImpl(256)]
-	public static List<T> copylist<T>(List<T> list) {
-		return new List<T>(list);
-	}
-
-	/// 2次元Listのディープコピー
-	[MethodImpl(256)]
-	public static List<List<T>> copylist2<T>(List<List<T>> list) {
-		List<List<T>> list2 = new List<List<T>>();
-		for (int i = 0; i < list.Count; ++i) {
-			list2.Add(new List<T>(list[i]));
-		}
-		return list2;
-	}
-
-	/// 3次元Listのディープコピー
-	[MethodImpl(256)]
-	public static List<List<List<T>>> copylist3<T>(List<List<List<T>>> list) {
-		List<List<List<T>>> list2 = new List<List<List<T>>>();
-		for (int i = 0; i < list.Count; ++i) {
-			List<List<T>> tmplist = new List<List<T>>();
-			for (int j = 0; j < list[i].Count; ++j) {
-				tmplist.Add(new List<T>(list[i][j]));
+	public T GE(T x) {
+		foreach (var bucket in buckets) {
+			if (bucket.Last().CompareTo(x) >= 0) {
+				return bucket[BinarySearch(bucket, x)];
 			}
-			list2.Add(tmplist);
 		}
-		return list2;
+		return default;
 	}
 
-	/// 1次元Listを出力
-	[MethodImpl(256)]
-	public static void printlist<T>(List<T> list) => writeline(string.Join(" ", list));
-
-	/// 1次元配列を出力
-	[MethodImpl(256)]
-	public static void printlist<T>(T[] list) => writeline(string.Join(" ", list));
-
-	/// 2次元リストを出力
-	[MethodImpl(256)]
-	public static void printlist2<T>(List<List<T>> list) {
-		foreach (var l in list) {
-			writeline(string.Join(" ", l));
+	public int Index(T x) {
+		int count = 0;
+		foreach (var bucket in buckets) {
+			if (bucket.Last().CompareTo(x) >= 0) {
+				return count + BinarySearch(bucket, x);
+			}
+			count += bucket.Count;
 		}
+		return count;
 	}
 
-	/// 2次元配列を出力
-	[MethodImpl(256)]
-	public static void printlist2<T>(T[][] list) {
-		foreach (var l in list) {
-			writeline(string.Join(" ", l));
+	public int IndexRight(T x) {
+		int count = 0;
+		foreach (var bucket in buckets) {
+			if (bucket.Last().CompareTo(x) > 0) {
+				return count + BinarySearch(bucket, x);
+			}
+			count += bucket.Count;
 		}
+		return count;
 	}
 
-	/// 1次元Listを出力
-	[MethodImpl(256)]
-	public static void printarr<T>(List<T> list) => writeline(string.Join(" ", list));
-
-	/// 1次元配列を出力
-	[MethodImpl(256)]
-	public static void printarr<T>(T[] list) => writeline(string.Join(" ", list));
-
-	/// 2次元リストを出力
-	[MethodImpl(256)]
-	public static void printarr2<T>(List<List<T>> list) {
-		foreach (var l in list) {
-			writeline(string.Join(" ", l));
+	private (List<T>, int) Position(T x) {
+		foreach (var bucket in buckets) {
+			if (bucket.Last().CompareTo(x) >= 0) {
+				return (bucket, BinarySearch(bucket, x));
+			}
 		}
+		throw new InvalidOperationException("The set is empty.");
 	}
 
-	/// 2次元配列を出力
-	[MethodImpl(256)]
-	public static void printarr2<T>(T[][] list) {
-		foreach (var l in list) {
-			writeline(string.Join(" ", l));
-		}
+	private int BinarySearch(List<T> bucket, T x) {
+		return bucket.BinarySearch(x) >= 0 ? bucket.BinarySearch(x) : ~bucket.BinarySearch(x);
 	}
+}
 
-	/// ジェネリックを出力
-	[MethodImpl(256)]
-	public static void printiter<T>(IEnumerable<T> generic) {
-		foreach (var it in generic) write(it + " ");
-		writeline();
-	}
-	/// ジェネリックを出力
-	[MethodImpl(256)]
-	public static void printlineiter<T>(IEnumerable<T> generic) {
-		foreach (var it in generic) {
-			writeline(it + " ");
-		}
-	}
-
-	/// 数字を1つ各型で読み込み
-	[MethodImpl(256)]
-	public static int readint() => int.Parse(read());
-	[MethodImpl(256)]
-	public static long readlong() => long.Parse(read());
-	[MethodImpl(256)]
-	public static float readfloat() => float.Parse(read());
-	[MethodImpl(256)]
-	public static double readdouble() => double.Parse(read());
-
-	/// 入力を空白区切りのstringで返す(変則的な入力に対応)
-	[MethodImpl(256)]
-	public static string[] readsplit() => read().Split(' ');
-
-	/// 数字をスペース区切りでint型で入力
-	[MethodImpl(256)]
-	public static int[] readints() => readsplit().Select(_ => int.Parse(_)).ToArray();
-
-	/// 数字をスペース区切りでlong型で入力
-	[MethodImpl(256)]
-	public static long[] readlongs() => readsplit().Select(_ => long.Parse(_)).ToArray();
-
-	/// 数字をスペース区切りでfloat型で入力
-	[MethodImpl(256)]
-	public static float[] readfloats() => readsplit().Select(_ => float.Parse(_)).ToArray();
-
-	/// 数字をスペース区切りでdouble型で入力
-	[MethodImpl(256)]
-	public static double[] readdoubles() => readsplit().Select(_ => double.Parse(_)).ToArray();
-
-	/// 文字列をスペース区切りで入力
-	[MethodImpl(256)]
-	public static string[] readstrings() => readsplit();
-
-	/// 自由な型で2変数を入力
-	[MethodImpl(256)]
-	public static void readt2<T1, T2>(out T1 a, out T2 b) {
-		string[] s = readsplit();
-		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
-		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
-	}
-
-	/// 自由な型で3変数を入力
-	[MethodImpl(256)]
-	public static void readt3<T1, T2, T3>(out T1 a, out T2 b, out T3 c) {
-		string[] s = readsplit();
-		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
-		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
-		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
-	}
-
-	/// 自由な型で4変数を入力
-	[MethodImpl(256)]
-	public static void readt4<T1, T2, T3, T4>(out T1 a, out T2 b, out T3 c, out T4 d) {
-		string[] s = readsplit();
-		a = (T1)GetConverter(typeof(T1)).ConvertFromString(s[0]);
-		b = (T2)GetConverter(typeof(T2)).ConvertFromString(s[1]);
-		c = (T3)GetConverter(typeof(T3)).ConvertFromString(s[2]);
-		d = (T4)GetConverter(typeof(T4)).ConvertFromString(s[3]);
-	}
-
-	/// 小数点以下を16桁で表示(精度が厳しい問題に対応)
-	[MethodImpl(256)]
-	public static void WriteLine16<T>(T num) => writeline(string.Format("{0:0.################}", num));
-
-	/// 整数を二進数で表示
-	[MethodImpl(256)]
-	public static void writeline2bit(int num) => writeline(Convert.ToString(num, 2));
-
-	/// 整数を2進数表現した文字列に
-	[MethodImpl(256)]
-	public static string int2bit(int num) => Convert.ToString(num, 2);
-
-	/// 整数を2進数表現した文字列に
-	[MethodImpl(256)]
-	public static string long2bit(long num) => Convert.ToString(num, 2);
-
-	/// 出力のflush削除
-	public static void preprocess() => System.Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = false });
-
-	/// 出力をflush
-	public static void finalprocess() => System.Console.Out.Flush();
-} // end of class
-
-/// 座標に便利(値型だけど16byteまではstructが速い)
-struct SL {
-	public string s;
-	public long num;
-	public SL(string s, long num) {
-		this.s = s;
-		this.num = num;
-	}
-	public override string ToString() => $"s:{s} num:{num}";
-} // end of class
-
-/// グラフをするときに(値型だけど16byteまではstructが速い)
-struct Edge : IComparable<Edge> {
-	public int from;
-	public int to;
-	public long cost;
-	public Edge(int from, int to, long cost = 0) {
-		this.from = from;
-		this.to = to;
-		this.cost = cost;
-	}
-	/// コスト順にソートできるように
-	[MethodImpl(256)]
-	public int CompareTo(Edge opp) => this.cost.CompareTo(opp.cost);
-
-	public override string ToString() => $"cost:{cost} from:{from} to:{to}";
-} // end of class
-
-class Kyopuro {
+// 使用例
+public static class Program {
 	public static void Main() {
-		preprocess();
-		var kyopuro = new Kyopuro();
-		kyopuro.Solve2();
-		finalprocess();
-	} // end of func
+		var A = new List<int> { 3, -1, 4, -1, 5, -9, 2, -6, 5, -3, 5, -8 };
 
+		var s = new SortedMultiset<int>(A);
+		Console.WriteLine(string.Join(", ", s)); // 内部状態を表示
+		s.Add(0);
+		s.Discard(-1);
 
-	public void Solve() {
-		int n = readint() * 2;
-		string input = "";
-		for (int i = 0; i < n; ++i) input += read();
-		string ans = "";
-		for (int i = 0; i < n; ++i) {
-			ans += i % (n / 2) + 1;
-		}
+		Console.WriteLine(s.Count); // 値の個数を表示
+		Console.WriteLine(s.LT(2)); // 指定値より小さい最大要素を表示
+		Console.WriteLine(s.LE(2)); // 指定値以下の最大要素を表示
+		Console.WriteLine(s.GT(2)); // 指定値より大きい最小要素を表示
+		Console.WriteLine(s.GE(2)); // 指定値以上の最小要素を表示
 
-		// writeline(ans);
-
-		var set = new HashSet<string>();
-		var que = new Queue<SL>();
-		que.Enqueue(new SL(input, 0));
-		while (que.Count > 0) {
-			var sl = que.Dequeue();
-			var sb = new StringBuilder(sl.s);
-			for (int i = 0; i < n - 1; ++i) {
-				char tmp = sb[i];
-				sb[i] = sb[i + 1];
-				sb[i + 1] = tmp;
-
-				string s = sb.ToString();
-				if (s == ans && sl.num > 0) {
-					writeline("ans:" + (sl.num + 1));
-					return;
-				}
-				que.Enqueue(new SL(s, sl.num + 1l));
-
-				tmp = sb[i];
-				sb[i] = sb[i + 1];
-				sb[i + 1] = tmp;
-
-			}
-		}
-
-		writeline("syuuryou");
-
-	} // end of method
-
-	public void Solve2() {
-		int n = readint();
-		var arr = new int[n * 2];
-
-		for (int i = 0; i < n * 2; ++i) arr[i] = readint() - 1;
-
-		int ans = 0;
-		for (int i = 0; i < n; ++i) {
-			int l = 0, r = 0;
-			for (int j = 0; j < n * 2; ++j) {
-				if (arr[j] != i) continue;
-				l = j;
-				break;
-			}
-
-			for (int j = n * 2 - 1; j >= 0; --j) {
-				if (arr[j] != i) continue;
-				r = j;
-				break;
-			}
-
-			writeline($"i:{i} l:{l} r:{r} dl:${Abs(l - i)} dr:${Abs(r - (i + n))}");
-			ans += Abs(l - i) + Abs(r - (i + n));
-		}
-
-		writeline(ans);
+		Console.WriteLine(s.IndexRight(2)); // 指定値以下の要素の個数を表示
+		Console.WriteLine(s.Index(2)); // 指定値未満の要素の個数を表示
 	}
-} // end of class
+}
