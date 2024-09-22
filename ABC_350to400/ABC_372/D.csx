@@ -1565,6 +1565,7 @@ class Kyopuro {
 			var node = avl.UpperBoundIterator(leftarr[i]);
 			node = node.Prev();
 
+
 		}
 	} // end of method
 } // end of class
