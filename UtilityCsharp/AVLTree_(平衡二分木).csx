@@ -952,39 +952,18 @@ class Kyopuro {
 
 	public void Solve4() {
 		var avl = new AVLTree<int>();
-
-
 		avl.Insert(10);
 		avl.Insert(13);
 		avl.Insert(20);
 		avl.Insert(5);
 		avl.Insert(6);
 		avl.Insert(10);
-
-		avl.PrintTree();
-		Console.WriteLine();
-
-
 		avl.Remove(6);
-		avl.PrintTree();
-		Console.WriteLine();
-
-
 		avl.Insert(15);
-		avl.PrintTree();
-		Console.WriteLine();
-
 		avl.Remove(10, 2);
-		avl.PrintTree();
-
 		avl.Insert(33, 3);
-		avl.PrintTree();
-		Console.WriteLine();
-
 		avl.Insert(2, 2);
 		avl.PrintTree();
-		Console.WriteLine();
-
 
 
 		Console.WriteLine();
@@ -996,7 +975,6 @@ class Kyopuro {
 		Console.WriteLine("Count of elements > 10: " + avl.CountGreaterThan(10));
 		Console.WriteLine("Count of elements > 15: " + avl.CountGreaterThan(15));
 		Console.WriteLine("Count of elements > 3: " + avl.CountGreaterThan(33));
-
 
 		Console.WriteLine();
 		Console.WriteLine("Count of elements <=  10: " + avl.CountLessThanOrEqual(10));

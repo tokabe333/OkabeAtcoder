@@ -576,22 +576,36 @@ struct Edge : IComparable<Edge> {
 } // end of class
 
 
+
 /// <summary>AVL木</summary>
 public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	/// <summary>AVL木を構成するノード1個分</summary>
 	public class Node {
-		public T key { get; set; }
-		public Node left { get; set; }
-		public Node right { get; set; }
-		public Node parent { get; set; }
-		public int height { get; set; }
-		public int count { get; set; }
+		/// <summary>要素の値</summary>
+		public T key;
+
+		public Node left;
+		public Node right;
+		public Node parent;
+
+		/// <summary>自身をrootとした時の木の高さ</summary>
+		public int height;
+
+		/// <summary>同一のkeyの個数</summary>
+		public int count;
+
+		/// <summary>自身をrootとする部分木のノード数の合計(rootのこの値は木全体のノード数)<br />
+		/// childNodeNum-count → このkeyより大きいkeyのノード数の合計</summary>
+		public int childNodeNum;
 
 		public Node(T key) {
 			this.key = key;
 			this.height = 1;
 			this.count = 1;
+			this.childNodeNum = 1;
 		} // end of constructor
+
+		public override string ToString() => $"key:{this.key} height:{this.height} count:{this.count} childNodeNum:{this.childNodeNum}";
 	} // end of class
 
 	/// <symmary>木の根、ここから全ノードを辿っていく</summary>
@@ -612,27 +626,51 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		foreach (T value in list) this.Insert(value);
 	} // end of constructor
 
+
+	// ---------------------------------------------------------------------
+	//                           ↓↓↓ 木構造の構築 ↓↓↓
+	// ---------------------------------------------------------------------
+
+
 	// -------------------------------- 挿入 --------------------------------
 
-	/// <summary>ノード挿入(公開用、外部からはこれを呼ぶ)</summary>
+	/// <summary>ノード挿入(公開用、外部からはこれを呼ぶ)、numで挿入する個数を指定</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Insert(T key) => root = this.Insert(root, key);
+	public void Insert(T key, int num = 1) => root = this.Insert(root, key, num);
 
 	/// <summary>ノード挿入処理、回転した結果を今の注目ノードに置き換える</summary>
-	private Node Insert(Node node, T key, Node parent = null) {
-		if (node == null) return new Node(key) { parent = parent };
+	private Node Insert(Node node, T key, int num, Node parent = null) {
+		if (node == null) {
+			var newNode = new Node(key) { parent = parent };
+			newNode.count = num;
+			newNode.childNodeNum = num;
+			// 再帰的に親ノードのchildNodeNumを更新(1個増やす)
+			var tmp = newNode.parent;
+			while (tmp != null) {
+				tmp.childNodeNum += num;
+				tmp = tmp.parent;
+			}
+
+			return newNode;
+		}
 
 		int compare = this.comparer.Compare(key, node.key);
 		// 注目ノードより小さいので左の子に挿入
-		if (compare < 0) node.left = this.Insert(node.left, key, node);
+		if (compare < 0) { node.left = this.Insert(node.left, key, num, node); }
 
 		// 注目ノードより大きいので右の子に挿入
-		else if (compare > 0) node.right = this.Insert(node.right, key, node);
+		else if (compare > 0) { node.right = this.Insert(node.right, key, num, node); }
 
 		// 注目ノードと同じ(すでにkeyが含まれている)ので個数をカウント
-		else node.count += 1;
+		else {
+			node.count += num;
+			node.childNodeNum += num;
 
-		// 左右の個の深い方+1が現在のノードの高さ
+			// 親をたどってchildNodeNumを更新
+			this.UpdateChildNodeNums(node.parent);
+		}
+
+		// 左右の子の深い方+1が現在のノードの高さ
 		node.height = 1 + Max(this.GetHeight(node.left), this.GetHeight(node.right));
 
 		// 高さを揃える
@@ -641,36 +679,46 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 	// -------------------------------- 削除 --------------------------------
 
-	/// <summary>ノード削除(公開用、外部からはこれを呼ぶ)</summary>
+	/// <summary>ノード削除(公開用、外部からはこれを呼ぶ)、numで消す個数を指定</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public void Remove(T key) => root = this.Remove(root, key);
+	public void Remove(T key, int num = 1) => root = this.Remove(root, key, num);
+
 
 	/// <summary>ノード削除処理、削除した結果を今の注目ノードに置き換える</summary>
-	private Node Remove(Node node, T key) {
+	private Node Remove(Node node, T key, int num) {
 		if (node == null) return null;
 
 		int compare = this.comparer.Compare(key, node.key);
 		// 注目ノードより小さいので削除は左に流す
 		if (compare < 0) {
-			node.left = this.Remove(node.left, key);
+			node.left = this.Remove(node.left, key, num);
 		}
 		// 注目ノードより大きいので削除は右に流す
 		else if (compare > 0) {
-			node.right = this.Remove(node.right, key);
+			node.right = this.Remove(node.right, key, num);
 		}
 		// 注目ノードが削除対象
 		else {
+
 			// 値が重複しているので個数を減らして終わり
-			if (node.count > 1) {
-				node.count -= 1;
+			if (node.count - num >= 1) {
+				node.count -= num;
+				this.UpdateChildNodeNums(node);
 				return node;
 			}
 			// 値が1つなのでノードを削除する
 			// 片方または両方の子がない場合は、子で置き換える(子ノードが高々1子なので)
 			if (node.left == null || node.right == null) {
+				// 自分の親から根までの要素数を減らす
+				var tmp1 = node.parent;
+				while (tmp1 != null) {
+					tmp1.childNodeNum -= node.count;
+					tmp1 = tmp1.parent;
+				}
+
+				// 両方なければ自身を削除、片方あればそれで置き換える
 				var tmp = node.left != null ? node.left : node.right;
 				if (tmp != null) tmp.parent = node.parent;
-				// 両方なければ自身を削除、片方あればそれで置き換える
 				return tmp;
 			}
 			// 両方の子がある場合は、右部分木から最小値のノードを探して置き換える
@@ -678,15 +726,131 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 				var minRight = this.FindMin(node.right);
 				node.key = minRight.key;
 				node.count = minRight.count;
-				node.right = this.Remove(node.right, minRight.key);
-				// if (node.right != null) node.right = node;
+				node.right = this.Remove(node.right, minRight.key, minRight.count);
+				node.childNodeNum = node.count + (node.left?.childNodeNum ?? 0) + (node.right?.childNodeNum ?? 0);
+
+				this.UpdateChildNodeNums(node.parent);
 			}
+
+
 		}
 
 		// 高さを揃える
 		node.height = 1 + Max(this.GetHeight(node.left), this.GetHeight(node.right));
 		return this.Balance(node);
 	} // end of method
+
+
+	// -------------------------------- 内部処理用 (Util) --------------------------------
+
+	/// <summary>ノードの高さを取得</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private int GetHeight(Node node) => node != null ? node.height : 0;
+
+	/// <summary>バランスファクタ(左右の高さの差)を取得、nullなら0</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private int GetBalance(Node node) => node != null ? this.GetHeight(node.left) - this.GetHeight(node.right) : 0;
+
+	/// <summary>指定されたノード以下の部分木から最小値のノードを返す
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private Node FindMin(Node node) {
+		while (node.left != null) node = node.left;
+		return node;
+	} // end of method
+
+	/// <summary>左回転</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private Node RotateLeft(Node x) {
+		// > この形が     (上がx, 右がy, 下がt2)
+		// < この形になる (上がy, 左がx, 下がt2)
+		Node y = x.right;
+		Node t2 = y.left;
+		Node xparent = x.parent;
+
+		y.left = x;
+		y.parent = xparent;
+		if (x != null) x.parent = y;
+
+		x.right = t2;
+		if (t2 != null) t2.parent = x;
+
+		// 高さ再調整
+		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
+		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
+
+		// 子要素の数を更新
+		x.childNodeNum = x.count + (x.left?.childNodeNum ?? 0) + (x.right?.childNodeNum ?? 0);
+		y.childNodeNum = y.count + (y.left?.childNodeNum ?? 0) + (y.right?.childNodeNum ?? 0);
+
+		return y;
+	} // end of method
+
+	/// <summary>右回転</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private Node RotateRight(Node y) {
+		// < この形が     (上がy, 左がx, 下がt2)
+		// > この形になる (上がx, 右がy, 下がt2)
+		Node x = y.left;
+		Node t2 = x.right;
+		Node yparent = y.parent;
+
+		x.right = y;
+		x.parent = yparent;
+		if (y != null) y.parent = x;
+
+		y.left = t2;
+		if (t2 != null) t2.parent = y;
+
+		// 高さ再調整
+		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
+		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
+
+		// 子要素の数を更新
+		y.childNodeNum = y.count + (y.left?.childNodeNum ?? 0) + (y.right?.childNodeNum ?? 0);
+		x.childNodeNum = x.count + (x.left?.childNodeNum ?? 0) + (x.right?.childNodeNum ?? 0);
+
+		return x;
+	} // end of method
+
+	/// <summary>木のバランスを取る</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private Node Balance(Node node) {
+		// 左右差を取得
+		int balance = this.GetBalance(node);
+
+		// 左の子の方が大きい (1, 0, -1)ならば偏りがないので 1超過
+		if (balance > 1) {
+			// 左の子の右の子が大きい場合 < この形
+			// L-R回転になるので先にL回転
+			if (this.GetBalance(node.left) < 0) node.left = this.RotateLeft(node.left);
+			return this.RotateRight(node);
+		}
+
+		// 右の子の方が大きい (1, 0, -1)ならば偏りがないので -1未満
+		if (balance < -1) {
+			// 右の子の左の子が大きい場合 > この形
+			// R-L回転になるので先にR回転
+			if (this.GetBalance(node.right) > 0) node.right = this.RotateRight(node.right);
+			return this.RotateLeft(node);
+		}
+
+		return node;
+	} // end of method
+
+	/// <summary>parentを起点にrootまで(root含む)までのノード全てのchildNodeNumsを更新</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	private void UpdateChildNodeNums(Node node) {
+		while (node != null) {
+			node.childNodeNum = node.count + (node.left?.childNodeNum ?? 0) + (node.right?.childNodeNum ?? 0);
+			node = node.parent;
+		}
+	} // end of method
+
+
+	// ---------------------------------------------------------------------
+	//                          ↓↓↓  木構造の探索 ↓↓↓
+	// ---------------------------------------------------------------------
+
 
 	// -------------------------------- 検索 --------------------------------
 
@@ -904,6 +1068,118 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		}
 	} // end of method
 
+	// -------------------------------- CountGreaterThanOrEqual --------------------------------
+
+	/// <summary>ある値X以上のノード数を返す</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CountGreaterThanOrEqual(T key) {
+		return CountGreaterThanOrEqual(this.root, key);
+	} // end of method
+
+	/// <summary>ある値X以上のノード数を返す</summary>
+	private int CountGreaterThanOrEqual(Node node, T key) {
+		if (node == null) return 0;
+		int compare = this.comparer.Compare(key, node.key);
+
+		// 現在のノードと一致するなら、現在のノード + 右部分木のすべてのノード
+		if (compare == 0) { return node.count + (node.right?.childNodeNum ?? 0); }
+
+		// keyが現在のノードより小さい場合
+		// 現在のノード、右部分木はすべて条件を満たす
+		// 左部分木は不明なため再帰的に検索
+		else if (compare < 0) {
+			int rightTreeNum = node.right?.childNodeNum ?? 0;
+			return node.count + rightTreeNum + this.CountGreaterThanOrEqual(node.left, key);
+		}
+
+		// keyが現在のノードより大きい場合
+		// 右部分木のみを調べる
+		else { return this.CountGreaterThanOrEqual(node.right, key); }
+	} // end of method
+
+	// -------------------------------- CountGreaterThan --------------------------------
+
+	/// <summary>ある値Xを超えるのノード数を返す</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CountGreaterThan(T key) {
+		return CountGreaterThan(this.root, key);
+	} // end of method
+
+	/// <summary>ある値Xを超えるのノード数を返す</summary>
+	private int CountGreaterThan(Node node, T key) {
+		if (node == null) return 0;
+		int compare = this.comparer.Compare(key, node.key);
+
+		// keyが現在のノードより小さい場合
+		// 現在のノード、右部分木はすべて条件を満たす
+		// 左部分木は不明なため再帰的に検索
+		if (compare < 0) {
+			int rightTreeNum = node.right?.childNodeNum ?? 0;
+			return node.count + rightTreeNum + this.CountGreaterThan(node.left, key);
+		}
+
+		// keyが現在のノードより大きい場合
+		// 右部分木のみを調べる
+		else { return this.CountGreaterThan(node.right, key); }
+	} // end of method
+
+	// -------------------------------- CountLessThanOrEqual --------------------------------
+
+	/// <summary>ある値X以下のノード数を返す</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CountLessThanOrEqual(T key) {
+		return CountLessThanOrEqual(this.root, key);
+	} // end of method
+
+	/// <summary>ある値X以下のノード数を返す</summary>
+	private int CountLessThanOrEqual(Node node, T key) {
+		if (node == null) return 0;
+		int compare = this.comparer.Compare(key, node.key);
+
+		// 現在のノードと一致するなら、現在のノード + 左部分木のすべてのノード
+		if (compare == 0) { return node.count + (node.left?.childNodeNum ?? 0); }
+
+		// keyが現在のノードより大きい場合
+		// 現在のノード、左部分木はすべて条件を満たす
+		// 右部分木は不明なため再帰的に検索
+		else if (compare > 0) {
+			int leftTreeNum = node.left?.childNodeNum ?? 0;
+			return node.count + leftTreeNum + this.CountLessThanOrEqual(node.right, key);
+		}
+
+		// keyが現在のノードより小さい場合
+		// 左部分木のみを調べる
+		else { return this.CountLessThanOrEqual(node.left, key); }
+	} // end of method
+
+	// -------------------------------- CountLessThan --------------------------------
+
+	/// <summary>ある値X以上のノード数を返す</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public int CountLessThan(T key) {
+		return CountLessThan(this.root, key);
+	} // end of method
+
+	/// <summary>ある値X以上のノード数を返す</summary>
+	private int CountLessThan(Node node, T key) {
+		if (node == null) return 0;
+		int compare = this.comparer.Compare(key, node.key);
+
+		// keyが現在のノードより大きい場合
+		// 現在のノード、左部分木はすべて条件を満たす
+		// 右部分木は不明なため再帰的に検索
+		if (compare > 0) {
+			int leftTreeNum = node.left?.childNodeNum ?? 0;
+			return node.count + leftTreeNum + this.CountLessThan(node.right, key);
+		}
+
+		// keyが現在のノードより小さい場合
+		// 左部分木のみを調べる
+		else { return this.CountLessThan(node.left, key); }
+	} // end of method
+
+
+
 	// -------------------------------- 最小値最大値 --------------------------------
 
 	/// <summary>最初の値を返す(基本は最小値)</summary>
@@ -947,7 +1223,11 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		return new AVLIterator(node);
 	} // end of method
 
-	// -------------------------------- 表示 --------------------------------
+
+	// ---------------------------------------------------------------------
+	//                            ↓↓↓ 表示 ↓↓↓
+	// ---------------------------------------------------------------------
+
 
 	/// <summary>中身表示用(公開用、外部からはこれを呼ぶ)</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -958,7 +1238,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		if (node == null) return;
 		string parentKey = node.parent != null ? node.parent.key.ToString() : "null";
 		// Console.WriteLine($"{indent}+- {node.key} (Count: {node.count})");
-		Console.WriteLine($"{indent}+- {node.key} (Count: {node.count}, Parent: {parentKey})");
+		Console.WriteLine($"{indent}+- {node.key} (Count: {node.count}, ChildNodeNums:{node.childNodeNum} Parent: {parentKey})");
 		indent += last ? "   " : "|  ";
 
 		this.PrintTree(node.left, indent, false);
@@ -999,91 +1279,11 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		this.PrintTreePreOrder(node.right);
 	} // end of method
 
-	// -------------------------------- 内部処理用 (Util) --------------------------------
 
-	/// <summary>ノードの高さを取得</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private int GetHeight(Node node) => node != null ? node.height : 0;
+	// ---------------------------------------------------------------------
+	//                    ↓↓↓ foreach, iterator サポート ↓↓↓
+	// ---------------------------------------------------------------------
 
-	/// <summary>バランスファクタ(左右の高さの差)を取得、nullなら0</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private int GetBalance(Node node) => node != null ? this.GetHeight(node.left) - this.GetHeight(node.right) : 0;
-
-	/// <summary>指定されたノード以下の部分木から最小値のノードを返す
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private Node FindMin(Node node) {
-		while (node.left != null) node = node.left;
-		return node;
-	} // end of method
-
-	/// <summary>左回転</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private Node RotateLeft(Node x) {
-		// > この形が     (上がx, 右がy, 下がt2)
-		// < この形になる (上がy, 左がx, 下がt2)
-		Node y = x.right;
-		Node t2 = y.left;
-		Node xparent = x.parent;
-
-		y.left = x;
-		y.parent = xparent;
-		if (x != null) x.parent = y;
-
-		x.right = t2;
-		if (t2 != null) t2.parent = x;
-
-		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
-		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
-
-		return y;
-	} // end of method
-
-	/// <summary>右回転</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private Node RotateRight(Node y) {
-		// < この形が     (上がy, 左がx, 下がt2)
-		// > この形になる (上がx, 右がy, 下がt2)
-		Node x = y.left;
-		Node t2 = x.right;
-		Node yparent = y.parent;
-
-		x.right = y;
-		x.parent = yparent;
-		if (y != null) y.parent = x;
-
-		y.left = t2;
-		if (t2 != null) t2.parent = y;
-
-		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
-		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
-
-		return x;
-	} // end of method
-
-	/// <summary>木のバランスを取る</summary>
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private Node Balance(Node node) {
-		// 左右差を取得
-		int balance = this.GetBalance(node);
-
-		// 左の子の方が大きい (1, 0, -1)ならば偏りがないので 1超過
-		if (balance > 1) {
-			// 左の子の右の子が大きい場合 < この形
-			// L-R回転になるので先にL回転
-			if (this.GetBalance(node.left) < 0) node.left = this.RotateLeft(node.left);
-			return this.RotateRight(node);
-		}
-
-		// 右の子の方が大きい (1, 0, -1)ならば偏りがないので -1未満
-		if (balance < -1) {
-			// 右の子の左の子が大きい場合 > この形
-			// R-L回転になるので先にR回転
-			if (this.GetBalance(node.right) > 0) node.right = this.RotateRight(node.right);
-			return this.RotateLeft(node);
-		}
-
-		return node;
-	} // end of method
 
 	/// <summary>foreachをサポート</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
