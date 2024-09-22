@@ -1,165 +1,144 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
-public class SortedMultiset<T> where T : IComparable<T> {
-	private const int BUCKET_RATIO = 50;
-	private const int REBUILD_RATIO = 170;
-	private List<List<T>> buckets;
-	private int size;
+public class AVLTree {
+	public class Node {
+		public int Value;
+		public Node Left, Right;
+		public int Height;
+		public int Size;  // 部分木のサイズ
 
-	public SortedMultiset(IEnumerable<T> items = null) {
-		var a = items?.ToList() ?? new List<T>();
-		size = a.Count;
-		if (size > 0 && !a.SequenceEqual(a.OrderBy(x => x))) {
-			a.Sort();
-		}
-		Build(a);
-	}
-
-	private void Build(List<T> a = null) {
-		if (a == null) a = this.ToList();
-		int bucketSize = (int)Math.Ceiling(Math.Sqrt(a.Count / (double)BUCKET_RATIO));
-		buckets = new List<List<T>>(bucketSize);
-
-		for (int i = 0; i < bucketSize; i++) {
-			buckets.Add(a.Skip(a.Count * i / bucketSize).Take(a.Count * (i + 1) / bucketSize - a.Count * i / bucketSize).ToList());
+		public Node(int value) {
+			Value = value;
+			Height = 1;
+			Size = 1;
 		}
 	}
 
-	public IEnumerator<T> GetEnumerator() {
-		foreach (var bucket in buckets) {
-			foreach (var item in bucket) {
-				yield return item;
-			}
-		}
+	private Node root;
+
+	public int Count => GetSize(root);
+
+	private int GetSize(Node node) {
+		return node?.Size ?? 0;
 	}
 
-	public void Add(T x) {
-		if (size == 0) {
-			buckets = new List<List<T>> { new List<T> { x } };
-			size = 1;
-			return;
-		}
-
-		var (bucket, index) = Position(x);
-		bucket.Insert(index, x);
-		size++;
-
-		if (bucket.Count > buckets.Count * REBUILD_RATIO) {
-			Build();
-		}
+	private int GetHeight(Node node) {
+		return node?.Height ?? 0;
 	}
 
-	public bool Discard(T x) {
-		if (size == 0) return false;
+	private Node RotateRight(Node y) {
+		Node x = y.Left;
+		Node T2 = x.Right;
 
-		var (bucket, index) = Position(x);
-		if (index == bucket.Count || !bucket[index].Equals(x)) return false;
+		// 回転
+		x.Right = y;
+		y.Left = T2;
 
-		bucket.RemoveAt(index);
-		size--;
+		// 高さの更新
+		y.Height = Math.Max(GetHeight(y.Left), GetHeight(y.Right)) + 1;
+		x.Height = Math.Max(GetHeight(x.Left), GetHeight(x.Right)) + 1;
 
-		if (bucket.Count == 0) {
-			Build();
-		}
+		// サイズの更新
+		y.Size = GetSize(y.Left) + GetSize(y.Right) + 1;
+		x.Size = GetSize(x.Left) + GetSize(x.Right) + 1;
 
-		return true;
+		return x;
 	}
 
-	public int Count => size;
+	private Node RotateLeft(Node x) {
+		Node y = x.Right;
+		Node T2 = y.Left;
 
-	public T LT(T x) {
-		for (int i = buckets.Count - 1; i >= 0; i--) {
-			var bucket = buckets[i];
-			if (bucket[0].CompareTo(x) < 0) {
-				return bucket[BinarySearch(bucket, x) - 1];
-			}
-		}
-		return default;
+		// 回転
+		y.Left = x;
+		x.Right = T2;
+
+		// 高さの更新
+		x.Height = Math.Max(GetHeight(x.Left), GetHeight(x.Right)) + 1;
+		y.Height = Math.Max(GetHeight(y.Left), GetHeight(y.Right)) + 1;
+
+		// サイズの更新
+		x.Size = GetSize(x.Left) + GetSize(x.Right) + 1;
+		y.Size = GetSize(y.Left) + GetSize(y.Right) + 1;
+
+		return y;
 	}
 
-	public T LE(T x) {
-		for (int i = buckets.Count - 1; i >= 0; i--) {
-			var bucket = buckets[i];
-			if (bucket[0].CompareTo(x) <= 0) {
-				return bucket[BinarySearch(bucket, x) - 1];
-			}
-		}
-		return default;
+	private int GetBalance(Node node) {
+		return node == null ? 0 : GetHeight(node.Left) - GetHeight(node.Right);
 	}
 
-	public T GT(T x) {
-		foreach (var bucket in buckets) {
-			if (bucket.Last().CompareTo(x) > 0) {
-				return bucket[BinarySearch(bucket, x)];
-			}
-		}
-		return default;
+	public void Insert(int value) {
+		root = Insert(root, value);
 	}
 
-	public T GE(T x) {
-		foreach (var bucket in buckets) {
-			if (bucket.Last().CompareTo(x) >= 0) {
-				return bucket[BinarySearch(bucket, x)];
-			}
+	private Node Insert(Node node, int value) {
+		if (node == null)
+			return new Node(value);
+
+		if (value < node.Value)
+			node.Left = Insert(node.Left, value);
+		else if (value > node.Value)
+			node.Right = Insert(node.Right, value);
+		else
+			return node;
+
+		node.Height = Math.Max(GetHeight(node.Left), GetHeight(node.Right)) + 1;
+		node.Size = GetSize(node.Left) + GetSize(node.Right) + 1;
+
+		int balance = GetBalance(node);
+
+		if (balance > 1 && value < node.Left.Value)
+			return RotateRight(node);
+
+		if (balance < -1 && value > node.Right.Value)
+			return RotateLeft(node);
+
+		if (balance > 1 && value > node.Left.Value) {
+			node.Left = RotateLeft(node.Left);
+			return RotateRight(node);
 		}
-		return default;
+
+		if (balance < -1 && value < node.Right.Value) {
+			node.Right = RotateRight(node.Right);
+			return RotateLeft(node);
+		}
+
+		return node;
 	}
 
-	public int Index(T x) {
-		int count = 0;
-		foreach (var bucket in buckets) {
-			if (bucket.Last().CompareTo(x) >= 0) {
-				return count + BinarySearch(bucket, x);
-			}
-			count += bucket.Count;
-		}
-		return count;
+	public int CountGreaterThanOrEqual(int x) {
+		return CountGreaterThanOrEqual(root, x);
 	}
 
-	public int IndexRight(T x) {
-		int count = 0;
-		foreach (var bucket in buckets) {
-			if (bucket.Last().CompareTo(x) > 0) {
-				return count + BinarySearch(bucket, x);
-			}
-			count += bucket.Count;
-		}
-		return count;
-	}
+	private int CountGreaterThanOrEqual(Node node, int x) {
+		if (node == null)
+			return 0;
 
-	private (List<T>, int) Position(T x) {
-		foreach (var bucket in buckets) {
-			if (bucket.Last().CompareTo(x) >= 0) {
-				return (bucket, BinarySearch(bucket, x));
-			}
+		if (x == node.Value) {
+			// 現在のノードの値がxに一致する場合、右部分木の全ての要素とこのノード自身を含む
+			return GetSize(node.Right) + 1;
+		} else if (x < node.Value) {
+			// xが現在のノードの値より小さい場合、右部分木全体とこのノード自身が条件を満たす
+			return GetSize(node.Right) + 1 + CountGreaterThanOrEqual(node.Left, x);
+		} else {
+			// xが現在のノードの値より大きい場合、左部分木のみを調べる
+			return CountGreaterThanOrEqual(node.Right, x);
 		}
-		throw new InvalidOperationException("The set is empty.");
-	}
-
-	private int BinarySearch(List<T> bucket, T x) {
-		return bucket.BinarySearch(x) >= 0 ? bucket.BinarySearch(x) : ~bucket.BinarySearch(x);
 	}
 }
 
-// 使用例
-public static class Program {
-	public static void Main() {
-		var A = new List<int> { 3, -1, 4, -1, 5, -9, 2, -6, 5, -3, 5, -8 };
+class Program {
+	static void Main() {
+		AVLTree tree = new AVLTree();
+		tree.Insert(10);
+		tree.Insert(20);
+		tree.Insert(5);
+		tree.Insert(6);
+		tree.Insert(15);
 
-		var s = new SortedMultiset<int>(A);
-		Console.WriteLine(string.Join(", ", s)); // 内部状態を表示
-		s.Add(0);
-		s.Discard(-1);
-
-		Console.WriteLine(s.Count); // 値の個数を表示
-		Console.WriteLine(s.LT(2)); // 指定値より小さい最大要素を表示
-		Console.WriteLine(s.LE(2)); // 指定値以下の最大要素を表示
-		Console.WriteLine(s.GT(2)); // 指定値より大きい最小要素を表示
-		Console.WriteLine(s.GE(2)); // 指定値以上の最小要素を表示
-
-		Console.WriteLine(s.IndexRight(2)); // 指定値以下の要素の個数を表示
-		Console.WriteLine(s.Index(2)); // 指定値未満の要素の個数を表示
+		Console.WriteLine("Count of elements >= 10: " + tree.CountGreaterThanOrEqual(10)); // 出力: 4
+		Console.WriteLine("Count of elements >= 15: " + tree.CountGreaterThanOrEqual(15)); // 出力: 2
+		Console.WriteLine("Count of elements >= 7: " + tree.CountGreaterThanOrEqual(7));   // 出力: 4
 	}
 }

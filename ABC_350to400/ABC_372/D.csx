@@ -879,21 +879,33 @@ public class SegmentTree {
 	} // end of method
 } // end of class
 
+
 /// <summary>AVL木</summary>
 public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	/// <summary>AVL木を構成するノード1個分</summary>
 	public class Node {
-		public T key { get; set; }
-		public Node left { get; set; }
-		public Node right { get; set; }
-		public Node parent { get; set; }
-		public int height { get; set; }
-		public int count { get; set; }
+		/// <summary>要素の値</summary>
+		public T key;
+
+		public Node left;
+		public Node right;
+		public Node parent;
+
+		/// <summary>自身をrootとした時の木の高さ</summary>
+		public int height;
+
+		/// <summary>同一のkeyの個数</summary>
+		public int count;
+
+		/// <summary>自身も含む子要素の数の合計(rootのこの値は木全体のノード数)<br />
+		/// childNodeNum-count → このkeyより大きいkeyのノード数の合計</summary>
+		public int childNodeNum;
 
 		public Node(T key) {
 			this.key = key;
 			this.height = 1;
 			this.count = 1;
+			this.childNodeNum = 1;
 		} // end of constructor
 	} // end of class
 
@@ -927,15 +939,25 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 
 		int compare = this.comparer.Compare(key, node.key);
 		// 注目ノードより小さいので左の子に挿入
-		if (compare < 0) node.left = this.Insert(node.left, key, node);
+		if (compare < 0) { node.left = this.Insert(node.left, key, node); }
 
 		// 注目ノードより大きいので右の子に挿入
-		else if (compare > 0) node.right = this.Insert(node.right, key, node);
+		else if (compare > 0) { node.right = this.Insert(node.right, key, node); }
 
 		// 注目ノードと同じ(すでにkeyが含まれている)ので個数をカウント
-		else node.count += 1;
+		else {
+			node.count += 1;
+			node.childNodeNum += 1;
 
-		// 左右の個の深い方+1が現在のノードの高さ
+			// 親をたどってchildNodeNumを更新
+			Node p = node.parent;
+			while (p != null) {
+				p.childNodeNum += 1;
+				p = p.parent;
+			}
+		}
+
+		// 左右の子の深い方+1が現在のノードの高さ
 		node.height = 1 + Max(this.GetHeight(node.left), this.GetHeight(node.right));
 
 		// 高さを揃える
@@ -1335,8 +1357,13 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		x.right = t2;
 		if (t2 != null) t2.parent = x;
 
+		// 高さ再調整
 		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
 		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
+
+		// 子要素の数を更新
+		x.childNodeNum = x.count + (x.left != null ? x.left.childNodeNum : 0) + (x.right != null ? x.right.childNodeNum : 0);
+		y.childNodeNum = y.count + (y.left != null ? y.left.childNodeNum : 0) + (y.right != null ? y.right.childNodeNum : 0);
 
 		return y;
 	} // end of method
@@ -1357,8 +1384,13 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 		y.left = t2;
 		if (t2 != null) t2.parent = y;
 
+		// 高さ再調整
 		y.height = Max(this.GetHeight(y.left), this.GetHeight(y.right)) + 1;
 		x.height = Max(this.GetHeight(x.left), this.GetHeight(x.right)) + 1;
+
+		// 子要素の数を更新
+		x.childNodeNum = x.count + (x.left != null ? x.left.childNodeNum : 0) + (x.right != null ? x.right.childNodeNum : 0);
+		y.childNodeNum = y.count + (y.left != null ? y.left.childNodeNum : 0) + (y.right != null ? y.right.childNodeNum : 0);
 
 		return x;
 	} // end of method
@@ -1471,6 +1503,7 @@ public class AVLTree<T> : IEnumerable<T> where T : IComparable<T> {
 	} // end of class
 } // end of class
 
+
 class Kyopuro {
 	public static void Main() {
 		preprocess();
@@ -1521,5 +1554,17 @@ class Kyopuro {
 		}
 
 		printlist(leftarr);
+
+		var avl = new AVLTree<int>(leftarr);
+		avl.Insert(iinf);
+
+		for (int i = 0; i < n - 1; ++i) {
+			avl.Remove(leftarr[i]);
+
+			// 自身以下の値の個数が答えになるはず
+			var node = avl.UpperBoundIterator(leftarr[i]);
+			node = node.Prev();
+
+		}
 	} // end of method
 } // end of class
