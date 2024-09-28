@@ -613,165 +613,76 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public int LowerBound<T>(T[] a, T v) {
-		return LowerBound(a, v, Comparer<T>.Default);
-	}
 
-	public int LowerBound<T>(T[] a, T v, Comparer<T> cmp) {
-		var l = 0;
-		var r = a.Length - 1;
-		while (l <= r) {
-			var mid = l + (r - l) / 2;
-			var res = cmp.Compare(a[mid], v);
-			if (res == -1) l = mid + 1;
-			else r = mid - 1;
-		}
-		return l;
-	}
 
-	public int FindFirstIndex(long[] arr, long target) {
-		int left = 0;
-		int right = arr.Length - 1;
-		int result = -1;
+	/// 隣接グラフに対してトポロジカルソートをする
+	/// 出来ない場合は要素0の配列を返す
+	public List<int> TopologicalSort(List<List<int>> graph) {
+		// ノード数
+		int n = graph.Count;
 
-		while (left <= right) {
-			int mid = left + (right - left) / 2;
-
-			if (arr[mid] == target) {
-				result = mid; // 一致した場合、一時的に結果を保存
-				right = mid - 1; // 左側を探す
-			} else if (arr[mid] < target) {
-				left = mid + 1; // 右側に移動
-			} else {
-				right = mid - 1; // 左側に移動
+		// 各ノードの入次数を記録
+		int[] inputNodes = new int[n];
+		for (int i = 0; i < n; ++i) {
+			foreach (int to in graph[i]) {
+				inputNodes[to] += 1;
 			}
 		}
 
-		return result; // 最初のインデックスを返す
-	}
-
-
-	public int FindLastIndex(long[] arr, long target) {
-		int l = 0, r = arr.Length;
-		int ret = -1;
-
-		while (Abs(l - r) > 1) {
-			int mid = (l + r) / 2;
-			if (arr[mid] == target) {
-				ret = mid;
-				l = mid;
-			} else if (arr[mid] < target) {
-				l = mid;
-			} else {
-				r = mid;
-			}
+		// 入力の次数が0のノードを記録
+		var queue = new Queue<int>();
+		for (int i = 0; i < n; ++i) {
+			if (inputNodes[i] > 0) continue;
+			queue.Enqueue(i);
 		}
-		return ret;
-	}
+
+		// トポロジカルソート結果
+		List<int> sorted = new List<int>();
+
+		// 手順1 : 入次数が0のノードをキューに追加
+		// 手順2 : キューからノードを取り出しソート結果に追加
+		// 手順3 : 隣接するノードの入次数を-1
+		// 手順4 : 手順1 ~ 手順3 を繰り返し
+		while (queue.Count > 0) {
+			// キューから取り出し
+			int node = queue.Dequeue();
+
+			// 隣接するノードの入次数を-1
+			foreach (int to in graph[node]) {
+				inputNodes[to] -= 1;
+				// 入次数が0ならキューに追加
+				if (inputNodes[to] == 0) queue.Enqueue(to);
+			}
+
+			// ソート結果に追加
+			sorted.Add(node);
+		}
+
+		// ソートしたノード数がgraphのノード数と一致すればトポロジカルソート成功
+		// 一致しなければトポロジカルソートできないグラフ(非DAG)
+		return sorted.Count == n ? sorted : new List<int>();
+	} // end of method
 
 
 	public void Solve() {
-		var (nn, mm, k) = readlongt3();
-		int n = (int)nn;
-		int m = (int)mm;
-
-		var arr = readlongs();
-		var voted = arr.Sum();
-		long nokori = k - voted;
-		// writeline($"nokori:{nokori}");
-
-		if (n == m) {
-			for (int i = 0; i < n; ++i) write(0 + " ");
-			writeline();
-			return;
+		var (n, m) = readintlongt2();
+		var wgraph = makelist2(n, 0, (0, 0l));
+		var graph = makelist2(n, 0, 0);
+		for (int i = 0; i < m; ++i) {
+			var (uu, vv, w) = readlongt3();
+			int u = (int)uu - 1;
+			int v = (int)vv - 1;
+			wgraph[u].Add((v, w));
+			graph[u].Add(v);
 		}
 
-		var sorted = copyarr(arr);
-		Array.Sort(sorted);
-		var prefix = new long[n + 1];
-		for (int i = 0; i < n; ++i) {
-			prefix[i + 1] = prefix[i] + sorted[i];
+		var topo = TopologicalSort(graph);
+
+		printlist(topo);
+
+		for (int k = 0; k < n; ++k) {
+
 		}
-
-		// printlist(sorted);
-		// printlist(prefix);
-
-		for (int i = 0; i < n; ++i) {
-			// 自分の場所をチェック
-			int ind = FindLastIndex(sorted, arr[i]);
-
-			// 自分が上位m人に入っているなら
-			// 自分より下でm+1人の範囲までと勝負
-			if (n - m <= ind) {
-				// 自分より下でm+1番目までの合計
-				long lowers = prefix[ind] - prefix[n - m - 1];
-				long lowninzu = ind - (n - m - 1);
-
-				long l = 0, r = nokori + 1;
-				while (Abs(l - r) > 1) {
-					long get = (l + r) / 2;
-					bool check = (arr[i] + get) * lowninzu + lowninzu > lowers + (nokori - get);
-
-					if (check) {
-						r = get;
-					} else {
-						l = get;
-					}
-				}
-
-				// もう一度確認
-				bool aftercheck = (arr[i] + l) * lowninzu + lowninzu > lowers + (nokori - l);
-				if (aftercheck == false) l += 1;
-
-				write(l + " ");
-			}
-			// 自分が上位m人に入っていないなら
-			// 自分より上でm番目までの人と勝負
-			else {
-				// 自分より上でm番目まで
-				// long uppers = prefix[n - m + 1] - prefix[ind + 1];
-				// long upninzu = (n - m) - (ind + 1) + 1;
-
-				// 上からm番目までと勝負
-				long uppers = prefix[n] - prefix[n - m];
-				long upninzu = m;
-
-				// 自分より上全員と勝負
-				// long uppers = prefix[n] - prefix[ind + 1];
-				// long upninzu = n - ind - 1;
-
-				// write($"ind:{ind} arr[i]:{sorted[ind]} uppers:{uppers} upninzu:{upninzu} ");
-
-
-				long l = 0, r = nokori + 1;
-				while (Abs(l - r) > 1) {
-					long get = (l + r) / 2;
-					bool check = (arr[i] + get) * upninzu > uppers + (nokori - get);
-
-					if (check) {
-						r = get;
-					} else {
-						l = get;
-					}
-				}
-
-				// もう一度確認
-				bool aftercheck = (arr[i] + l) + upninzu > uppers + (nokori - l);
-				if (aftercheck == false) l += 1;
-
-				// だめならば
-				if (arr[i] + nokori < sorted[n - m]) {
-					write(-1 + " ");
-					continue;
-				}
-
-				write(l + " ");
-				// writeline();
-
-			}
-		}
-
-		writeline();
 
 
 	} // end of method

@@ -613,165 +613,34 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
-	public int LowerBound<T>(T[] a, T v) {
-		return LowerBound(a, v, Comparer<T>.Default);
-	}
-
-	public int LowerBound<T>(T[] a, T v, Comparer<T> cmp) {
-		var l = 0;
-		var r = a.Length - 1;
-		while (l <= r) {
-			var mid = l + (r - l) / 2;
-			var res = cmp.Compare(a[mid], v);
-			if (res == -1) l = mid + 1;
-			else r = mid - 1;
-		}
-		return l;
-	}
-
-	public int FindFirstIndex(long[] arr, long target) {
-		int left = 0;
-		int right = arr.Length - 1;
-		int result = -1;
-
-		while (left <= right) {
-			int mid = left + (right - left) / 2;
-
-			if (arr[mid] == target) {
-				result = mid; // 一致した場合、一時的に結果を保存
-				right = mid - 1; // 左側を探す
-			} else if (arr[mid] < target) {
-				left = mid + 1; // 右側に移動
-			} else {
-				right = mid - 1; // 左側に移動
-			}
-		}
-
-		return result; // 最初のインデックスを返す
-	}
-
-
-	public int FindLastIndex(long[] arr, long target) {
-		int l = 0, r = arr.Length;
-		int ret = -1;
-
-		while (Abs(l - r) > 1) {
-			int mid = (l + r) / 2;
-			if (arr[mid] == target) {
-				ret = mid;
-				l = mid;
-			} else if (arr[mid] < target) {
-				l = mid;
-			} else {
-				r = mid;
-			}
-		}
-		return ret;
-	}
-
-
 	public void Solve() {
-		var (nn, mm, k) = readlongt3();
-		int n = (int)nn;
-		int m = (int)mm;
-
-		var arr = readlongs();
-		var voted = arr.Sum();
-		long nokori = k - voted;
-		// writeline($"nokori:{nokori}");
-
-		if (n == m) {
-			for (int i = 0; i < n; ++i) write(0 + " ");
-			writeline();
-			return;
+		var (n, m) = readintt2();
+		var graph = makelist2(n, 0, (0, 0l));
+		for (int i = 0; i < m; ++i) {
+			var (uu, vv, w) = readlongt3();
+			int u = (int)uu - 1;
+			int v = (int)vv - 1;
+			graph[u].Add((v, w));
+			graph[v].Add((u, -w));
 		}
 
-		var sorted = copyarr(arr);
-		Array.Sort(sorted);
-		var prefix = new long[n + 1];
-		for (int i = 0; i < n; ++i) {
-			prefix[i + 1] = prefix[i] + sorted[i];
-		}
+		var ans = makearr(n, -linf);
 
-		// printlist(sorted);
-		// printlist(prefix);
-
-		for (int i = 0; i < n; ++i) {
-			// 自分の場所をチェック
-			int ind = FindLastIndex(sorted, arr[i]);
-
-			// 自分が上位m人に入っているなら
-			// 自分より下でm+1人の範囲までと勝負
-			if (n - m <= ind) {
-				// 自分より下でm+1番目までの合計
-				long lowers = prefix[ind] - prefix[n - m - 1];
-				long lowninzu = ind - (n - m - 1);
-
-				long l = 0, r = nokori + 1;
-				while (Abs(l - r) > 1) {
-					long get = (l + r) / 2;
-					bool check = (arr[i] + get) * lowninzu + lowninzu > lowers + (nokori - get);
-
-					if (check) {
-						r = get;
-					} else {
-						l = get;
-					}
-				}
-
-				// もう一度確認
-				bool aftercheck = (arr[i] + l) * lowninzu + lowninzu > lowers + (nokori - l);
-				if (aftercheck == false) l += 1;
-
-				write(l + " ");
-			}
-			// 自分が上位m人に入っていないなら
-			// 自分より上でm番目までの人と勝負
-			else {
-				// 自分より上でm番目まで
-				// long uppers = prefix[n - m + 1] - prefix[ind + 1];
-				// long upninzu = (n - m) - (ind + 1) + 1;
-
-				// 上からm番目までと勝負
-				long uppers = prefix[n] - prefix[n - m];
-				long upninzu = m;
-
-				// 自分より上全員と勝負
-				// long uppers = prefix[n] - prefix[ind + 1];
-				// long upninzu = n - ind - 1;
-
-				// write($"ind:{ind} arr[i]:{sorted[ind]} uppers:{uppers} upninzu:{upninzu} ");
-
-
-				long l = 0, r = nokori + 1;
-				while (Abs(l - r) > 1) {
-					long get = (l + r) / 2;
-					bool check = (arr[i] + get) * upninzu > uppers + (nokori - get);
-
-					if (check) {
-						r = get;
-					} else {
-						l = get;
-					}
-				}
-
-				// もう一度確認
-				bool aftercheck = (arr[i] + l) + upninzu > uppers + (nokori - l);
-				if (aftercheck == false) l += 1;
-
-				// だめならば
-				if (arr[i] + nokori < sorted[n - m]) {
-					write(-1 + " ");
-					continue;
-				}
-
-				write(l + " ");
-				// writeline();
-
+		void dfs(int node) {
+			foreach (var next in graph[node]) {
+				if (ans[next.Item1] != -linf) continue;
+				ans[next.Item1] = ans[node] + next.Item2;
+				dfs(next.Item1);
 			}
 		}
 
-		writeline();
+		for (int k = 0; k < n; ++k) {
+			if (ans[k] != -linf) continue;
+			ans[k] = 0;
+			dfs(k);
+		}
+
+		printlist(ans);
 
 
 	} // end of method
