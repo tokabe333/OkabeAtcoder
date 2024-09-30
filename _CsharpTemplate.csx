@@ -498,11 +498,18 @@ class Util {
 		return ((int)arr[0], arr[1], arr[2]);
 	} // end of func
 
-	/// <summary>先頭に要素数(int)と次にでかい数字2つ</summary>
+	/// <summary>先頭に要素数(int)と次にでかい数字3つ</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static (int, long, long, long) readintlongt4() {
 		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
 		return ((int)arr[0], arr[1], arr[2], arr[3]);
+	} // end of func
+
+	/// <summary>int, int, longの形式で読み込み</summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static (int, int, long) readintintlong() {
+		var arr = ReadLine().Split(' ').Select(x => long.Parse(x)).ToArray();
+		return ((int)arr[0], (int)arr[1], arr[2]);
 	} // end of func
 
 	/// <summary>小数点以下を16桁で表示(精度が厳しい問題に対応)</summary>
