@@ -624,12 +624,13 @@ class Kyopuro {
 		int n = readint();
 		var ab = new List<long[]>();
 		long sumb = 0;
-		var teams = new List<long>[3];
-		for (int i = 0; i < 3; ++i) teams[i] = new List<long>();
+		var teams = new Dictionary<long, long>[3];
+		for (int i = 0; i < 3; ++i) teams[i] = new Dictionary<long, long>();
 		for (int i = 0; i < n; ++i) {
 			ab.Add(readlongs());
 			sumb += ab[i][1];
-			teams[ab[i][0] - 1].Add(ab[i][1]);
+			if (teams[ab[i][0] - 1].ContainsKey(ab[i][1]) == false) teams[ab[i][0] - 1][ab[i][1]] = 0;
+			teams[ab[i][0] - 1][ab[i][1]] += 1;
 		}
 
 		if (sumb % 3 != 0) {
@@ -664,12 +665,16 @@ class Kyopuro {
 		foreach (var abb in ab) printlist(abb);
 		// writeline($"{a} {b} {c}");
 
-		var ansteams = new List<long>[3];
-		for (int i = 0; i < 3; ++i) ansteams[i] = new List<long>();
-		for (int i = 0; i < n; ++i) ansteams[flags[i] - 1].Add(ab[i][1]);
+		var ansteams = new Dictionary<long, long>[3];
+		for (int i = 0; i < 3; ++i) ansteams[i] = new Dictionary<long, long>();
+		for (int i = 0; i < n; ++i) { if (ansteams[flags[i] - 1].ContainsKey(ab[i][1]) == false) ansteams[flags[i] - 1][ab[i][1]] = 0; { } }
+		ansteams[flags[i] - 1].Add(ab[i][1]);
 
-		var shuffle = new int[][] { [0, 1, 2], [0, 2, 1] };
-		printlist2(shuffle);
+		long ans = 0;
+		var shuffle = new int[][] { [0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0] };
+		foreach (var s in shuffle) {
+
+		}
 
 	} // end of method
 } // end of class

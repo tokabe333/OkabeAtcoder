@@ -620,56 +620,64 @@ class Kyopuro {
 		finalprocess();
 	} // end of func
 
+
+
 	public void Solve() {
 		int n = readint();
-		var ab = new List<long[]>();
-		long sumb = 0;
-		var teams = new List<long>[3];
-		for (int i = 0; i < 3; ++i) teams[i] = new List<long>();
+		var arr = makearr2(n, n, ' ');
 		for (int i = 0; i < n; ++i) {
-			ab.Add(readlongs());
-			sumb += ab[i][1];
-			teams[ab[i][0] - 1].Add(ab[i][1]);
-		}
-
-		if (sumb % 3 != 0) {
-			writeline(-1);
-			return;
-		}
-
-		ab.Sort((a, b) => b[1].CompareTo(a[1]));
-		long sumb3 = sumb / 3;
-
-		var flags = new int[n];
-		bool func(int team, int depth, long sum) {
-			if (sum == sumb3) return true;
-			if (depth >= n) return false;
-			if (sum > sumb3) return false;
-
-
-			if (flags[depth] == 0) {
-				flags[depth] = team;
-				bool a = func(team, depth + 1, sum + ab[depth][1]);
-				if (a == true) return true;
-				flags[depth] = 0;
+			string s = read();
+			for (int j = 0; j < n; ++j) {
+				arr[i][j] = s[j];
 			}
-			bool b = func(team, depth + 1, sum);
-			return b;
+		}
+		var ans = copyarr2(arr);
+
+		/// 外からd周目を90度回す
+		void rotate90(int d) {
+			// up
+			for (int x = d; x < n - d; ++x) ans[x][n - d - 1] = arr[d][x];
+
+			// right
+			for (int y = d; y < n - d; ++y) ans[n - d - 1][n - y - 1] = arr[y][n - d - 1];
+
+			// down
+			for (int x = d; x < n - d; ++x) ans[x][d] = arr[n - d - 1][x];
+
+			// left
+			for (int y = d; y < n - d; ++y) ans[d][n - y - 1] = arr[y][d];
+
+			// arrも更新
+			for (int x = d; x < n - d; ++x) arr[d][x] = ans[d][x];
+			for (int x = d; x < n - d; ++x) arr[n - d - 1][x] = ans[n - d - 1][x];
+			for (int y = d; y < n - d; ++y) arr[y][d] = ans[y][d];
+			for (int y = d; y < n - d; ++y) arr[y][n - d - 1] = ans[y][n - d - 1];
 		}
 
-		bool a = func(1, 0, 0);
-		bool b = func(2, 0, 0);
-		bool c = func(3, 0, 0);
-		printlist(flags);
-		foreach (var abb in ab) printlist(abb);
-		// writeline($"{a} {b} {c}");
+		for (int i = 0; i < n / 2; ++i) {
+			for (int j = 0; j < (i + 1) % 4; ++j) {
+				rotate90(i);
+			}
+		}
 
-		var ansteams = new List<long>[3];
-		for (int i = 0; i < 3; ++i) ansteams[i] = new List<long>();
-		for (int i = 0; i < n; ++i) ansteams[flags[i] - 1].Add(ab[i][1]);
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j < n; ++j) {
+				write(ans[i][j]);
+			}
+			writeline();
+		}
 
-		var shuffle = new int[][] { [0, 1, 2], [0, 2, 1] };
-		printlist2(shuffle);
+		// rotate90(0);
+		// rotate90(1);
+		// rotate90(1);
+		// rotate90(2);
+		// rotate90(2);
+		// rotate90(2);
+		// printlist2(arr);
+		// writeline();
+		// printlist2(ans);
+
+
 
 	} // end of method
 } // end of class

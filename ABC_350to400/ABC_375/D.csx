@@ -621,55 +621,27 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		int n = readint();
-		var ab = new List<long[]>();
-		long sumb = 0;
-		var teams = new List<long>[3];
-		for (int i = 0; i < 3; ++i) teams[i] = new List<long>();
-		for (int i = 0; i < n; ++i) {
-			ab.Add(readlongs());
-			sumb += ab[i][1];
-			teams[ab[i][0] - 1].Add(ab[i][1]);
-		}
 
-		if (sumb % 3 != 0) {
-			writeline(-1);
-			return;
-		}
+		string s = read();
+		var chars = new List<long>[30];
+		for (int i = 0; i < 30; ++i) chars[i] = new List<long>();
 
-		ab.Sort((a, b) => b[1].CompareTo(a[1]));
-		long sumb3 = sumb / 3;
+		for (int i = 0; i < s.Length; ++i) chars[s[i] - 'A'].Add(i);
 
-		var flags = new int[n];
-		bool func(int team, int depth, long sum) {
-			if (sum == sumb3) return true;
-			if (depth >= n) return false;
-			if (sum > sumb3) return false;
+		long ans = 0;
+		foreach (var list in chars) {
+			long sum = list.Sum();
+			long n = list.Count;
 
-
-			if (flags[depth] == 0) {
-				flags[depth] = team;
-				bool a = func(team, depth + 1, sum + ab[depth][1]);
-				if (a == true) return true;
-				flags[depth] = 0;
+			foreach (var ind in list) {
+				sum -= ind;
+				n -= 1;
+				long hoge = sum - (ind * n) - n;
+				ans += hoge;
 			}
-			bool b = func(team, depth + 1, sum);
-			return b;
 		}
+		writeline(ans);
 
-		bool a = func(1, 0, 0);
-		bool b = func(2, 0, 0);
-		bool c = func(3, 0, 0);
-		printlist(flags);
-		foreach (var abb in ab) printlist(abb);
-		// writeline($"{a} {b} {c}");
-
-		var ansteams = new List<long>[3];
-		for (int i = 0; i < 3; ++i) ansteams[i] = new List<long>();
-		for (int i = 0; i < n; ++i) ansteams[flags[i] - 1].Add(ab[i][1]);
-
-		var shuffle = new int[][] { [0, 1, 2], [0, 2, 1] };
-		printlist2(shuffle);
 
 	} // end of method
 } // end of class
