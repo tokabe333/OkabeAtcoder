@@ -668,7 +668,7 @@ class Kyopuro {
 		var ansteams = new Dictionary<long, long>[3];
 		for (int i = 0; i < 3; ++i) ansteams[i] = new Dictionary<long, long>();
 		for (int i = 0; i < n; ++i) { if (ansteams[flags[i] - 1].ContainsKey(ab[i][1]) == false) ansteams[flags[i] - 1][ab[i][1]] = 0; { } }
-		ansteams[flags[i] - 1].Add(ab[i][1]);
+		// ansteams[flags[i] - 1].Add(ab[i][1]);
 
 		long ans = 0;
 		var shuffle = new int[][] { [0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0] };
