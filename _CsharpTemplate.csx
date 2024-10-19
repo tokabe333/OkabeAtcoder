@@ -16,10 +16,15 @@ using static Util;
 class Util {
 	public const long m107 = 1000000007;
 	public const long m998 = 998244353;
-	public const int a10_9 = 1000000000;
-	public const long a10_18 = 1000000000000000000;
+	public const int i10_5 = 100000;
+	public const int i20_5 = 200000;
+	public const long l10_5 = 100000;
+	public const long l20_5 = 200000;
+	public const int i10_9 = 1000000000;
+	public const long l10_9 = 1000000000;
+	public const long l10_18 = 1000000000000000000;
 	public const int iinf = 1 << 30;
-	public const long linf = (1l << 61) - (1l << 31);
+	public const long linf = 1l << 60;
 
 	/// <summary>1行読みこみ</summary>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -579,16 +584,13 @@ class SortedMap<K, V> : SortedDictionary<K, V> {
 } // end of class
 
 /// 座標に便利(値型だけど16byteまではstructが速い)
-struct YX {
-	public int y;
-	public int x;
-	public YX(int y, int x) {
+struct YX<T> {
+	public T y;
+	public T x;
+	public YX(T y, T x) {
 		this.y = y;
 		this.x = x;
 	}
-
-	// デバッグ出力
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public override string ToString() => $"y:{y} x:{x}";
 } // end of class
 

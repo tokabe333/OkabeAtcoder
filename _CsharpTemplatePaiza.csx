@@ -15,10 +15,15 @@ using static Util;
 class Util {
 	public const long m107 = 1000000007;
 	public const long m998 = 998244353;
-	public const int a10_9 = 1000000000;
-	public const long a10_18 = 1000000000000000000;
+	public const int i10_5 = 100000;
+	public const int i20_5 = 200000;
+	public const long l10_5 = 100000;
+	public const long l20_5 = 200000;
+	public const int i10_9 = 1000000000;
+	public const long l10_9 = 1000000000;
+	public const long l10_18 = 1000000000000000000;
 	public const int iinf = 1 << 30;
-	public const long linf = (1l << 61) - (1l << 31);
+	public const long linf = 1l << 60;
 
 	/// 入出力
 	[MethodImpl(256)]
@@ -241,25 +246,15 @@ class Util {
 	[MethodImpl(256)]
 	public static string[] readsplit() => read().Split(' ');
 
-	/// 数字をスペース区切りでint型で入力
+	/// 数字をスペース区切りで入力
 	[MethodImpl(256)]
 	public static int[] readints() => readsplit().Select(_ => int.Parse(_)).ToArray();
-
-	/// 数字をスペース区切りでlong型で入力
 	[MethodImpl(256)]
 	public static long[] readlongs() => readsplit().Select(_ => long.Parse(_)).ToArray();
-
-	/// 数字をスペース区切りでfloat型で入力
 	[MethodImpl(256)]
 	public static float[] readfloats() => readsplit().Select(_ => float.Parse(_)).ToArray();
-
-	/// 数字をスペース区切りでdouble型で入力
 	[MethodImpl(256)]
 	public static double[] readdoubles() => readsplit().Select(_ => double.Parse(_)).ToArray();
-
-	/// 文字列をスペース区切りで入力
-	[MethodImpl(256)]
-	public static string[] readstrings() => readsplit();
 
 	/// 自由な型で2変数を入力
 	[MethodImpl(256)]
