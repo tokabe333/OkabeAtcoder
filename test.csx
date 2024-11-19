@@ -350,25 +350,7 @@ class Kyopuro {
 
 	public void Solve() {
 
-		int n = readint();
-		var arr = readlongs();
-
-
-		long p106 = (long)Pow(10, 6);
-		var num = new long[p106 * 2 + 10];
-
-		foreach (var a in arr) num[a] += 1;
-
-
-		for (int i = 0; i <= p106; ++i) {
-			num[i * 2] += num[i] / 2;
-			num[i] %= 2;
-		}
-
-		writeline(num.Sum());
-
-
-
+		writeline("hogehoge");
 
 	} // end of method
 } // end of class
