@@ -623,27 +623,26 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (n, m) = readlongt2();
-		var idou = new (long, long)[8];
-		idou[0] = (-2, -1);
-		idou[1] = (-2, 1);
-		idou[2] = (-1, -2);
-		idou[3] = (-1, 2);
-		idou[4] = (1, -2);
-		idou[5] = (1, 2);
-		idou[6] = (2, -1);
-		idou[7] = (2, 1);
 
-		var set = new HashSet<(long, long)>();
-		for (int i = 0; i < m; ++i) {
-			var (a, b) = readlongt2();
-			foreach (var move in idou) {
-				var (dy, dx) = move;
-				set.Add((a + dy, b + dx));
+
+		var y = new int[8];
+		var x = new int[8];
+		for (int i = 0; i < 8; ++i) {
+			var s = read();
+			for (int j = 0; j < 8; ++j) {
+				if (s[j] != '#') continue;
+				y[i] = 1;
+				x[j] = 1;
 			}
 		}
 
-		writeline(n * n - set.Count);
+		int ans = 0;
+		for (int i = 0; i < 8; ++i) {
+			for (int j = 0; j < 8; ++j) {
+				if (y[i] + x[j] == 0) ans += 1;
+			}
+		}
+		writeline(ans);
 
 	} // end of method
 } // end of class

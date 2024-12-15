@@ -623,27 +623,11 @@ class Kyopuro {
 	} // end of func
 
 	public void Solve() {
-		var (n, m) = readlongt2();
-		var idou = new (long, long)[8];
-		idou[0] = (-2, -1);
-		idou[1] = (-2, 1);
-		idou[2] = (-1, -2);
-		idou[3] = (-1, 2);
-		idou[4] = (1, -2);
-		idou[5] = (1, 2);
-		idou[6] = (2, -1);
-		idou[7] = (2, 1);
 
-		var set = new HashSet<(long, long)>();
-		for (int i = 0; i < m; ++i) {
-			var (a, b) = readlongt2();
-			foreach (var move in idou) {
-				var (dy, dx) = move;
-				set.Add((a + dy, b + dx));
-			}
-		}
-
-		writeline(n * n - set.Count);
+		string s = read();
+		var c = s.ToCharArray();
+		Array.Sort(c);
+		writeline("ABC" == new string(c) ? "Yes" : "No");
 
 	} // end of method
 } // end of class
